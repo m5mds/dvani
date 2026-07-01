@@ -434,5 +434,5 @@ Goal: push the current Divani static site to `https://github.com/m5mds/dvani.git
 - [x] Add ignore rules for generated screenshots, browser profiles, and audit JSON.
 - [x] Initialize git repository and configure remote.
 - [x] Commit the clean site files.
-- [ ] Push to GitHub.
-- [ ] Verify remote branch state.
+- [x] Push to GitHub.
+- [x] Verify remote branch state.
