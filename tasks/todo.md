@@ -436,3 +436,25 @@ Goal: push the current Divani static site to `https://github.com/m5mds/dvani.git
 - [x] Commit the clean site files.
 - [x] Push to GitHub.
 - [x] Verify remote branch state.
+
+## Apple-Like Page And Project Transitions
+
+Goal: make the static Divani site feel like using an Apple product by adding native-feeling transitions between pages and project states.
+
+Design source: `docs/plans/2026-07-01-divani-apple-transitions-design.md`.
+
+- [x] Capture approved transition direction.
+- [x] Add cross-document View Transition CSS for multipage navigation.
+- [x] Add same-document View Transition support for project switching.
+- [x] Add safe fallback page-exit animation for unsupported browsers.
+- [x] Regenerate all static pages from the generator.
+- [x] Run browser audit for links, images, overflow, forms, drawer, project switching, and errors.
+- [x] Capture representative screenshots.
+- [ ] Commit and push to GitHub.
+
+Apple-like transition notes:
+
+- Added native View Transition CSS for page navigation and shared elements.
+- Added project image/text transitions with image preloading and a safe fallback.
+- Fixed a Chromium edge case by temporarily removing the full-page transition capture during project switching.
+- Final audit: `tasks/apple-transitions-audit.md`.

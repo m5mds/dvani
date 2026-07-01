@@ -4,6 +4,8 @@
   const closeButton = document.querySelector(".mobile-close");
   const drawerLinks = drawer ? Array.from(drawer.querySelectorAll("a")) : [];
   const focusables = [closeButton].concat(drawerLinks).filter(Boolean);
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const supportsViewTransitions = "startViewTransition" in document;
 
   function openDrawer(){
     drawer.classList.add("open");
@@ -39,28 +41,91 @@
     });
   }
 
+  function isTransitionableLink(link){
+    if(!link || (link.target && link.target !== "_self")) return false;
+    if(link.hasAttribute("download")) return false;
+    const raw = link.getAttribute("href") || "";
+    if(!raw || raw.startsWith("#")) return false;
+    let url;
+    try { url = new URL(raw, window.location.href); }
+    catch { return false; }
+    if(url.origin !== window.location.origin) return false;
+    if(url.protocol !== "http:" && url.protocol !== "https:" && url.protocol !== "file:") return false;
+    if(/\.pdf($|[?#])/i.test(url.pathname)) return false;
+    if(url.pathname === window.location.pathname && url.hash) return false;
+    return true;
+  }
+
+  if(!supportsViewTransitions && !reduced){
+    document.addEventListener("click", event => {
+      const target = event.target instanceof Element ? event.target : null;
+      const link = target ? target.closest("a[href]") : null;
+      if(!isTransitionableLink(link)) return;
+      event.preventDefault();
+      document.documentElement.classList.add("is-leaving");
+      window.setTimeout(() => { window.location.href = link.href; }, 260);
+    });
+  }
+
   const stage = document.querySelector(".project-stage");
+  const pageMain = document.querySelector("main");
   const projectImage = document.getElementById("projectImage");
   const projectTitle = document.getElementById("projectTitle");
   const projectMeta = document.getElementById("projectMeta");
   const panelTitle = document.getElementById("projectPanelTitle");
   const projectDescription = document.getElementById("projectDescription");
   let projectTimer = 0;
+  let projectToken = 0;
+
+  function preloadProjectImage(src){
+    return new Promise(resolve => {
+      if(!src){ resolve(); return; }
+      const img = new Image();
+      img.onload = resolve;
+      img.onerror = resolve;
+      img.src = src;
+    });
+  }
+
+  function applyProject(button){
+    if(projectImage){ projectImage.src = button.dataset.src; projectImage.alt = button.dataset.alt; }
+    if(projectTitle) projectTitle.textContent = button.dataset.title;
+    if(projectMeta) projectMeta.textContent = button.dataset.meta;
+    if(panelTitle) panelTitle.textContent = button.dataset.title;
+    if(projectDescription) projectDescription.textContent = button.dataset.text;
+    stage && stage.classList.remove("is-switching");
+  }
+
   document.querySelectorAll(".project-pick").forEach(button => {
-    button.addEventListener("click", () => {
+    button.addEventListener("click", async () => {
       if(button.getAttribute("aria-pressed") === "true") return;
+      const token = ++projectToken;
+      window.clearTimeout(projectTimer);
       document.querySelectorAll(".project-pick").forEach(item => item.setAttribute("aria-pressed","false"));
       button.setAttribute("aria-pressed","true");
+      await preloadProjectImage(button.dataset.src);
+      if(token !== projectToken) return;
+      if(supportsViewTransitions && !reduced){
+        const pageTransitionName = pageMain ? pageMain.style.getPropertyValue("view-transition-name") : "";
+        if(pageMain) pageMain.style.setProperty("view-transition-name","none");
+        let transition;
+        try {
+          transition = document.startViewTransition(() => applyProject(button));
+        } catch {
+          if(pageMain) pageMain.style.setProperty("view-transition-name", pageTransitionName);
+          applyProject(button);
+          return;
+        }
+        const restorePageTransition = () => {
+          if(pageMain) pageMain.style.setProperty("view-transition-name", pageTransitionName);
+        };
+        transition.ready.catch(() => {}).finally(restorePageTransition);
+        transition.updateCallbackDone.catch(() => {});
+        transition.finished.catch(() => {}).finally(() => stage && stage.classList.remove("is-switching"));
+        return;
+      }
       stage && stage.classList.add("is-switching");
-      window.clearTimeout(projectTimer);
-      projectTimer = window.setTimeout(() => {
-        if(projectImage){ projectImage.src = button.dataset.src; projectImage.alt = button.dataset.alt; }
-        if(projectTitle) projectTitle.textContent = button.dataset.title;
-        if(projectMeta) projectMeta.textContent = button.dataset.meta;
-        if(panelTitle) panelTitle.textContent = button.dataset.title;
-        if(projectDescription) projectDescription.textContent = button.dataset.text;
-        stage && stage.classList.remove("is-switching");
-      }, 220);
+      projectTimer = window.setTimeout(() => applyProject(button), 220);
     });
   });
 
@@ -78,7 +143,6 @@
   });
 
   const revealItems = Array.from(document.querySelectorAll(".reveal"));
-  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   function sync(){
     const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
     document.documentElement.style.setProperty("--scroll-progress", Math.min(1, Math.max(0, window.scrollY / maxScroll)).toFixed(4));
