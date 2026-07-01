@@ -1,0 +1,22 @@
+# Dependencies and local runtime
+node_modules/
+.env
+.env.*
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Generated browser profiles and QA artifacts
+tasks/chrome-*/
+tasks/chrome-profile-*/
+tasks/chrome-test-profile/
+tasks/screenshots/
+tasks/profile-review/
+tasks/*.json
+tasks/*contactsheet.jpg
+
+# Logs and temporary files
+*.log
+*.tmp
