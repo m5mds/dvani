@@ -450,7 +450,7 @@ Design source: `docs/plans/2026-07-01-divani-apple-transitions-design.md`.
 - [x] Regenerate all static pages from the generator.
 - [x] Run browser audit for links, images, overflow, forms, drawer, project switching, and errors.
 - [x] Capture representative screenshots.
-- [ ] Commit and push to GitHub.
+- [x] Commit and push to GitHub.
 
 Apple-like transition notes:
 
