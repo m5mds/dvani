@@ -616,3 +616,25 @@ Certificate vault polish notes:
 - Certificate previews stay readable with light document frames inside dark cards.
 - Desktop and mobile screenshots confirm the page now matches the refined Divani identity.
 - Final audit: `tasks/certificate-vault-polish-audit.md`.
+
+## Why-Us Matrix Polish Pass
+
+Goal: make the why-us page feel less generic by replacing the beige reason-card grid with a dark decision matrix.
+
+Design source: `docs/plans/2026-07-02-divani-why-matrix-polish.md`.
+
+- [x] Audit current why-us markup and remaining light card-grid treatment.
+- [x] Replace the beige reason grid with a dark decision matrix.
+- [x] Add scoped responsive styling for desktop and mobile.
+- [x] Regenerate all static pages from the generator.
+- [x] Run browser audit for links, images, overflow, forms, drawer, project switching, and errors.
+- [x] Capture representative why-us page screenshots.
+- [x] Document final why-us matrix audit.
+- [x] Commit and push to GitHub.
+
+Why-us matrix polish notes:
+
+- The why-us page now uses a dark decision matrix instead of the beige reason-card grid.
+- All original reasons are preserved, but the hierarchy now feels like a premium decision framework.
+- Desktop and mobile screenshots confirm the matrix is calmer and aligned with the rest of the site.
+- Final audit: `tasks/why-matrix-polish-audit.md`.
