@@ -364,9 +364,14 @@ const clientsPage = shell({
   description: "أبرز العملاء والشركاء الذين عملت معهم ديفاني.",
   body: `
 ${pageHero({ label: "العملاء", title: "ثقة جهات تحتاج مساحات تعمل كل يوم.", text: "الشعارات هنا دليل علاقة مهنية، لذلك نعرضها بوضوح واحترام: لا كخلفيات، ولا كقصاصات داخل صور المشروع.", image: "assets/magic-lobby.jpg", alt: "بهو داخلي هادئ من أعمال ديفاني" })}
-${clientMarquee()}
-<section class="section proof-section">
-  <div class="section-inner logo-grid">
+<section class="section proof-section client-wall-section">
+  <div class="section-inner">
+    <div class="section-head reveal">
+      <p class="section-label">العملاء والشركاء</p>
+      <h2>ثقة تظهر بهدوء.</h2>
+    </div>
+  </div>
+  <div class="section-inner logo-grid client-wall">
     ${clientLogos.map(([src, alt]) => `<figure class="logo-card reveal"><img src="${src}" alt="${alt}"><figcaption>${alt}</figcaption></figure>`).join("")}
   </div>
 </section>`
@@ -541,13 +546,14 @@ h3{font-size:1.45rem;line-height:1.25;margin-bottom:10px}
 .proof-list strong{color:var(--gold-soft);direction:ltr}
 .proof-list span,.prose p,.service-card p,.value-card p,.reason p,.project-card p,.certificate-card p,.contact-line span{color:rgba(244,238,228,.68)}
 .paper-section .service-card p,.paper-section .reason p,.paper-section .certificate-card p{color:rgba(23,18,13,.66)}
-.logo-band{padding:24px var(--pad);background:linear-gradient(180deg,#060605,#080706);border-block:1px solid rgba(244,238,228,.07);overflow:hidden}
-.logo-band-inner{width:min(100%,var(--wrap));margin:0 auto;display:grid;grid-template-columns:190px minmax(0,1fr);gap:24px;align-items:center}
+.logo-band{padding:22px var(--pad);background:linear-gradient(180deg,#060605,#080706 72%,#050504);border-block:1px solid rgba(244,238,228,.065);overflow:hidden}
+.logo-band-inner{width:min(100%,var(--wrap));margin:0 auto;display:grid;grid-template-columns:minmax(170px,210px) minmax(0,1fr);gap:28px;align-items:center}
+.logo-band .eyebrow{margin:0}
 .logo-marquee{direction:ltr;overflow:hidden;mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent)}
-.logo-track{display:flex;width:max-content;gap:8px;animation:logoMove 62s linear infinite;animation-delay:-12s}
-.logo-group{display:flex;gap:8px}
-.logo-tile{margin:0;width:132px;height:56px;flex:0 0 auto;display:grid;place-items:center;padding:10px 14px;border:1px solid rgba(244,238,228,.09);background:rgba(244,238,228,.022)}
-.logo-tile img{max-height:34px;object-fit:contain;filter:saturate(.92) brightness(1.08);opacity:.78}
+.logo-track{display:flex;width:max-content;gap:10px;animation:logoMove 62s linear infinite;animation-delay:-12s}
+.logo-group{display:flex;gap:10px}
+.logo-tile{margin:0;width:146px;height:58px;flex:0 0 auto;display:grid;place-items:center;padding:10px 16px;border:1px solid rgba(244,238,228,.065);border-radius:4px;background:linear-gradient(180deg,rgba(244,238,228,.024),rgba(244,238,228,.008));box-shadow:inset 0 1px 0 rgba(255,255,255,.018)}
+.logo-tile img{max-width:116px;max-height:34px;object-fit:contain;filter:saturate(.88) brightness(1.08);opacity:.72}
 @keyframes logoMove{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 .feature-project,.project-showcase{display:grid;grid-template-columns:1.08fr .92fr;gap:34px;align-items:stretch}
 .project-showcase{gap:0;padding:12px;border:1px solid rgba(244,238,228,.1);background:linear-gradient(135deg,rgba(244,238,228,.035),rgba(244,238,228,.012));box-shadow:0 46px 120px rgba(0,0,0,.34)}
@@ -589,10 +595,21 @@ h3{font-size:1.45rem;line-height:1.25;margin-bottom:10px}
 .project-card:hover img{transform:scale(1.025);filter:saturate(1.04) contrast(1.03)}
 .project-card div{padding:22px}
 .logo-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
-.logo-card{display:grid;place-items:center;text-align:center;min-height:150px}
+.logo-card{display:grid;place-items:center;text-align:center;min-height:150px;margin:0}
 .proof-section .logo-card{min-height:136px;background:linear-gradient(180deg,rgba(244,238,228,.04),rgba(244,238,228,.018))}
 .logo-card img{max-height:54px;object-fit:contain;margin-bottom:16px;filter:saturate(.98) brightness(1.1)}
 .logo-card figcaption{color:rgba(244,238,228,.68);font-size:.86rem}
+.client-wall-section{padding-top:88px;background:radial-gradient(circle at 18% 0,rgba(217,182,111,.055),transparent 28%),#060605}
+.client-wall-section .section-head{display:block;text-align:right;max-width:640px;margin-left:auto;margin-right:0;margin-bottom:34px}
+.client-wall-section .section-head h2{margin-bottom:0}
+.client-wall{grid-template-columns:repeat(12,minmax(0,1fr));gap:12px}
+.client-wall .logo-card{grid-column:span 3;position:relative;overflow:hidden;min-height:132px;padding:24px 20px;border-color:rgba(244,238,228,.075);background:linear-gradient(180deg,rgba(244,238,228,.028),rgba(244,238,228,.01));box-shadow:inset 0 1px 0 rgba(255,255,255,.024)}
+.client-wall .logo-card::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% -10%,rgba(217,182,111,.08),transparent 44%);opacity:0;transition:opacity .34s var(--ease-out)}
+.client-wall .logo-card:nth-child(1),.client-wall .logo-card:nth-child(2),.client-wall .logo-card:nth-child(3){grid-column:span 4;min-height:148px}
+.client-wall .logo-card img{max-width:78%;max-height:58px;margin:0;opacity:.82;filter:saturate(.86) brightness(1.08);transition:opacity .34s var(--ease-out),filter .34s var(--ease-out),transform .34s var(--ease-out)}
+.client-wall .logo-card:hover::before{opacity:1}
+.client-wall .logo-card:hover img{opacity:1;filter:saturate(1) brightness(1.14);transform:translateY(-1px)}
+.client-wall .logo-card figcaption{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 .certificate-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 .certificate-card{display:grid;grid-template-columns:180px 1fr;gap:22px;align-items:center}
 .proof-section .certificate-card{background:rgba(255,255,255,.3);box-shadow:0 28px 80px rgba(23,18,13,.08)}
@@ -648,8 +665,10 @@ body[data-page="quote"] .whatsapp-float,body[data-page="contact"] .whatsapp-floa
 ::view-transition-old(project-title),::view-transition-old(project-stage-title),::view-transition-old(project-description){animation:vtTextOut .28s var(--ease-soft) both}
 ::view-transition-new(project-title),::view-transition-new(project-stage-title),::view-transition-new(project-description){animation:vtTextIn .54s var(--ease-out) both}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;scroll-behavior:auto!important;transition:none!important}.js .reveal{opacity:1;transform:none;filter:none}main{animation:none}.home-hero-media,.page-hero-media{transform:none}::view-transition-old(root),::view-transition-new(root),::view-transition-old(page),::view-transition-new(page),::view-transition-old(hero-media),::view-transition-new(hero-media),::view-transition-old(project-image),::view-transition-new(project-image),::view-transition-old(project-title),::view-transition-new(project-title),::view-transition-old(project-stage-title),::view-transition-new(project-stage-title),::view-transition-old(project-description),::view-transition-new(project-description){animation:none!important}}
+@media (max-width:980px){.client-wall{grid-template-columns:repeat(6,minmax(0,1fr))}.client-wall .logo-card,.client-wall .logo-card:nth-child(1),.client-wall .logo-card:nth-child(2),.client-wall .logo-card:nth-child(3){grid-column:span 3;min-height:124px}}
 @media (max-width:1160px){:root{--pad:34px}.navlinks{display:none}.desktop-quote{display:none}.menu-button{display:grid}.topbar{grid-template-columns:auto 1fr auto}.brand{justify-self:start}}
 @media (max-width:760px){:root{--pad:18px}.topbar{height:68px}.brand img{height:34px}.home-hero,.page-hero{min-height:76svh;padding-top:118px;padding-bottom:44px}.home-hero-content{transform:translateY(-18px)}.page-hero{min-height:50svh}.page-hero-content{transform:none}.page-hero h1{font-size:2.08rem;line-height:1.16}h1{font-size:2.38rem;line-height:1.1}.home-hero h1{font-size:3rem}h2{font-size:1.82rem;line-height:1.18}.home-hero p,.page-hero p,.lead{font-size:1rem}.section{padding:76px var(--pad)}.intro-focus{text-align:right}.intro-focus h2,.intro-focus .lead{margin-inline:0}.proof-list{margin-top:30px}.proof-list div{grid-template-columns:1fr;gap:4px;padding:16px 0}.split,.feature-project,.project-showcase,.form-layout,.footer{grid-template-columns:1fr;gap:26px}.section-head{display:grid;gap:10px}.logo-band-inner{grid-template-columns:1fr;gap:14px}.logo-band{padding-block:22px}.logo-marquee{margin-inline:calc(var(--pad) * -1);padding-inline:var(--pad)}.logo-tile{width:112px;height:52px}.logo-tile img{max-height:32px}.service-grid,.service-grid.compact,.cards-grid,.logo-grid,.certificate-grid,.reason-grid,.values-grid{grid-template-columns:1fr}.service-row{grid-template-columns:42px 1fr;gap:14px;padding:20px 0}.service-row p{grid-column:2}.feature-project{padding:10px}.feature-project img,.image-panel{height:320px}.feature-project div{padding:18px 6px 8px}.project-showcase{padding:0;border:0;background:transparent;box-shadow:none}.project-showcase .project-stage{min-height:360px}.project-copy{min-height:auto;padding:26px 18px}#projectPanelTitle{font-size:2.12rem;line-height:1.12}.project-stage{min-height:350px}.project-card img{height:220px}.certificate-card{grid-template-columns:1fr}.form-panel{grid-template-columns:1fr}.footer nav{display:grid}.whatsapp-float{display:none}body[data-page="quote"] .whatsapp-float,body[data-page="contact"] .whatsapp-float{display:none}.contact-line{grid-template-columns:1fr}}
+@media (max-width:760px){.client-wall-section{padding-top:70px}.client-wall{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.client-wall .logo-card,.client-wall .logo-card:nth-child(1),.client-wall .logo-card:nth-child(2),.client-wall .logo-card:nth-child(3){grid-column:auto;min-height:108px;padding:18px 12px}.client-wall .logo-card img{max-width:86%;max-height:42px}}
 `);
 
 write("assets/site.js", `(() => {

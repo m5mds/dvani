@@ -550,3 +550,25 @@ Mobile drawer polish notes:
 - The close control is CSS-drawn instead of a text mark, with the Arabic accessible label preserved.
 - Navigation links have larger touch targets and the quote CTA is treated as the drawer's final action.
 - Final audit: `tasks/mobile-drawer-polish-audit.md`.
+
+## Client Proof Polish Pass
+
+Goal: make Divani's client proof feel curated, elegant, and less repetitive while preserving the moving logo strip on the homepage.
+
+Design source: `docs/plans/2026-07-02-divani-client-proof-polish.md`.
+
+- [x] Audit current homepage strip, clients page hero, and client logo grid screenshots.
+- [x] Remove duplicate logo-strip repetition from the dedicated clients page.
+- [x] Refine homepage logo strip tiles and client logo wall styling.
+- [x] Regenerate all static pages from the generator.
+- [x] Run browser audit for links, images, overflow, forms, drawer, project switching, and errors.
+- [x] Capture representative client proof screenshots.
+- [x] Document final client proof audit.
+- [x] Commit and push to GitHub.
+
+Client proof polish notes:
+
+- The homepage keeps the moving logo strip, but the dedicated clients page no longer repeats it.
+- The clients page now uses a quieter logo wall with right-aligned Arabic hierarchy and hidden duplicate captions.
+- Logo-card figure margins are reset so desktop and mobile grids align correctly.
+- Final audit: `tasks/client-proof-polish-audit.md`.
