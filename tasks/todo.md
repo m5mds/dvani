@@ -638,3 +638,24 @@ Why-us matrix polish notes:
 - All original reasons are preserved, but the hierarchy now feels like a premium decision framework.
 - Desktop and mobile screenshots confirm the matrix is calmer and aligned with the rest of the site.
 - Final audit: `tasks/why-matrix-polish-audit.md`.
+
+## Arabic Microcopy Polish Pass
+
+Goal: remove remaining generic English section labels from key Arabic-first project and conversion surfaces.
+
+Design source: `docs/plans/2026-07-02-divani-arabic-microcopy-polish.md`.
+
+- [x] Audit current generated pages/source for leftover template-like English labels.
+- [x] Replace project, quote, and contact section labels with Arabic labels.
+- [x] Regenerate all static pages from the generator.
+- [x] Run browser audit for links, images, overflow, forms, drawer, project switching, and errors.
+- [x] Capture representative project/quote/contact screenshots.
+- [x] Document final Arabic microcopy audit.
+- [x] Commit and push to GitHub.
+
+Arabic microcopy polish notes:
+
+- Replaced template-like English section labels on project, quote, and contact surfaces.
+- Kept the requested homepage client-strip phrase `Proud to have served`.
+- Full browser audit passed across 10 pages with 0 runtime/log errors.
+- Final audit: `tasks/arabic-microcopy-polish-audit.md`.
