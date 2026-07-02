@@ -572,3 +572,25 @@ Client proof polish notes:
 - The clients page now uses a quieter logo wall with right-aligned Arabic hierarchy and hidden duplicate captions.
 - Logo-card figure margins are reset so desktop and mobile grids align correctly.
 - Final audit: `tasks/client-proof-polish-audit.md`.
+
+## Services Page Polish Pass
+
+Goal: make the services page feel more curated and premium by replacing the generic service card grid with a clearer service ledger.
+
+Design source: `docs/plans/2026-07-02-divani-service-page-polish.md`.
+
+- [x] Audit current services content and page structure.
+- [x] Replace the generic services card grid with a service atelier/ledger layout.
+- [x] Add scoped responsive styling for the new service layout.
+- [x] Regenerate all static pages from the generator.
+- [x] Run browser audit for links, images, overflow, forms, drawer, project switching, and errors.
+- [x] Capture representative services page screenshots.
+- [x] Document final services page audit.
+- [x] Commit and push to GitHub.
+
+Services page polish notes:
+
+- The services page now uses a service atelier layout instead of a generic six-card grid.
+- Existing service content is preserved but presented as a premium ledger with a narrative pane.
+- Desktop and mobile screenshots confirm the new hierarchy is calmer and easier to scan.
+- Final audit: `tasks/service-page-polish-audit.md`.
