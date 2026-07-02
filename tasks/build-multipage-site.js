@@ -500,9 +500,9 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .page-hero{min-height:58svh}
 .home-hero-media,.page-hero-media{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1.015);animation:imageSettle 1.25s var(--ease-out) both;will-change:transform;view-transition-name:hero-media}
 .home-hero-shade,.page-hero-shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,7,6,.22),rgba(7,7,6,.72) 62%,#070706),linear-gradient(90deg,rgba(7,7,6,.16),rgba(7,7,6,.82))}
-.home-hero-content,.page-hero-content{position:relative;width:min(100%,var(--wrap))}
+.home-hero-content,.page-hero-content{position:relative;z-index:1;width:min(100%,var(--wrap))}
 .home-hero-content{max-width:600px;margin-left:auto;margin-right:0;text-align:right;transform:translateY(-34px)}
-.page-hero-content{max-width:720px;margin:0 auto}
+.page-hero-content{max-width:760px;margin-left:auto;margin-right:0;text-align:right;transform:translateY(-18px)}
 .section-label,.eyebrow{margin:0 0 14px;color:var(--gold-soft);font-size:.78rem;font-weight:850;text-transform:uppercase;letter-spacing:0}
 .eyebrow span{display:block;color:rgba(244,238,228,.64);font-size:.94rem;font-weight:650;text-transform:none;margin-top:7px}
 h1,h2,h3,p{margin-top:0}
@@ -538,6 +538,7 @@ h3{font-size:1.45rem;line-height:1.25;margin-bottom:10px}
 .logo-tile img{max-height:34px;object-fit:contain;filter:saturate(.92) brightness(1.08);opacity:.78}
 @keyframes logoMove{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 .feature-project,.project-showcase{display:grid;grid-template-columns:1.08fr .92fr;gap:34px;align-items:stretch}
+.project-showcase{gap:0;padding:12px;border:1px solid rgba(244,238,228,.1);background:linear-gradient(135deg,rgba(244,238,228,.035),rgba(244,238,228,.012));box-shadow:0 46px 120px rgba(0,0,0,.34)}
 .project-reveal-section{background:radial-gradient(circle at 50% 0,rgba(217,182,111,.075),transparent 34%),#050504}
 .feature-project{border:1px solid rgba(244,238,228,.1);padding:14px;background:rgba(244,238,228,.018);box-shadow:0 44px 120px rgba(0,0,0,.36)}
 .feature-project img,.image-panel{width:100%;height:520px;object-fit:cover;border:1px solid rgba(244,238,228,.08);transition:transform .9s var(--ease-out),filter .9s var(--ease-out)}
@@ -557,17 +558,20 @@ h3{font-size:1.45rem;line-height:1.25;margin-bottom:10px}
 .service-card small,.reason small{color:var(--gold);direction:ltr}
 .cta-band{padding:72px var(--pad);background:linear-gradient(90deg,rgba(217,182,111,.14),rgba(244,238,228,.035));border-block:1px solid rgba(244,238,228,.1)}
 .project-stage{margin:0;min-height:560px;position:relative;overflow:hidden;border:1px solid var(--line);background:#050504;box-shadow:0 38px 100px rgba(0,0,0,.28)}
+.project-showcase .project-stage{min-height:620px;border:0;box-shadow:none}
+.project-showcase .project-stage::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 46%,rgba(5,5,4,.62));pointer-events:none}
 .project-stage img{width:100%;height:100%;object-fit:cover;transition:opacity .48s var(--ease-out),transform .62s var(--ease-out),filter .48s var(--ease-out);view-transition-name:project-image}
 .project-stage.is-switching img{opacity:.26;transform:scale(1.028);filter:blur(8px) saturate(.84)}
-.project-stage figcaption{position:absolute;inset-inline:22px;bottom:20px;padding:18px;background:rgba(7,7,6,.72);border:1px solid rgba(244,238,228,.13);backdrop-filter:blur(12px)}
+.project-stage figcaption{position:absolute;z-index:2;inset-inline:22px;bottom:20px;padding:18px;background:rgba(7,7,6,.72);border:1px solid rgba(244,238,228,.13);backdrop-filter:blur(12px)}
 .project-stage strong{font-size:1.35rem;view-transition-name:project-stage-title}
-.project-copy{border:1px solid var(--line);padding:30px;background:rgba(244,238,228,.025)}
-#projectPanelTitle{view-transition-name:project-title}
-#projectDescription{view-transition-name:project-description}
-.project-picks{display:grid;margin-top:28px;border-top:1px solid var(--line)}
+.project-copy{min-height:620px;display:flex;flex-direction:column;justify-content:center;border:0;padding:46px;background:linear-gradient(180deg,rgba(7,7,6,.92),rgba(7,7,6,.68))}
+#projectPanelTitle{font-size:3.15rem;line-height:1.05;max-width:none;view-transition-name:project-title}
+#projectDescription{max-width:520px;font-size:1.06rem;color:rgba(244,238,228,.74);view-transition-name:project-description}
+.project-picks{display:grid;margin-top:34px;border-top:1px solid var(--line)}
 .project-pick{display:grid;grid-template-columns:44px 1fr;gap:12px;text-align:right;padding:16px 0;border:0;border-bottom:1px solid var(--line);background:transparent;cursor:pointer;transition:padding .3s var(--ease-out),color .3s var(--ease-out)}
 .project-pick small{direction:ltr;color:rgba(244,238,228,.48)}
-.project-pick[aria-pressed="true"] span,.project-pick:hover span{color:var(--gold-soft)}
+.project-pick[aria-pressed="true"]{padding-inline-end:12px}
+.project-pick[aria-pressed="true"] span,.project-pick[aria-pressed="true"] small,.project-pick:hover span{color:var(--gold-soft)}
 .project-card{padding:0;overflow:hidden}
 .project-card img{width:100%;height:240px;object-fit:cover;transition:transform .75s var(--ease-out),filter .75s var(--ease-out)}
 .project-card:hover img{transform:scale(1.025);filter:saturate(1.04) contrast(1.03)}
@@ -626,7 +630,7 @@ textarea{resize:vertical}
 ::view-transition-new(project-title),::view-transition-new(project-stage-title),::view-transition-new(project-description){animation:vtTextIn .54s var(--ease-out) both}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;scroll-behavior:auto!important;transition:none!important}.js .reveal{opacity:1;transform:none;filter:none}main{animation:none}.home-hero-media,.page-hero-media{transform:none}::view-transition-old(root),::view-transition-new(root),::view-transition-old(page),::view-transition-new(page),::view-transition-old(hero-media),::view-transition-new(hero-media),::view-transition-old(project-image),::view-transition-new(project-image),::view-transition-old(project-title),::view-transition-new(project-title),::view-transition-old(project-stage-title),::view-transition-new(project-stage-title),::view-transition-old(project-description),::view-transition-new(project-description){animation:none!important}}
 @media (max-width:1160px){:root{--pad:34px}.navlinks{display:none}.desktop-quote{display:none}.menu-button{display:grid}.topbar{grid-template-columns:auto 1fr auto}.brand{justify-self:start}}
-@media (max-width:760px){:root{--pad:18px}.topbar{height:68px}.brand img{height:34px}.home-hero,.page-hero{min-height:76svh;padding-top:118px;padding-bottom:44px}.home-hero-content{transform:translateY(-18px)}.page-hero{min-height:52svh}h1{font-size:2.38rem;line-height:1.1}.home-hero h1{font-size:3rem}h2{font-size:1.82rem;line-height:1.18}.home-hero p,.page-hero p,.lead{font-size:1rem}.section{padding:76px var(--pad)}.intro-focus{text-align:right}.intro-focus h2,.intro-focus .lead{margin-inline:0}.proof-list{margin-top:30px}.proof-list div{grid-template-columns:1fr;gap:4px;padding:16px 0}.split,.feature-project,.project-showcase,.form-layout,.footer{grid-template-columns:1fr;gap:26px}.section-head{display:grid;gap:10px}.logo-band-inner{grid-template-columns:1fr;gap:14px}.logo-band{padding-block:22px}.logo-marquee{margin-inline:calc(var(--pad) * -1);padding-inline:var(--pad)}.logo-tile{width:112px;height:52px}.logo-tile img{max-height:32px}.service-grid,.service-grid.compact,.cards-grid,.logo-grid,.certificate-grid,.reason-grid,.values-grid{grid-template-columns:1fr}.service-row{grid-template-columns:42px 1fr;gap:14px;padding:20px 0}.service-row p{grid-column:2}.feature-project{padding:10px}.feature-project img,.image-panel{height:320px}.feature-project div{padding:18px 6px 8px}.project-stage{min-height:350px}.project-card img{height:220px}.certificate-card{grid-template-columns:1fr}.form-panel{grid-template-columns:1fr}.footer nav{display:grid}.whatsapp-float{inset-inline-start:auto;inset-inline-end:auto;left:18px;right:auto;bottom:18px;min-height:40px;padding:0 14px}body[data-page="quote"] .whatsapp-float,body[data-page="contact"] .whatsapp-float{display:none}.contact-line{grid-template-columns:1fr}}
+@media (max-width:760px){:root{--pad:18px}.topbar{height:68px}.brand img{height:34px}.home-hero,.page-hero{min-height:76svh;padding-top:118px;padding-bottom:44px}.home-hero-content{transform:translateY(-18px)}.page-hero{min-height:50svh}.page-hero-content{transform:none}.page-hero h1{font-size:2.08rem;line-height:1.16}h1{font-size:2.38rem;line-height:1.1}.home-hero h1{font-size:3rem}h2{font-size:1.82rem;line-height:1.18}.home-hero p,.page-hero p,.lead{font-size:1rem}.section{padding:76px var(--pad)}.intro-focus{text-align:right}.intro-focus h2,.intro-focus .lead{margin-inline:0}.proof-list{margin-top:30px}.proof-list div{grid-template-columns:1fr;gap:4px;padding:16px 0}.split,.feature-project,.project-showcase,.form-layout,.footer{grid-template-columns:1fr;gap:26px}.section-head{display:grid;gap:10px}.logo-band-inner{grid-template-columns:1fr;gap:14px}.logo-band{padding-block:22px}.logo-marquee{margin-inline:calc(var(--pad) * -1);padding-inline:var(--pad)}.logo-tile{width:112px;height:52px}.logo-tile img{max-height:32px}.service-grid,.service-grid.compact,.cards-grid,.logo-grid,.certificate-grid,.reason-grid,.values-grid{grid-template-columns:1fr}.service-row{grid-template-columns:42px 1fr;gap:14px;padding:20px 0}.service-row p{grid-column:2}.feature-project{padding:10px}.feature-project img,.image-panel{height:320px}.feature-project div{padding:18px 6px 8px}.project-showcase{padding:0;border:0;background:transparent;box-shadow:none}.project-showcase .project-stage{min-height:360px}.project-copy{min-height:auto;padding:26px 18px}#projectPanelTitle{font-size:2.12rem;line-height:1.12}.project-stage{min-height:350px}.project-card img{height:220px}.certificate-card{grid-template-columns:1fr}.form-panel{grid-template-columns:1fr}.footer nav{display:grid}.whatsapp-float{display:none}body[data-page="quote"] .whatsapp-float,body[data-page="contact"] .whatsapp-float{display:none}.contact-line{grid-template-columns:1fr}}
 `);
 
 write("assets/site.js", `(() => {
@@ -700,6 +704,7 @@ write("assets/site.js", `(() => {
 
   const stage = document.querySelector(".project-stage");
   const pageMain = document.querySelector("main");
+  const heroMedia = document.querySelector(".home-hero-media,.page-hero-media");
   const projectImage = document.getElementById("projectImage");
   const projectTitle = document.getElementById("projectTitle");
   const projectMeta = document.getElementById("projectMeta");
@@ -737,18 +742,21 @@ write("assets/site.js", `(() => {
       await preloadProjectImage(button.dataset.src);
       if(token !== projectToken) return;
       if(supportsViewTransitions && !reduced){
-        const pageTransitionName = pageMain ? pageMain.style.getPropertyValue("view-transition-name") : "";
-        if(pageMain) pageMain.style.setProperty("view-transition-name","none");
+        const suspendedTransitions = [pageMain, heroMedia].filter(Boolean).map(element => ({
+          element,
+          value: element.style.getPropertyValue("view-transition-name")
+        }));
+        suspendedTransitions.forEach(({ element }) => element.style.setProperty("view-transition-name","none"));
         let transition;
         try {
           transition = document.startViewTransition(() => applyProject(button));
         } catch {
-          if(pageMain) pageMain.style.setProperty("view-transition-name", pageTransitionName);
+          suspendedTransitions.forEach(({ element, value }) => element.style.setProperty("view-transition-name", value));
           applyProject(button);
           return;
         }
         const restorePageTransition = () => {
-          if(pageMain) pageMain.style.setProperty("view-transition-name", pageTransitionName);
+          suspendedTransitions.forEach(({ element, value }) => element.style.setProperty("view-transition-name", value));
         };
         transition.ready.catch(() => {}).finally(restorePageTransition);
         transition.updateCallbackDone.catch(() => {});

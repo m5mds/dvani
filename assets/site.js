@@ -69,6 +69,7 @@
 
   const stage = document.querySelector(".project-stage");
   const pageMain = document.querySelector("main");
+  const heroMedia = document.querySelector(".home-hero-media,.page-hero-media");
   const projectImage = document.getElementById("projectImage");
   const projectTitle = document.getElementById("projectTitle");
   const projectMeta = document.getElementById("projectMeta");
@@ -106,18 +107,21 @@
       await preloadProjectImage(button.dataset.src);
       if(token !== projectToken) return;
       if(supportsViewTransitions && !reduced){
-        const pageTransitionName = pageMain ? pageMain.style.getPropertyValue("view-transition-name") : "";
-        if(pageMain) pageMain.style.setProperty("view-transition-name","none");
+        const suspendedTransitions = [pageMain, heroMedia].filter(Boolean).map(element => ({
+          element,
+          value: element.style.getPropertyValue("view-transition-name")
+        }));
+        suspendedTransitions.forEach(({ element }) => element.style.setProperty("view-transition-name","none"));
         let transition;
         try {
           transition = document.startViewTransition(() => applyProject(button));
         } catch {
-          if(pageMain) pageMain.style.setProperty("view-transition-name", pageTransitionName);
+          suspendedTransitions.forEach(({ element, value }) => element.style.setProperty("view-transition-name", value));
           applyProject(button);
           return;
         }
         const restorePageTransition = () => {
-          if(pageMain) pageMain.style.setProperty("view-transition-name", pageTransitionName);
+          suspendedTransitions.forEach(({ element, value }) => element.style.setProperty("view-transition-name", value));
         };
         transition.ready.catch(() => {}).finally(restorePageTransition);
         transition.updateCallbackDone.catch(() => {});

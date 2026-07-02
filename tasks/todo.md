@@ -458,3 +458,27 @@ Apple-like transition notes:
 - Added project image/text transitions with image preloading and a safe fallback.
 - Fixed a Chromium edge case by temporarily removing the full-page transition capture during project switching.
 - Final audit: `tasks/apple-transitions-audit.md`.
+
+## Perfect UI/UX Refinement Pass
+
+Goal: continue toward a client-ready, Apple-like Divani UI/UX with stronger inner-page hero hierarchy, a more unified project showcase, and cleaner mobile behavior.
+
+Design source: `docs/plans/2026-07-02-divani-perfect-uiux-refinement.md`.
+
+- [x] Audit current screenshots and project lessons for remaining UX issues.
+- [x] Refine inner-page hero placement, stacking, and mobile title scale.
+- [x] Refine the project showcase into a more unified premium surface.
+- [x] Remove mobile floating-overlay clutter while preserving contact paths.
+- [x] Regenerate all static pages from the generator.
+- [x] Run browser audit for links, images, overflow, forms, drawer, project switching, and errors.
+- [x] Capture representative screenshots.
+- [x] Document final refinement audit.
+- [x] Commit and push to GitHub.
+
+Perfect UI/UX refinement notes:
+
+- Inner-page heroes are now anchored and stacked above the image shade more reliably.
+- Project showcase now reads as one composed premium surface instead of separate panels.
+- Project transitions now scope themselves to project elements instead of recapturing hero media.
+- Mobile floating WhatsApp is hidden to avoid overlay clutter.
+- Final audit: `tasks/perfect-uiux-refinement-audit.md`.
