@@ -348,7 +348,7 @@ const projectsPage = shell({
   title: "المشاريع | ديفاني",
   description: "معرض مشاريع ديفاني المنفذة في التصميم والتنفيذ الداخلي.",
   body: `
-${pageHero({ label: "المشاريع", title: "مشاريع منفذة بهدوء وثقة.", text: "معرض مختار من أعمال الضيافة والقاعات والمساحات التجارية. كل صورة هنا دليل على قرار مكاني تم تنفيذه بعناية.", image: "assets/project-auditorium-clean.jpg", alt: "قاعة فعاليات بتشطيب خشبي وإضاءة مسرحية" })}
+${pageHero({ label: "المشاريع", title: "مشاريع منفذة بهدوء وثقة.", text: "معرض مختار من أعمال الضيافة والقاعات والمساحات التجارية. كل صورة هنا دليل على قرار مكاني تم تنفيذه بعناية.", image: "assets/detail-lobby-lines.jpg", alt: "بهو فندقي هادئ بخطوط خشبية وإضاءة دافئة" })}
 <section class="section">
   <div class="section-inner project-showcase">
     <figure class="project-stage reveal">

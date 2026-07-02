@@ -659,3 +659,26 @@ Arabic microcopy polish notes:
 - Kept the requested homepage client-strip phrase `Proud to have served`.
 - Full browser audit passed across 10 pages with 0 runtime/log errors.
 - Final audit: `tasks/arabic-microcopy-polish-audit.md`.
+
+## Project Hero Image Polish Pass
+
+Goal: remove obvious image reuse and text-heavy background pressure from the projects page hero while preserving the interactive project showcase.
+
+Design source: `docs/plans/2026-07-02-divani-project-hero-image-polish.md`.
+
+- [x] Audit current projects page hero and asset alternatives.
+- [x] Reject candidate images with partial marks or baked-in text.
+- [x] Replace the projects page hero with a clean unused architectural image.
+- [x] Regenerate all static pages from the generator.
+- [x] Run browser audit for links, images, overflow, forms, drawer, project switching, and errors.
+- [x] Capture and inspect the updated projects page screenshot.
+- [x] Document final project hero image audit.
+- [x] Commit and push to GitHub.
+
+Project hero image polish notes:
+
+- Replaced the projects page hero image with the clean, unused `assets/detail-lobby-lines.jpg`.
+- Preserved the interactive project showcase and its first auditorium project image.
+- Rejected `assets/magic-suite.jpg` because its crop contains a partial mark.
+- Full browser audit passed across 10 pages with 0 runtime/log errors.
+- Final audit: `tasks/project-hero-image-polish-audit.md`.
