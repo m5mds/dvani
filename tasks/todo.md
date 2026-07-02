@@ -528,3 +528,25 @@ Form UX polish notes:
 - Form panels, labels, placeholders, focus states, and invalid states now feel more tactile and premium.
 - Required validation messages are Arabic instead of default English browser text.
 - Final audit: `tasks/form-ux-polish-audit.md`.
+
+## Mobile Drawer Polish Pass
+
+Goal: make the mobile navigation drawer feel as premium and intentional as the rest of the Apple-like dark Divani site.
+
+Design source: `docs/plans/2026-07-02-divani-mobile-drawer-polish.md`.
+
+- [x] Audit current mobile drawer markup, styling, and behavior.
+- [x] Replace the text close mark with a CSS-drawn close control.
+- [x] Refine drawer material, nav touch targets, active states, and CTA layout.
+- [x] Regenerate all static pages from the generator.
+- [x] Run browser audit for links, images, overflow, forms, drawer, project switching, and errors.
+- [x] Capture representative mobile drawer screenshots.
+- [x] Document final mobile drawer audit.
+- [x] Commit and push to GitHub.
+
+Mobile drawer polish notes:
+
+- The mobile drawer now has premium dark material depth, blur, shadow, and a subtle gold active state.
+- The close control is CSS-drawn instead of a text mark, with the Arabic accessible label preserved.
+- Navigation links have larger touch targets and the quote CTA is treated as the drawer's final action.
+- Final audit: `tasks/mobile-drawer-polish-audit.md`.
