@@ -594,3 +594,25 @@ Services page polish notes:
 - Existing service content is preserved but presented as a premium ledger with a narrative pane.
 - Desktop and mobile screenshots confirm the new hierarchy is calmer and easier to scan.
 - Final audit: `tasks/service-page-polish-audit.md`.
+
+## Certificate Vault Polish Pass
+
+Goal: keep certificate proof readable while bringing the certificates page back into the dark, elegant Divani identity.
+
+Design source: `docs/plans/2026-07-02-divani-certificate-vault-polish.md`.
+
+- [x] Audit current certificates page screenshots and markup.
+- [x] Replace the beige paper proof section with a dark certificate vault section.
+- [x] Add scoped certificate vault styling for desktop and mobile.
+- [x] Regenerate all static pages from the generator.
+- [x] Run browser audit for links, images, overflow, forms, drawer, project switching, and errors.
+- [x] Capture representative certificate page screenshots.
+- [x] Document final certificate vault audit.
+- [x] Commit and push to GitHub.
+
+Certificate vault polish notes:
+
+- The certificates page now uses a dark certificate vault instead of the beige paper section.
+- Certificate previews stay readable with light document frames inside dark cards.
+- Desktop and mobile screenshots confirm the page now matches the refined Divani identity.
+- Final audit: `tasks/certificate-vault-polish-audit.md`.

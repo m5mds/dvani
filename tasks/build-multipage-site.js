@@ -390,9 +390,16 @@ const certificatesPage = shell({
   description: "عرض الشهادات والاعتمادات الخاصة بديفاني.",
   body: `
 ${pageHero({ label: "الشهادات والاعتمادات", title: "اعتمادات واضحة قبل أي اتفاق.", text: "نعرض المستندات والاعتمادات بصياغة نظيفة حتى تكون الثقة قابلة للمراجعة، لا مجرد عبارة داخل العرض.", image: "assets/detail-ceiling.jpg", alt: "تفاصيل إنارة وسقف داخلي" })}
-<section class="section paper-section proof-section">
-  <div class="section-inner certificate-grid">
-    ${certificates.map(([src, title, text]) => `<article class="certificate-card reveal"><img src="${src}" alt="${title}"><div><h3>${title}</h3><p>${text}</p></div></article>`).join("")}
+<section class="section proof-section certificate-vault-section">
+  <div class="section-inner certificate-vault-head reveal">
+    <div>
+      <p class="section-label">ملف الثقة</p>
+      <h2>مستندات واضحة داخل إطار هادئ.</h2>
+    </div>
+    <p class="lead">نعرض الاعتمادات كوثائق قابلة للمراجعة، مع مساحة كافية لقراءة الصورة ومكان واضح لكل نوع مستند.</p>
+  </div>
+  <div class="section-inner certificate-grid certificate-vault">
+    ${certificates.map(([src, title, text], i) => `<article class="certificate-card reveal"><small>${String(i + 1).padStart(2, "0")}</small><img src="${src}" alt="${title}"><div><h3>${title}</h3><p>${text}</p></div></article>`).join("")}
   </div>
 </section>
 <section class="cta-band">
@@ -632,6 +639,19 @@ h3{font-size:1.45rem;line-height:1.25;margin-bottom:10px}
 .certificate-card{display:grid;grid-template-columns:180px 1fr;gap:22px;align-items:center}
 .proof-section .certificate-card{background:rgba(255,255,255,.3);box-shadow:0 28px 80px rgba(23,18,13,.08)}
 .certificate-card img{width:100%;max-height:220px;object-fit:contain;background:#fff;border:1px solid var(--dark-line)}
+.certificate-vault-section{background:radial-gradient(circle at 82% 0,rgba(217,182,111,.07),transparent 32%),linear-gradient(180deg,#070706,#050504);border-top:1px solid rgba(244,238,228,.08)}
+.certificate-vault-head{display:grid;grid-template-columns:minmax(0,.9fr) minmax(280px,.72fr);gap:42px;align-items:end;margin-bottom:34px}
+.certificate-vault-head h2{margin-bottom:0}
+.certificate-vault-head .lead{margin:0;color:rgba(244,238,228,.68)}
+.certificate-vault{gap:16px}
+.certificate-vault .certificate-card{position:relative;overflow:hidden;grid-template-columns:168px minmax(0,1fr);min-height:246px;padding:22px;border-color:rgba(244,238,228,.09);background:linear-gradient(180deg,rgba(244,238,228,.04),rgba(244,238,228,.014));box-shadow:0 34px 92px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.024)}
+.certificate-vault .certificate-card::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 0 0,rgba(217,182,111,.09),transparent 42%);opacity:.65;pointer-events:none}
+.certificate-vault .certificate-card small{position:absolute;inset-block-start:18px;inset-inline-end:20px;direction:ltr;color:var(--gold-soft);font-weight:850;opacity:.72}
+.certificate-vault .certificate-card img{position:relative;z-index:1;height:206px;max-height:none;padding:6px;background:#f4f0e8;border-color:rgba(244,238,228,.28);box-shadow:0 16px 48px rgba(0,0,0,.24)}
+.certificate-vault .certificate-card div{position:relative;z-index:1;padding-top:24px}
+.certificate-vault .certificate-card h3{margin-bottom:8px}
+.certificate-vault .certificate-card p{margin:0;color:rgba(244,238,228,.66)}
+.certificate-vault .certificate-card:hover{background:linear-gradient(180deg,rgba(244,238,228,.055),rgba(244,238,228,.018));border-color:rgba(217,182,111,.26)}
 .form-layout{display:grid;grid-template-columns:.78fr 1.22fr;gap:50px;align-items:start}
 .form-panel{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;background:linear-gradient(180deg,rgba(244,238,228,.045),rgba(244,238,228,.018));box-shadow:0 34px 90px rgba(0,0,0,.24)}
 .form-panel label{display:grid;gap:7px;color:rgba(244,238,228,.72);font-size:.92rem;transition:color .28s var(--ease-out)}
@@ -683,10 +703,11 @@ body[data-page="quote"] .whatsapp-float,body[data-page="contact"] .whatsapp-floa
 ::view-transition-old(project-title),::view-transition-old(project-stage-title),::view-transition-old(project-description){animation:vtTextOut .28s var(--ease-soft) both}
 ::view-transition-new(project-title),::view-transition-new(project-stage-title),::view-transition-new(project-description){animation:vtTextIn .54s var(--ease-out) both}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;scroll-behavior:auto!important;transition:none!important}.js .reveal{opacity:1;transform:none;filter:none}main{animation:none}.home-hero-media,.page-hero-media{transform:none}::view-transition-old(root),::view-transition-new(root),::view-transition-old(page),::view-transition-new(page),::view-transition-old(hero-media),::view-transition-new(hero-media),::view-transition-old(project-image),::view-transition-new(project-image),::view-transition-old(project-title),::view-transition-new(project-title),::view-transition-old(project-stage-title),::view-transition-new(project-stage-title),::view-transition-old(project-description),::view-transition-new(project-description){animation:none!important}}
-@media (max-width:980px){.service-atelier{grid-template-columns:1fr;gap:30px}.service-atelier-copy{position:relative;top:auto}.client-wall{grid-template-columns:repeat(6,minmax(0,1fr))}.client-wall .logo-card,.client-wall .logo-card:nth-child(1),.client-wall .logo-card:nth-child(2),.client-wall .logo-card:nth-child(3){grid-column:span 3;min-height:124px}}
+@media (max-width:980px){.service-atelier{grid-template-columns:1fr;gap:30px}.service-atelier-copy{position:relative;top:auto}.certificate-vault-head{grid-template-columns:1fr;gap:14px}.client-wall{grid-template-columns:repeat(6,minmax(0,1fr))}.client-wall .logo-card,.client-wall .logo-card:nth-child(1),.client-wall .logo-card:nth-child(2),.client-wall .logo-card:nth-child(3){grid-column:span 3;min-height:124px}}
 @media (max-width:1160px){:root{--pad:34px}.navlinks{display:none}.desktop-quote{display:none}.menu-button{display:grid}.topbar{grid-template-columns:auto 1fr auto}.brand{justify-self:start}}
 @media (max-width:760px){:root{--pad:18px}.topbar{height:68px}.brand img{height:34px}.home-hero,.page-hero{min-height:76svh;padding-top:118px;padding-bottom:44px}.home-hero-content{transform:translateY(-18px)}.page-hero{min-height:50svh}.page-hero-content{transform:none}.page-hero h1{font-size:2.08rem;line-height:1.16}h1{font-size:2.38rem;line-height:1.1}.home-hero h1{font-size:3rem}h2{font-size:1.82rem;line-height:1.18}.home-hero p,.page-hero p,.lead{font-size:1rem}.section{padding:76px var(--pad)}.intro-focus{text-align:right}.intro-focus h2,.intro-focus .lead{margin-inline:0}.proof-list{margin-top:30px}.proof-list div{grid-template-columns:1fr;gap:4px;padding:16px 0}.split,.feature-project,.project-showcase,.form-layout,.footer{grid-template-columns:1fr;gap:26px}.section-head{display:grid;gap:10px}.logo-band-inner{grid-template-columns:1fr;gap:14px}.logo-band{padding-block:22px}.logo-marquee{margin-inline:calc(var(--pad) * -1);padding-inline:var(--pad)}.logo-tile{width:112px;height:52px}.logo-tile img{max-height:32px}.service-grid,.service-grid.compact,.cards-grid,.logo-grid,.certificate-grid,.reason-grid,.values-grid{grid-template-columns:1fr}.service-row{grid-template-columns:42px 1fr;gap:14px;padding:20px 0}.service-row p{grid-column:2}.feature-project{padding:10px}.feature-project img,.image-panel{height:320px}.feature-project div{padding:18px 6px 8px}.project-showcase{padding:0;border:0;background:transparent;box-shadow:none}.project-showcase .project-stage{min-height:360px}.project-copy{min-height:auto;padding:26px 18px}#projectPanelTitle{font-size:2.12rem;line-height:1.12}.project-stage{min-height:350px}.project-card img{height:220px}.certificate-card{grid-template-columns:1fr}.form-panel{grid-template-columns:1fr}.footer nav{display:grid}.whatsapp-float{display:none}body[data-page="quote"] .whatsapp-float,body[data-page="contact"] .whatsapp-float{display:none}.contact-line{grid-template-columns:1fr}}
 @media (max-width:760px){.service-atelier-copy{padding:24px 20px}.service-atelier-copy h2{font-size:1.78rem}.service-line{grid-template-columns:40px 1fr;gap:10px 14px;padding:20px 6px}.service-line p{grid-column:2}.service-line:hover{transform:none}.service-line h3{font-size:1.12rem}}
+@media (max-width:760px){.certificate-vault-section{padding-top:70px}.certificate-vault-head{margin-bottom:26px}.certificate-vault .certificate-card{grid-template-columns:1fr;min-height:auto;padding:18px}.certificate-vault .certificate-card img{height:230px}.certificate-vault .certificate-card div{padding-top:0}.certificate-vault .certificate-card small{inset-block-start:14px;inset-inline-end:16px}}
 @media (max-width:760px){.client-wall-section{padding-top:70px}.client-wall{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.client-wall .logo-card,.client-wall .logo-card:nth-child(1),.client-wall .logo-card:nth-child(2),.client-wall .logo-card:nth-child(3){grid-column:auto;min-height:108px;padding:18px 12px}.client-wall .logo-card img{max-width:86%;max-height:42px}}
 `);
 
