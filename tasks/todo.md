@@ -505,3 +505,26 @@ Proof/conversion polish notes:
 - Clients and certificates proof sections are tighter and less empty after their hero/proof bands.
 - Logo and certificate proof cards have quieter premium surfaces.
 - Final audit: `tasks/proof-conversion-polish-audit.md`.
+
+## Form UX Polish Pass
+
+Goal: make quote/contact form interactions feel premium, accessible, and easier to complete.
+
+Design source: `docs/plans/2026-07-02-divani-form-ux-polish.md`.
+
+- [x] Audit current quote/contact form markup and interaction states.
+- [x] Add explicit phone input types and input guidance.
+- [x] Refine form panel, focus, placeholder, and invalid states.
+- [x] Add Arabic custom validation messages.
+- [x] Regenerate all static pages from the generator.
+- [x] Run browser audit for links, images, overflow, forms, drawer, project switching, and errors.
+- [x] Capture representative form screenshots.
+- [x] Document final form UX audit.
+- [x] Commit and push to GitHub.
+
+Form UX polish notes:
+
+- Quote/contact phone fields now use `type="tel"` with phone-specific input guidance.
+- Form panels, labels, placeholders, focus states, and invalid states now feel more tactile and premium.
+- Required validation messages are Arabic instead of default English browser text.
+- Final audit: `tasks/form-ux-polish-audit.md`.

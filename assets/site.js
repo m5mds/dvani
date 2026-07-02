@@ -134,8 +134,40 @@
   });
 
   document.querySelectorAll("[data-whatsapp-form]").forEach(form => {
+    const fields = Array.from(form.elements).filter(field => "setCustomValidity" in field);
+
+    function fieldLabel(field){
+      const label = field.closest("label");
+      if(!label) return field.name || "هذا الحقل";
+      const text = Array.from(label.childNodes).filter(node => node.nodeType === Node.TEXT_NODE).map(node => node.textContent.trim()).join(" ");
+      return text || field.name || "هذا الحقل";
+    }
+
+    function validationText(field){
+      const label = fieldLabel(field);
+      if(field.validity.valueMissing) return "يرجى تعبئة " + label + ".";
+      if(field.validity.tooShort) return label + " أقصر من المطلوب.";
+      if(field.validity.typeMismatch) return "يرجى إدخال " + label + " بصيغة صحيحة.";
+      if(field.validity.patternMismatch) return "يرجى مراجعة " + label + ".";
+      return "";
+    }
+
+    fields.forEach(field => {
+      field.addEventListener("invalid", () => {
+        field.setCustomValidity("");
+        field.setCustomValidity(validationText(field));
+      });
+      field.addEventListener("input", () => field.setCustomValidity(""));
+      field.addEventListener("change", () => field.setCustomValidity(""));
+    });
+
     form.addEventListener("submit", event => {
       event.preventDefault();
+      fields.forEach(field => {
+        field.setCustomValidity("");
+        if(!field.validity.valid) field.setCustomValidity(validationText(field));
+      });
+      if(!form.checkValidity()) return;
       const title = form.dataset.formTitle || "رسالة من موقع ديفاني";
       const lines = [title];
       Array.from(form.elements).forEach(field => {

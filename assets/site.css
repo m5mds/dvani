@@ -126,10 +126,14 @@ h3{font-size:1.45rem;line-height:1.25;margin-bottom:10px}
 .proof-section .certificate-card{background:rgba(255,255,255,.3);box-shadow:0 28px 80px rgba(23,18,13,.08)}
 .certificate-card img{width:100%;max-height:220px;object-fit:contain;background:#fff;border:1px solid var(--dark-line)}
 .form-layout{display:grid;grid-template-columns:.78fr 1.22fr;gap:50px;align-items:start}
-.form-panel{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
-.form-panel label{display:grid;gap:7px;color:rgba(244,238,228,.72);font-size:.92rem}
+.form-panel{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;background:linear-gradient(180deg,rgba(244,238,228,.045),rgba(244,238,228,.018));box-shadow:0 34px 90px rgba(0,0,0,.24)}
+.form-panel label{display:grid;gap:7px;color:rgba(244,238,228,.72);font-size:.92rem;transition:color .28s var(--ease-out)}
+.form-panel label:focus-within{color:var(--gold-soft)}
 .form-panel .full{grid-column:1/-1}
-input,select,textarea{width:100%;border:1px solid rgba(244,238,228,.16);background:rgba(244,238,228,.04);color:var(--bone);padding:13px 14px;border-radius:6px}
+input,select,textarea{width:100%;min-height:52px;border:1px solid rgba(244,238,228,.16);background:rgba(244,238,228,.04);color:var(--bone);padding:13px 14px;border-radius:6px;transition:border-color .28s var(--ease-out),background .28s var(--ease-out),box-shadow .28s var(--ease-out)}
+input:focus,select:focus,textarea:focus{border-color:rgba(239,217,157,.72);background:rgba(244,238,228,.065);box-shadow:0 0 0 4px rgba(217,182,111,.1)}
+input:user-invalid,select:user-invalid,textarea:user-invalid{border-color:rgba(255,129,104,.72);box-shadow:0 0 0 4px rgba(255,129,104,.1)}
+input::placeholder,textarea::placeholder{color:rgba(244,238,228,.36)}
 select option{color:#151007}
 textarea{resize:vertical}
 .clean-list{padding:0;margin:24px 0;list-style:none;color:rgba(244,238,228,.7)}

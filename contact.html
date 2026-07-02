@@ -56,7 +56,7 @@
     
 <form class="form-panel reveal" data-whatsapp-form data-form-title="رسالة تواصل">
   <label>الاسم<input name="الاسم" required autocomplete="name"></label>
-  <label>رقم الجوال<input name="الجوال" required inputmode="tel" autocomplete="tel"></label>
+  <label>رقم الجوال<input type="tel" name="الجوال" required inputmode="tel" autocomplete="tel" minlength="9" placeholder="05xxxxxxxx"></label>
   <label class="full">الرسالة<textarea name="الرسالة" rows="5" required></textarea></label>
   <button class="command primary full" type="submit">إرسال الرسالة عبر واتساب</button>
 </form>
