@@ -52,6 +52,7 @@ h3{font-size:1.45rem;line-height:1.25;margin-bottom:10px}
 .home-hero p,.page-hero p,.lead{font-size:1.1rem;color:rgba(244,238,228,.76);max-width:660px}
 .hero-actions,.cta-actions,.contact-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
 .section{padding:112px var(--pad)}
+.proof-section{padding-top:84px}
 .dark-section{background:#050504}
 .paper-section{background:var(--paper);color:var(--ink)}
 .section-inner{width:min(100%,var(--wrap));margin:0 auto}
@@ -117,10 +118,12 @@ h3{font-size:1.45rem;line-height:1.25;margin-bottom:10px}
 .project-card div{padding:22px}
 .logo-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
 .logo-card{display:grid;place-items:center;text-align:center;min-height:150px}
+.proof-section .logo-card{min-height:136px;background:linear-gradient(180deg,rgba(244,238,228,.04),rgba(244,238,228,.018))}
 .logo-card img{max-height:54px;object-fit:contain;margin-bottom:16px;filter:saturate(.98) brightness(1.1)}
 .logo-card figcaption{color:rgba(244,238,228,.68);font-size:.86rem}
 .certificate-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 .certificate-card{display:grid;grid-template-columns:180px 1fr;gap:22px;align-items:center}
+.proof-section .certificate-card{background:rgba(255,255,255,.3);box-shadow:0 28px 80px rgba(23,18,13,.08)}
 .certificate-card img{width:100%;max-height:220px;object-fit:contain;background:#fff;border:1px solid var(--dark-line)}
 .form-layout{display:grid;grid-template-columns:.78fr 1.22fr;gap:50px;align-items:start}
 .form-panel{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
@@ -141,6 +144,7 @@ textarea{resize:vertical}
 .footer small{direction:ltr}
 .whatsapp-float{position:fixed;z-index:70;inset-inline-start:22px;bottom:22px;min-height:42px;padding:0 15px;display:inline-flex;align-items:center;gap:8px;border-radius:999px;border:1px solid rgba(39,174,96,.42);background:rgba(7,7,6,.72);color:var(--bone);font-weight:800;box-shadow:0 18px 42px rgba(0,0,0,.32);backdrop-filter:blur(14px)}
 .whatsapp-float::before{content:"";width:7px;height:7px;border-radius:50%;background:#27ae60;box-shadow:0 0 16px rgba(39,174,96,.62)}
+body[data-page="quote"] .whatsapp-float,body[data-page="contact"] .whatsapp-float{display:none}
 .reveal{opacity:1;transform:none}
 .js .reveal{opacity:0;transform:translateY(16px);filter:blur(6px);transition:opacity .72s var(--ease-out),transform .72s var(--ease-out),filter .72s var(--ease-out)}
 .js .reveal.in{opacity:1;transform:none;filter:blur(0);animation:contentLift .78s var(--ease-out) both}

@@ -482,3 +482,26 @@ Perfect UI/UX refinement notes:
 - Project transitions now scope themselves to project elements instead of recapturing hero media.
 - Mobile floating WhatsApp is hidden to avoid overlay clutter.
 - Final audit: `tasks/perfect-uiux-refinement-audit.md`.
+
+## Proof And Conversion Polish Pass
+
+Goal: tighten proof/conversion pages so the premium UI/UX holds beyond the homepage and project showcase.
+
+Design source: `docs/plans/2026-07-02-divani-proof-conversion-polish.md`.
+
+- [x] Audit clients, certificates, quote, and contact screenshots.
+- [x] Hide floating WhatsApp on quote/contact pages at all viewport sizes.
+- [x] Tighten clients/certificates proof-section spacing.
+- [x] Refine logo/certificate proof surfaces.
+- [x] Regenerate all static pages from the generator.
+- [x] Run browser audit for links, images, overflow, forms, drawer, project switching, and errors.
+- [x] Capture representative screenshots.
+- [x] Document final polish audit.
+- [x] Commit and push to GitHub.
+
+Proof/conversion polish notes:
+
+- Floating WhatsApp is now hidden on quote/contact pages at every viewport size.
+- Clients and certificates proof sections are tighter and less empty after their hero/proof bands.
+- Logo and certificate proof cards have quieter premium surfaces.
+- Final audit: `tasks/proof-conversion-polish-audit.md`.
