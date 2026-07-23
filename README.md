@@ -1,31 +1,11 @@
-# Divani
+# DIVANI
 
-Static multipage website for Divani interior design and fit-out.
+Production files for DIVANI's bilingual architectural portfolio.
 
-## Pages
+- `index.html` — English experience
+- `ar.html` — Arabic experience
+- Legacy page URLs redirect to their matching homepage sections
+- Static HTML, CSS, JavaScript, images, fonts, and compact in-page media only
+- No backend or stored form data; project enquiries open an encoded WhatsApp draft
 
-- `index.html`
-- `about.html`
-- `why-us.html`
-- `services.html`
-- `projects.html`
-- `clients.html`
-- `certificates.html`
-- `quote.html`
-- `contact.html`
-
-`Divani (1).html` is kept as a compatibility copy of the homepage.
-
-## Structure
-
-- `assets/` contains site CSS, JavaScript, logos, certificates, and project imagery.
-- `tasks/build-multipage-site.js` is the source generator for all HTML pages and shared assets.
-- `docs/plans/` contains design direction notes.
-
-## Regenerate
-
-```powershell
-node tasks\build-multipage-site.js
-```
-
-The site is static and can be opened directly from `index.html`.
+Serve the repository root with any static web server.

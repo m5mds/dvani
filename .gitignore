@@ -11,12 +11,30 @@ desktop.ini
 # Generated browser profiles and QA artifacts
 tasks/chrome-*/
 tasks/chrome-profile-*/
+tasks/.chrome-profile-*/
+tasks/.version-*/
 tasks/chrome-test-profile/
 tasks/screenshots/
 tasks/profile-review/
 tasks/*.json
+!tasks/cinematic-toolchain.json
 tasks/*contactsheet.jpg
 
 # Logs and temporary files
 *.log
 *.tmp
+__pycache__/
+*.pyc
+
+# Local source, QA, prototypes, and exported recordings
+tasks/
+docs/
+prototypes/
+exports/
+tmp/
+assets/browser-upscaled/
+assets/hires/
+assets/profile-client-logos/
+assets/cinematic/division-v1/
+assets/cinematic/division-v2/
+assets/cinematic/hero-v1/source/

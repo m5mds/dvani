@@ -1,128 +1,506 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<!doctype html>
+<html lang="en" dir="ltr" class="no-js">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="ديفاني شركة تصميم وتنفيذ داخلي للمساحات الفندقية والتجارية في السعودية.">
-<title>ديفاني | تصميم وتنفيذ داخلي للمساحات الفندقية والتجارية</title>
-<script>document.documentElement.classList.add("js");</script>
-<link rel="stylesheet" href="assets/site.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#11100e">
+  <meta name="description" content="Divani — Interior & Architectural Design, Luxury Fit-Out Solutions, and Real Estate Development in Saudi Arabia.">
+  <title>Divani — From Drawing to Place</title>
+  <link rel="alternate" hreflang="en" href="index.html">
+  <link rel="alternate" hreflang="ar" href="ar.html">
+  <script>
+    (function () {
+      var connection = navigator.connection;
+      var supported = window.fetch && window.requestAnimationFrame && window.CSS && CSS.supports && CSS.supports("height", "100svh");
+      var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if ((connection && connection.saveData) || reduced || !supported) {
+        document.documentElement.className += " static-hero static-motion";
+      } else {
+        document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, "").trim() +
+          " js-pending brief-render-pending capabilities-render-pending hero-text-render-pending threshold-render-pending design-copy-render-pending";
+        window.setTimeout(function () {
+          document.documentElement.classList.remove(
+            "brief-render-pending", "capabilities-render-pending", "hero-text-render-pending",
+            "threshold-render-pending", "design-copy-render-pending"
+          );
+          document.querySelectorAll("[data-initial-render-ready]").forEach(function (element) {
+            element.removeAttribute("data-initial-render-ready");
+          });
+        }, 2000);
+      }
+    }());
+  </script>
+  <link rel="stylesheet" href="assets/home-monumental.css">
+  <script src="assets/home-loader.js" defer></script>
 </head>
-<body data-page="home">
-<div class="progress" aria-hidden="true"><span></span></div>
-<header class="topbar">
-  <a class="brand" href="index.html" aria-label="ديفاني">
-    <img src="assets/divani-logo.png" alt="">
-    <span>ديفاني</span>
-  </a>
-  <nav class="navlinks" aria-label="التنقل الرئيسي"><a href="index.html" aria-current="page">الرئيسية</a><a href="about.html">من نحن</a><a href="why-us.html">لماذا نحن</a><a href="services.html">الخدمات</a><a href="projects.html">المشاريع</a><a href="clients.html">العملاء</a><a href="certificates.html">الشهادات</a><a href="quote.html">طلب عرض سعر</a><a href="contact.html">تواصل معنا</a></nav>
-  <a class="command primary desktop-quote" href="quote.html">طلب عرض سعر</a>
-  <button class="menu-button" type="button" aria-label="فتح القائمة" aria-controls="mobileDrawer" aria-expanded="false">
-    <span></span><span></span><span></span>
-  </button>
-</header>
-<div class="mobile-drawer" id="mobileDrawer" aria-hidden="true" inert>
-  <div class="mobile-panel">
-    <button class="mobile-close" type="button" aria-label="إغلاق القائمة"><span></span><span></span></button>
-    <nav aria-label="تنقل الجوال"><a href="index.html" aria-current="page">الرئيسية</a><a href="about.html">من نحن</a><a href="why-us.html">لماذا نحن</a><a href="services.html">الخدمات</a><a href="projects.html">المشاريع</a><a href="clients.html">العملاء</a><a href="certificates.html">الشهادات</a><a href="quote.html">طلب عرض سعر</a><a href="contact.html">تواصل معنا</a></nav>
-    <a class="command primary" href="quote.html">طلب عرض سعر</a>
-  </div>
-</div>
-<main>
+<body data-page="home" data-locale="en">
+  <a class="skip-link" href="#about-title">Skip the opening film</a>
 
-<section class="home-hero">
-  <img class="home-hero-media" src="assets/magic-hero-rattan.jpg" alt="مشهد داخلي بتكوين خشبي منحني من أعمال ديفاني">
-  <div class="home-hero-shade"></div>
-  <div class="home-hero-content reveal">
-    <p class="section-label">تصميم داخلي / تنفيذ / تأثيث</p>
-    <h1>ديفاني</h1>
-    <p>نصمم وننفذ مساحات ضيافة وتجارية هادئة، واضحة، وجاهزة للافتتاح من أول تفصيلة.</p>
-    <div class="hero-actions">
-      <a class="command primary" href="quote.html">ابدأ مشروعك</a>
-      <a class="command" href="projects.html">استعرض الأعمال</a>
+  <div class="site-intro" aria-hidden="true">
+    <div class="site-intro__identity" data-hero-ident>
+      <span class="site-intro__mark-shell">
+        <img class="site-intro__mark" src="assets/divani-logo.png" width="256" height="256" alt="">
+      </span>
+      <span class="site-intro__wordmark">DIVANI</span>
     </div>
   </div>
-</section>
 
-<section class="logo-band" aria-label="Proud to have served">
-  <div class="logo-band-inner">
-    <p class="eyebrow">Proud to have served<span>نفخر بثقة جهات رائدة</span></p>
-    <div class="logo-marquee">
-      <div class="logo-track">
-        <div class="logo-group"><figure class="logo-tile"><img src="assets/client-logos/amaala.png" alt="AMAALA"></figure><figure class="logo-tile"><img src="assets/client-logos/red-sea-global.png" alt="Red Sea Global"></figure><figure class="logo-tile"><img src="assets/client-logos/rcu.png" alt="Royal Commission for AlUla"></figure><figure class="logo-tile"><img src="assets/client-logos/neom.png" alt="NEOM"></figure><figure class="logo-tile"><img src="assets/client-logos/gaca.png" alt="GACA"></figure><figure class="logo-tile"><img src="assets/client-logos/siac.png" alt="SIAC Construction"></figure><figure class="logo-tile"><img src="assets/client-logos/hayyak.png" alt="Hayyak Lounge"></figure><figure class="logo-tile"><img src="assets/client-logos/bec-arabia.png" alt="BEC Arabia"></figure><figure class="logo-tile"><img src="assets/client-logos/six-senses.png" alt="Six Senses"></figure><figure class="logo-tile"><img src="assets/client-logos/le-meridien.png" alt="Le Meridien"></figure><figure class="logo-tile"><img src="assets/client-logos/house-express.png" alt="House Express"></figure><figure class="logo-tile"><img src="assets/client-logos/rosewood.png" alt="Rosewood Hotel Group"></figure><figure class="logo-tile"><img src="assets/client-logos/crowne-plaza.png" alt="Crowne Plaza Hotels and Resorts"></figure></div>
-        <div class="logo-group" aria-hidden="true"><figure class="logo-tile"><img src="assets/client-logos/amaala.png" alt=""></figure><figure class="logo-tile"><img src="assets/client-logos/red-sea-global.png" alt=""></figure><figure class="logo-tile"><img src="assets/client-logos/rcu.png" alt=""></figure><figure class="logo-tile"><img src="assets/client-logos/neom.png" alt=""></figure><figure class="logo-tile"><img src="assets/client-logos/gaca.png" alt=""></figure><figure class="logo-tile"><img src="assets/client-logos/siac.png" alt=""></figure><figure class="logo-tile"><img src="assets/client-logos/hayyak.png" alt=""></figure><figure class="logo-tile"><img src="assets/client-logos/bec-arabia.png" alt=""></figure><figure class="logo-tile"><img src="assets/client-logos/six-senses.png" alt=""></figure><figure class="logo-tile"><img src="assets/client-logos/le-meridien.png" alt=""></figure><figure class="logo-tile"><img src="assets/client-logos/house-express.png" alt=""></figure><figure class="logo-tile"><img src="assets/client-logos/rosewood.png" alt=""></figure><figure class="logo-tile"><img src="assets/client-logos/crowne-plaza.png" alt=""></figure></div>
+  <main>
+    <section
+      class="hero-sequence"
+      id="proof"
+      aria-labelledby="proof-title"
+      data-hero-sequence
+      data-hero-manifest="assets/cinematic/hero-v1/manifest.json"
+      data-mode="poster"
+      data-ready="false"
+      data-current-frame="0"
+      data-frame-count="75"
+      data-variant="desktop"
+    >
+      <div class="hero-stage">
+        <header class="site-header" aria-label="Language selector">
+          <div class="site-header__actions">
+            <a class="language-switch" href="ar.html#proof" lang="ar" dir="rtl" data-language-switch>العربية</a>
+          </div>
+        </header>
+        <picture>
+          <source media="(max-width: 767px)" srcset="assets/cinematic/hero-v1/mobile/frame-001.webp" width="720" height="1280" data-hero-mobile-poster>
+          <img
+            class="hero-poster"
+            src="assets/cinematic/hero-v1/poster.webp"
+            width="1600"
+            height="900"
+            alt=""
+            fetchpriority="high"
+            decoding="async"
+            aria-hidden="true"
+          >
+        </picture>
+        <canvas id="hero-canvas" data-hero-canvas aria-hidden="true"></canvas>
+        <div class="hero-wash" aria-hidden="true"></div>
+
+        <div class="hero-semantic">
+          <h1 id="proof-title">A drawing becomes a place.</h1>
+        </div>
+        <p class="hero-work-mark" lang="en" dir="ltr" aria-hidden="true">DIVANI</p>
+        <div class="hero-work-logo" data-hero-work-logo aria-hidden="true">
+          <img src="assets/divani-logo.png" width="256" height="256" alt="">
+          <span>DIVANI</span>
+        </div>
+        <div class="hero-copy">
+          <p class="hero-divisions" aria-label="Design, fit-out and development">DESIGN · FIT-OUT · DEVELOPMENT</p>
+          <a class="hero-cta" href="#project-brief">Start a project <span aria-hidden="true">↓</span></a>
+        </div>
+
       </div>
-    </div>
-  </div>
-</section>
-<section class="section intro-section">
-  <div class="section-inner intro-focus reveal">
-    <p class="section-label">نبذة عن الشركة</p>
-    <h2>نصمم أماكن تستقبل الناس بوضوح وهدوء.</h2>
-    <p class="lead">في ديفاني يبدأ المشروع من طريقة استخدام المكان: حركة الضيف، نقطة الضوء، ملمس الخامة، وسهولة التشغيل بعد التسليم.</p>
-    <div class="proof-list">
-      <div><strong>من 2009</strong><span>خبرة في مساحات ضيافة وتشغيل</span></div>
-      <div><strong>Design</strong><span>تصميم جميل وقابل للتنفيذ</span></div>
-      <div><strong>Fit-out</strong><span>تشطيب، توريد، وتأثيث تحت مسار واحد</span></div>
-    </div>
-  </div>
-</section>
-<section class="section project-reveal-section dark-section">
-  <div class="section-inner">
-    <div class="section-head reveal">
-      <p class="section-label">المشاريع</p>
-      <h2>المشروع هو المنتج.</h2>
-      <a class="text-link" href="projects.html">كل المشاريع</a>
-    </div>
-    <div class="feature-project reveal">
-      <img src="assets/project-lica-clean.jpg" alt="بهو فندقي مع مكتب استقبال بإضاءة دافئة">
-      <div>
-        <span class="project-kicker">Hotel Lobby</span>
-        <h3>ليلاك بارك</h3>
-        <p>بهو فندقي يوضح طريقة عمل ديفاني: خط نظر واضح، خامات دافئة، وإضاءة تجعل الوصول إلى الاستقبال بديهيا.</p>
+    </section>
+
+    <section class="readiness editorial-section" id="about" aria-labelledby="about-title" data-motion-stage="readiness" data-motion-direction="left-to-right">
+      <div class="readiness-visual" data-motion-enter="readiness-media">
+        <img
+          src="assets/restored/web/project-house-restored.jpg"
+          width="1672"
+          height="941"
+          alt="Restored archival view of a warm timber and limestone reception interior"
+          loading="lazy"
+          decoding="async"
+        >
       </div>
+      <div class="readiness-copy" data-motion-enter="readiness-copy">
+        <p class="eyebrow">About Us</p>
+        <h2 id="about-title" tabindex="-1">Experience shaped<br>since 2009.</h2>
+        <p>Founded in 2009, Divani is a Saudi design and delivery firm specializing in Interior &amp; Architectural Design, Luxury Fit-Out Solutions and Real Estate Development. We work across hospitality, residential, commercial and destination-led environments, carrying each project from a clear spatial idea through disciplined execution.</p>
+        <a href="#capabilities">Explore our expertise</a>
+      </div>
+    </section>
+
+    <section class="delivery editorial-section" id="why-divani" aria-labelledby="delivery-title" data-motion-stage="delivery" data-motion-direction="left-to-right">
+      <header class="section-intro" data-motion-enter="delivery-heading">
+        <p class="eyebrow">Why DIVANI</p>
+        <h2 id="delivery-title">Every Detail.<br>Intentionally Designed.</h2>
+        <p>Divani protects one design vision from concept through delivery. Our multidisciplinary approach combines design judgment, material knowledge, technical coordination and precise execution to create environments tailored to the client, the place and how each space will be used.</p>
+      </header>
+      <ol class="delivery-path">
+        <li data-motion-enter="delivery-step" data-motion-index="0"><strong>Read the ambition</strong><span>Clarify the place, its purpose and the standard it must hold.</span></li>
+        <li data-motion-enter="delivery-step" data-motion-index="1"><strong>Resolve the system</strong><span>Bring space, material and essential decisions into one coherent direction.</span></li>
+        <li data-motion-enter="delivery-step" data-motion-index="2"><strong>Carry it forward</strong><span>Keep the defining idea legible as the work moves from intention into reality.</span></li>
+        <li data-motion-enter="delivery-step" data-motion-index="3"><strong>Finish with discipline</strong><span>Review the whole environment, not isolated details.</span></li>
+      </ol>
+    </section>
+
+    <section class="capabilities editorial-section" id="capabilities" aria-labelledby="capabilities-title">
+      <article class="capability-chapter capability-chapter--design" data-motion-stage="capability" data-motion-variant="design" data-motion-direction="left-to-right" data-capability-id="design">
+      <div class="threshold-stage" data-motion-stage="threshold" data-motion-direction="left-to-right" data-threshold-stage>
+        <div class="threshold-stage__sticky">
+          <div class="threshold-handoff" aria-hidden="true">
+            <picture>
+              <source media="(max-width: 767px)" srcset="assets/cinematic/hero-v1/mobile-handoff.webp" data-cinematic-srcset="assets/cinematic/hero-v1/mobile/frame-075.webp" width="720" height="1280">
+              <img src="assets/cinematic/hero-v1/handoff.webp" data-cinematic-src="assets/cinematic/hero-v1/desktop/frame-075.webp" width="1600" height="900" alt="" loading="lazy" fetchpriority="low" decoding="async" data-cinematic-handoff>
+            </picture>
+          </div>
+          <div class="threshold-portal" data-threshold-portal>
+            <div class="threshold-design-media" data-threshold-design-media aria-hidden="true">
+              <img src="assets/cinematic/division-v3/media/design-poster.webp" width="1280" height="720" alt="" loading="lazy" decoding="async" data-threshold-design-poster>
+              <video
+                data-capability-film="design"
+                data-film-gate="threshold"
+                data-film-eligible="false"
+                muted
+                playsinline
+                preload="none"
+                data-poster="assets/cinematic/division-v3/media/design-poster.webp"
+                aria-hidden="true"
+                tabindex="-1"
+              >
+                <source data-src="assets/cinematic/division-v3/media/design.mp4" type="video/mp4">
+              </video>
+            </div>
+            <header class="section-intro threshold-portal__content" data-motion-enter="threshold-copy">
+              <p class="eyebrow handoff-disclosure">Our Expertise</p>
+              <h2 id="capabilities-title" tabindex="-1">Transforming Ideas into<br>Exceptional Spaces.</h2>
+            </header>
+          </div>
+        </div>
+      </div>
+        <div class="capability-copy" data-motion-enter="capability-copy">
+          <h3>Interior &amp; Architectural Design</h3>
+          <p>Architecture and interiors considered as one experience: proportion, circulation, material, light and use resolved together.</p>
+          <a href="#project-brief" data-brief-division="Interior &amp; Architectural Design">Brief the design team</a>
+        </div>
+      </article>
+
+      <article class="capability-chapter capability-chapter--fitout" data-motion-stage="capability" data-motion-variant="fitout" data-motion-direction="center-out" data-capability-id="fitout">
+        <div class="capability-media">
+          <video
+            data-capability-film="fitout"
+            muted
+            playsinline
+            preload="none"
+            data-poster="assets/cinematic/division-v3/media/fitout-poster.webp"
+            aria-hidden="true"
+            tabindex="-1"
+          >
+            <source data-src="assets/cinematic/division-v3/media/fitout.mp4" type="video/mp4">
+          </video>
+          <noscript><img class="capability-loop-fallback" src="assets/cinematic/division-v3/media/fitout-poster.webp" width="1280" height="720" alt=""></noscript>
+          <span class="capability-occluder capability-occluder--fitout-start" data-motion-occluder="fitout-start" aria-hidden="true"></span>
+          <span class="capability-occluder capability-occluder--fitout-end" data-motion-occluder="fitout-end" aria-hidden="true"></span>
+        </div>
+        <div class="capability-copy" data-motion-enter="capability-copy">
+          <h3>Luxury Fit-Out Solutions</h3>
+          <p>Material junctions, bespoke elements and final finishes brought into a coherent, exacting interior.</p>
+          <a href="#project-brief" data-brief-division="Luxury Fit-Out Solutions">Brief the fit-out team</a>
+        </div>
+      </article>
+
+      <article class="capability-chapter capability-chapter--development" data-motion-stage="capability" data-motion-variant="development" data-motion-direction="right-to-left" data-capability-id="development">
+        <div class="capability-media">
+          <video
+            data-capability-film="development"
+            muted
+            playsinline
+            preload="none"
+            data-poster="assets/cinematic/division-v3/media/development-poster.webp"
+            aria-hidden="true"
+            tabindex="-1"
+          >
+            <source data-src="assets/cinematic/division-v3/media/development.mp4" type="video/mp4">
+          </video>
+          <noscript><img class="capability-loop-fallback" src="assets/cinematic/division-v3/media/development-poster.webp" width="1280" height="720" alt=""></noscript>
+          <span class="capability-occluder capability-occluder--timber" data-motion-occluder="timber" aria-hidden="true"></span>
+        </div>
+        <div class="capability-copy" data-motion-enter="capability-copy">
+          <h3>Real Estate Development</h3>
+          <p>Spatial identity and architectural value shaped around the ambition, context and future life of a development.</p>
+          <a href="#project-brief" data-brief-division="Real Estate Development">Discuss a development</a>
+        </div>
+      </article>
+    </section>
+
+    <section class="relationships editorial-section" id="relationships" aria-labelledby="relationships-title" data-motion-stage="relationships" data-motion-direction="center-out">
+      <header class="section-intro section-intro--light" data-motion-enter="relationships-heading">
+        <p class="eyebrow">Our Clients</p>
+        <h2 id="relationships-title">Trusted across<br>distinctive destinations.</h2>
+      </header>
+      <div class="relationship-marks" aria-label="Divani clients">
+        <p class="relationship-group-label relationship-group-label--featured">Featured relationships</p>
+        <p class="relationship-group-label relationship-group-label--complete">Complete network · 49 relationships</p>
+        <figure data-motion-enter="relationship-mark" data-motion-index="0"><img src="assets/client-logos-monochrome/siac.png" width="1200" height="448" alt="SIAC Construction" loading="lazy"><figcaption>SIAC Construction</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="1"><img src="assets/client-logos-monochrome/jedco-jeddah-airports.png" width="1140" height="320" alt="JEDCO · Jeddah Airports" loading="lazy"><figcaption>JEDCO · Jeddah Airports</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="2"><img src="assets/client-logos-monochrome/watania-business-group.png" width="315" height="320" alt="Watania Business Group" loading="lazy"><figcaption>Watania Business Group</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="3"><img src="assets/client-logos-monochrome/ibtech.png" width="412" height="320" alt="IBTech" loading="lazy"><figcaption>IBTech</figcaption></figure>
+        <figure data-motion-enter="relationship-mark" data-motion-index="4"><img src="assets/client-logos-monochrome/amaala.png" width="1200" height="448" alt="AMAALA" loading="lazy"><figcaption>AMAALA</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="5"><img src="assets/client-logos-monochrome/mastery-house.png" width="848" height="320" alt="Mastery House" loading="lazy"><figcaption>Mastery House</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="6"><img src="assets/client-logos-monochrome/alsharif-group-holding.png" width="766" height="320" alt="AlSharif Group Holding" loading="lazy"><figcaption>AlSharif Group Holding</figcaption></figure>
+        <figure data-motion-enter="relationship-mark" data-motion-index="7"><img src="assets/client-logos-monochrome/red-sea-global.png" width="1200" height="448" alt="Red Sea Global" loading="lazy"><figcaption>Red Sea Global</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="8"><img src="assets/client-logos-monochrome/elegancia-arabia.png" width="940" height="320" alt="Elegancia Arabia" loading="lazy"><figcaption>Elegancia Arabia</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="9"><img src="assets/client-logos-monochrome/diriyah-company.png" width="322" height="320" alt="Diriyah Company" loading="lazy"><figcaption>Diriyah Company</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="10"><img src="assets/client-logos-monochrome/cce.png" width="727" height="320" alt="CCE" loading="lazy"><figcaption>CCE</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="11"><img src="assets/client-logos-monochrome/mas-engineering-construction.png" width="1644" height="320" alt="MAS Engineering &amp; Construction" loading="lazy"><figcaption>MAS Engineering &amp; Construction</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="12"><img src="assets/client-logos-monochrome/havelock-one.png" width="393" height="320" alt="Havelock One" loading="lazy"><figcaption>Havelock One</figcaption></figure>
+        <figure class="relationship-mark--wide" data-motion-enter="relationship-mark" data-motion-index="13"><img src="assets/client-logos-monochrome/rcu-mono-v3.png" width="328" height="91" alt="Royal Commission for AlUla" loading="lazy"><figcaption>Royal Commission for AlUla</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="14"><img src="assets/client-logos-monochrome/astra-construction.png" width="493" height="320" alt="Astra Construction" loading="lazy"><figcaption>Astra Construction</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="15"><img src="assets/client-logos-monochrome/alfanar-engineering-services.png" width="718" height="320" alt="Alfanar Engineering Services" loading="lazy"><figcaption>Alfanar Engineering Services</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="16"><img src="assets/client-logos-monochrome/china-comservice.png" width="386" height="320" alt="China Comservice" loading="lazy"><figcaption>China Comservice</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="17"><img src="assets/client-logos-monochrome/national-housing-company.png" width="407" height="320" alt="National Housing Company" loading="lazy"><figcaption>National Housing Company</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="18"><img src="assets/client-logos-monochrome/albaddad-engineering.png" width="1705" height="320" alt="AlBaddad Engineering" loading="lazy"><figcaption>AlBaddad Engineering</figcaption></figure>
+        <figure data-motion-enter="relationship-mark" data-motion-index="19"><img src="assets/client-logos-monochrome/hayyak.png" width="1200" height="448" alt="Hayyak Lounge" loading="lazy"><figcaption>Hayyak Lounge</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="20"><img src="assets/client-logos-monochrome/al-tanfeethi.png" width="426" height="320" alt="Al Tanfeethi" loading="lazy"><figcaption>Al Tanfeethi</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="21"><img src="assets/client-logos-monochrome/abdul-mohsen-al-tamimi-group.png" width="1182" height="320" alt="Abdul Mohsen Al Tamimi Group" loading="lazy"><figcaption>Abdul Mohsen Al Tamimi Group</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="22"><img src="assets/client-logos-monochrome/kidana.png" width="968" height="320" alt="Kidana" loading="lazy"><figcaption>Kidana</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="23"><img src="assets/client-logos-monochrome/ministry-civil-service.png" width="585" height="320" alt="Ministry of Civil Service" loading="lazy"><figcaption>Ministry of Civil Service</figcaption></figure>
+        <figure data-motion-enter="relationship-mark" data-motion-index="24"><img src="assets/client-logos-monochrome/bec-arabia.png" width="1200" height="448" alt="BEC Arabia" loading="lazy"><figcaption>BEC Arabia</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="25"><img src="assets/client-logos-monochrome/civil-affairs.png" width="382" height="320" alt="Civil Affairs" loading="lazy"><figcaption>Civil Affairs</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="26"><img src="assets/client-logos-monochrome/national-talents-company.png" width="1523" height="320" alt="National Talents Company" loading="lazy"><figcaption>National Talents Company</figcaption></figure>
+        <figure class="relationship-mark--wide" data-motion-enter="relationship-mark" data-motion-index="27"><img src="assets/client-logos-monochrome/neom-mono-v3.png" width="623" height="232" alt="NEOM" loading="lazy"><figcaption>NEOM</figcaption></figure>
+        <figure data-motion-enter="relationship-mark" data-motion-index="28"><img src="assets/client-logos-monochrome/gaca.png" width="1200" height="448" alt="GACA" loading="lazy"><figcaption>GACA</figcaption></figure>
+        <figure data-motion-enter="relationship-mark" data-motion-index="29"><img src="assets/client-logos-monochrome/six-senses.png" width="1200" height="448" alt="Six Senses" loading="lazy"><figcaption>Six Senses</figcaption></figure>
+        <figure data-motion-enter="relationship-mark" data-motion-index="30"><img src="assets/client-logos-monochrome/le-meridien.png" width="1200" height="448" alt="Le Méridien" loading="lazy"><figcaption>Le Méridien</figcaption></figure>
+        <figure data-motion-enter="relationship-mark" data-motion-index="31"><img src="assets/client-logos-monochrome/house-express.png" width="1200" height="448" alt="House Express" loading="lazy"><figcaption>House Express</figcaption></figure>
+        <figure class="relationship-mark--wide" data-motion-enter="relationship-mark" data-motion-index="32"><img src="assets/client-logos-monochrome/rosewood-mono-v3.png" width="1280" height="269" alt="Rosewood Hotel Group" loading="lazy"><figcaption>Rosewood Hotel Group</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="33"><img src="assets/client-logos-monochrome/raleen-hotel-resorts.png" width="595" height="320" alt="Raleen Hotel &amp; Resorts" loading="lazy"><figcaption>Raleen Hotel &amp; Resorts</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="34"><img src="assets/client-logos-monochrome/aris-star.png" width="352" height="320" alt="Aris Star" loading="lazy"><figcaption>Aris Star</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="35"><img src="assets/client-logos-monochrome/swiss-inn-hotels-resorts.png" width="978" height="320" alt="Swiss Inn Hotels &amp; Resorts" loading="lazy"><figcaption>Swiss Inn Hotels &amp; Resorts</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="36"><img src="assets/client-logos-monochrome/swiss-inn-tabuk.png" width="1023" height="320" alt="Swiss Inn Tabuk" loading="lazy"><figcaption>Swiss Inn Tabuk</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="37"><img src="assets/client-logos-monochrome/lilac-park.png" width="211" height="320" alt="Lilac Park" loading="lazy"><figcaption>Lilac Park</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="38"><img src="assets/client-logos-monochrome/five-seasons-hotel.png" width="561" height="320" alt="Five Seasons Hotel" loading="lazy"><figcaption>Five Seasons Hotel</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="39"><img src="assets/client-logos-monochrome/skyline-tabuk-hotel.png" width="364" height="320" alt="Skyline Tabuk Hotel" loading="lazy"><figcaption>Skyline Tabuk Hotel</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="40"><img src="assets/client-logos-monochrome/marvelous-hotel.png" width="695" height="320" alt="Marvelous Hotel" loading="lazy"><figcaption>Marvelous Hotel</figcaption></figure>
+        <figure data-motion-enter="relationship-mark" data-motion-index="41"><img src="assets/client-logos-monochrome/crowne-plaza.png" width="1200" height="448" alt="Crowne Plaza Hotels &amp; Resorts" loading="lazy"><figcaption>Crowne Plaza Hotels &amp; Resorts</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="42"><img src="assets/client-logos-monochrome/rose-land.png" width="216" height="320" alt="Rose Land" loading="lazy"><figcaption>Rose Land</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="43"><img src="assets/client-logos-monochrome/hikari-sushi-lounge.png" width="549" height="320" alt="Hikari Sushi Lounge" loading="lazy"><figcaption>Hikari Sushi Lounge</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="44"><img src="assets/client-logos-monochrome/diwan-al-kashi.png" width="209" height="320" alt="Diwan Al Kashi" loading="lazy"><figcaption>Diwan Al Kashi</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="45"><img src="assets/client-logos-monochrome/top-grill.png" width="418" height="320" alt="Top Grill" loading="lazy"><figcaption>Top Grill</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="46"><img src="assets/client-logos-monochrome/north-coffee.png" width="290" height="320" alt="North Coffee" loading="lazy"><figcaption>North Coffee</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="47"><img src="assets/client-logos-monochrome/hirola.png" width="163" height="320" alt="Hirola" loading="lazy"><figcaption>Hirola</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="48"><img src="assets/client-logos-monochrome/mazyan.png" width="292" height="320" alt="Mazyan" loading="lazy"><figcaption>Mazyan</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="selected-work editorial-section" id="selected-work" aria-labelledby="selected-work-title" data-motion-stage="selected-work" data-motion-direction="left-to-right">
+      <header class="section-intro section-intro--light" data-motion-enter="selected-work-copy">
+        <p class="eyebrow">Our Projects</p>
+        <h2 id="selected-work-title">Spaces That<br>Tell Stories.</h2>
+      </header>
+
+      <div class="project-runway" data-project-showcase style="--project-count: 8; --project-runway-height: 580svh">
+        <figure class="project-runway__stage" data-project-frame data-motion-enter="selected-work-media">
+          <img
+            data-project-layer="primary"
+            data-project-asset-slot="project-01-primary"
+            src="assets/client-projects/2026-07-22/01-desert-pool-retreat.jpeg"
+            width="1280"
+            height="960"
+            alt="Desert retreat terrace with a pool and timber shade structure"
+            loading="lazy"
+            decoding="async"
+          >
+          <img
+            class="project-runway__incoming-layer"
+            data-project-layer="incoming"
+            data-project-asset-slot="project-incoming"
+            src="assets/client-projects/2026-07-22/01-desert-pool-retreat.jpeg"
+            width="1280"
+            height="960"
+            alt=""
+            aria-hidden="true"
+            loading="lazy"
+            decoding="async"
+          >
+          <span class="project-cut-occluder" data-project-occluder data-motion-direction="left-to-right" aria-hidden="true"></span>
+          <figcaption aria-live="polite" aria-atomic="true">
+            <span class="project-runway__counter" data-project-counter>01 / 08</span>
+            <span class="project-runway__caption-copy">
+              <strong data-project-title>Our Projects</strong>
+            </span>
+          </figcaption>
+        </figure>
+
+        <aside class="project-runway__navigator" aria-label="Our Projects navigation">
+          <span class="project-runway__navigator-count" data-project-navigator-counter>01 / 08</span>
+          <strong>Our Projects</strong>
+          <div class="project-runway__navigator-list" aria-label="Choose a project image">
+            <button type="button" data-project-static-select data-project-index="0" aria-label="View project 01" aria-pressed="true">01</button>
+            <button type="button" data-project-static-select data-project-index="1" aria-label="View project 02" aria-pressed="false">02</button>
+            <button type="button" data-project-static-select data-project-index="2" aria-label="View project 03" aria-pressed="false">03</button>
+            <button type="button" data-project-static-select data-project-index="3" aria-label="View project 04" aria-pressed="false">04</button>
+            <button type="button" data-project-static-select data-project-index="4" aria-label="View project 05" aria-pressed="false">05</button>
+            <button type="button" data-project-static-select data-project-index="5" aria-label="View project 06" aria-pressed="false">06</button>
+            <button type="button" data-project-static-select data-project-index="6" aria-label="View project 07" aria-pressed="false">07</button>
+            <button type="button" data-project-static-select data-project-index="7" aria-label="View project 08" aria-pressed="false">08</button>
+          </div>
+        </aside>
+
+        <div class="project-runway__chapters" data-project-chapters>
+          <article class="project-runway__chapter" data-project-chapter data-project-index="0" data-project-id="project-01" data-src="assets/client-projects/2026-07-22/01-desert-pool-retreat.jpeg" data-alt="Desert retreat terrace with a pool and timber shade structure" data-title="Our Projects">
+            <img class="project-runway__mobile-image" data-project-mobile-image data-project-asset-slot="project-01-mobile" data-project-id="project-01" src="assets/client-projects/2026-07-22/01-desert-pool-retreat.jpeg" width="1280" height="960" alt="Desert retreat terrace with a pool and timber shade structure" loading="lazy" decoding="async">
+            <div class="project-runway__chapter-copy">
+              <span class="project-runway__index">01 / 08</span>
+              <h3>Our Projects</h3>
+              <button type="button" data-project-select data-project-id="project-01" aria-pressed="true">View project 01</button>
+            </div>
+          </article>
+          <article class="project-runway__chapter" data-project-chapter data-project-index="1" data-project-id="project-02" data-src="assets/client-projects/2026-07-22/02-illuminated-modern-villa.jpeg" data-alt="Illuminated contemporary villa behind a horizontal timber screen" data-title="Our Projects">
+            <img class="project-runway__mobile-image" data-project-mobile-image data-project-asset-slot="project-02-mobile" data-project-id="project-02" src="assets/client-projects/2026-07-22/02-illuminated-modern-villa.jpeg" width="1113" height="738" alt="Illuminated contemporary villa behind a horizontal timber screen" loading="lazy" decoding="async">
+            <div class="project-runway__chapter-copy">
+              <span class="project-runway__index">02 / 08</span>
+              <h3>Our Projects</h3>
+              <button type="button" data-project-select data-project-id="project-02" aria-pressed="false">View project 02</button>
+            </div>
+          </article>
+          <article class="project-runway__chapter" data-project-chapter data-project-index="2" data-project-id="project-03" data-src="assets/client-projects/2026-07-22/03-destination-retail-interior.jpeg" data-alt="Bright destination retail interior with curved display fixtures" data-title="Our Projects">
+            <img class="project-runway__mobile-image" data-project-mobile-image data-project-asset-slot="project-03-mobile" data-project-id="project-03" src="assets/client-projects/2026-07-22/03-destination-retail-interior.jpeg" width="1215" height="811" alt="Bright destination retail interior with curved display fixtures" loading="lazy" decoding="async">
+            <div class="project-runway__chapter-copy">
+              <span class="project-runway__index">03 / 08</span>
+              <h3>Our Projects</h3>
+              <button type="button" data-project-select data-project-id="project-03" aria-pressed="false">View project 03</button>
+            </div>
+          </article>
+          <article class="project-runway__chapter" data-project-chapter data-project-index="3" data-project-id="project-04" data-src="assets/client-projects/2026-07-22/04-alula-auditorium.jpeg" data-alt="Timber-lined auditorium with tiered upholstered seating" data-title="Our Projects">
+            <img class="project-runway__mobile-image" data-project-mobile-image data-project-asset-slot="project-04-mobile" data-project-id="project-04" src="assets/client-projects/2026-07-22/04-alula-auditorium.jpeg" width="1280" height="960" alt="Timber-lined auditorium with tiered upholstered seating" loading="lazy" decoding="async">
+            <div class="project-runway__chapter-copy">
+              <span class="project-runway__index">04 / 08</span>
+              <h3>Our Projects</h3>
+              <button type="button" data-project-select data-project-id="project-04" aria-pressed="false">View project 04</button>
+            </div>
+          </article>
+          <article class="project-runway__chapter" data-project-chapter data-project-index="4" data-project-id="project-05" data-src="assets/client-projects/2026-07-22/05-hospitality-reception.jpeg" data-alt="Hospitality reception with carved wall relief and timber detailing" data-title="Our Projects">
+            <img class="project-runway__mobile-image" data-project-mobile-image data-project-asset-slot="project-05-mobile" data-project-id="project-05" src="assets/client-projects/2026-07-22/05-hospitality-reception.jpeg" width="627" height="468" alt="Hospitality reception with carved wall relief and timber detailing" loading="lazy" decoding="async">
+            <div class="project-runway__chapter-copy">
+              <span class="project-runway__index">05 / 08</span>
+              <h3>Our Projects</h3>
+              <button type="button" data-project-select data-project-id="project-05" aria-pressed="false">View project 05</button>
+            </div>
+          </article>
+          <article class="project-runway__chapter" data-project-chapter data-project-index="5" data-project-id="project-06" data-src="assets/client-projects/2026-07-22/06-woven-sculpture-interior.jpeg" data-alt="Interior featuring a large woven suspended sculpture" data-title="Our Projects">
+            <img class="project-runway__mobile-image" data-project-mobile-image data-project-asset-slot="project-06-mobile" data-project-id="project-06" src="assets/client-projects/2026-07-22/06-woven-sculpture-interior.jpeg" width="1280" height="960" alt="Interior featuring a large woven suspended sculpture" loading="lazy" decoding="async">
+            <div class="project-runway__chapter-copy">
+              <span class="project-runway__index">06 / 08</span>
+              <h3>Our Projects</h3>
+              <button type="button" data-project-select data-project-id="project-06" aria-pressed="false">View project 06</button>
+            </div>
+          </article>
+          <article class="project-runway__chapter" data-project-chapter data-project-index="6" data-project-id="project-07" data-src="assets/client-projects/2026-07-22/07-contemporary-prayer-hall.jpeg" data-alt="Contemporary prayer hall with illuminated geometric ceiling" data-title="Our Projects">
+            <img class="project-runway__mobile-image" data-project-mobile-image data-project-asset-slot="project-07-mobile" data-project-id="project-07" src="assets/client-projects/2026-07-22/07-contemporary-prayer-hall.jpeg" width="929" height="756" alt="Contemporary prayer hall with illuminated geometric ceiling" loading="lazy" decoding="async">
+            <div class="project-runway__chapter-copy">
+              <span class="project-runway__index">07 / 08</span>
+              <h3>Our Projects</h3>
+              <button type="button" data-project-select data-project-id="project-07" aria-pressed="false">View project 07</button>
+            </div>
+          </article>
+          <article class="project-runway__chapter" data-project-chapter data-project-index="7" data-project-id="project-08" data-src="assets/client-projects/2026-07-22/08-workplace-lounge.jpeg" data-alt="Workplace lounge with integrated timber cabinetry" data-title="Our Projects">
+            <img class="project-runway__mobile-image" data-project-mobile-image data-project-asset-slot="project-08-mobile" data-project-id="project-08" src="assets/client-projects/2026-07-22/08-workplace-lounge.jpeg" width="1280" height="960" alt="Workplace lounge with integrated timber cabinetry" loading="lazy" decoding="async">
+            <div class="project-runway__chapter-copy">
+              <span class="project-runway__index">08 / 08</span>
+              <h3>Our Projects</h3>
+              <button type="button" data-project-select data-project-id="project-08" aria-pressed="false">View project 08</button>
+            </div>
+          </article>
+          <div class="project-runway__hold" data-project-runway-hold aria-hidden="true"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="project-brief editorial-section" id="project-brief" aria-labelledby="project-brief-title" data-motion-stage="project-brief" data-motion-direction="right-to-left">
+      <div class="project-brief__intro" data-motion-enter="project-brief-copy">
+        <p class="eyebrow">Start Your Project</p>
+        <h2 id="project-brief-title">Every Great Space<br>Begins Here.</h2>
+        <p>Tell us about your project, and our team will guide you from concept to completion.</p>
+        <a href="https://wa.me/966531100366" target="_blank" rel="noopener noreferrer">Or open WhatsApp directly</a>
+      </div>
+
+      <form
+        class="brief-form"
+        id="projectBriefForm"
+        data-project-brief-form
+        data-whatsapp-number="966531100366"
+        action="https://wa.me/966531100366"
+        method="get"
+        target="_blank"
+        aria-describedby="brief-note"
+      >
+        <div class="brief-field">
+          <label for="brief-name">Your name</label>
+          <input id="brief-name" name="name" type="text" autocomplete="name" required>
+        </div>
+        <div class="brief-field">
+          <label for="brief-contact">Phone or email</label>
+          <input id="brief-contact" name="contact" type="text" autocomplete="tel" required>
+        </div>
+        <div class="brief-field">
+          <label for="brief-city">City</label>
+          <input id="brief-city" name="city" type="text" autocomplete="address-level2" required>
+        </div>
+        <div class="brief-field">
+          <label for="brief-division">Division</label>
+          <select id="brief-division" name="division" required>
+            <option value="" selected disabled>Choose a division</option>
+            <option>Interior &amp; Architectural Design</option>
+            <option>Luxury Fit-Out Solutions</option>
+            <option>Real Estate Development</option>
+            <option>Not sure yet</option>
+          </select>
+        </div>
+        <div class="brief-field">
+          <label for="brief-stage">Project stage</label>
+          <select id="brief-stage" name="stage" required>
+            <option value="" selected disabled>Choose the current stage</option>
+            <option>Early brief</option>
+            <option>Concept or design</option>
+            <option>Pricing or procurement</option>
+            <option>Delivery in progress</option>
+            <option>Not sure yet</option>
+          </select>
+        </div>
+        <div class="brief-field brief-field--message">
+          <label for="brief-message">The brief</label>
+          <textarea id="brief-message" name="brief" rows="6" required placeholder="What are you creating, and what must it become?"></textarea>
+        </div>
+        <div class="brief-form__footer">
+          <p id="brief-note">Nothing is stored here. Your answers open as a draft in WhatsApp; you decide whether to send it.</p>
+          <button type="submit">Prepare WhatsApp brief <span aria-hidden="true">↗</span></button>
+          <a class="brief-form__fallback" href="https://wa.me/966531100366" target="_blank" rel="noopener noreferrer" data-whatsapp-fallback hidden>Open the prepared WhatsApp draft</a>
+        </div>
+        <p class="brief-status" data-brief-status role="status" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <section class="final-frame" id="contact" aria-labelledby="final-frame-title" data-motion-stage="final-frame" data-motion-direction="left-to-right">
+      <div class="final-frame__content" data-motion-enter="final-frame-copy">
+        <p class="eyebrow">Contact</p>
+        <h2 id="final-frame-title">Let's Create<br>Your Next Space.</h2>
+        <div class="contact-links">
+          <a href="tel:+966531100366">+966 53 110 0366</a>
+          <a href="https://wa.me/966531100366" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+          <a href="mailto:info@divaniworld.com">info@divaniworld.com</a>
+          <span>Al Morouj, Tabuk</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <a class="site-footer__brand" href="#proof" aria-label="Return to the Divani opening">
+      <img src="assets/divani-logo.png" width="256" height="256" alt="">
+      <span>DIVANI</span>
+    </a>
+    <nav aria-label="Footer">
+      <a href="#about">About Us</a>
+      <a href="#why-divani">Why Divani</a>
+      <a href="#capabilities">Our Expertise</a>
+      <a href="#relationships">Our Clients</a>
+      <a href="#selected-work">Our Projects</a>
+      <a href="#project-brief">Start Your Project</a>
+      <a href="#contact">Contact</a>
+      <a href="ar.html" lang="ar" dir="rtl" data-footer-language-switch>العربية</a>
+    </nav>
+    <div class="site-footer__contact">
+      <a href="tel:+966531100366">+966 53 110 0366</a>
+      <a href="https://wa.me/966531100366" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+      <a href="mailto:info@divaniworld.com">info@divaniworld.com</a>
+      <span>Al Morouj, Tabuk</span>
     </div>
-  </div>
-</section>
-<section class="section paper-section">
-  <div class="section-inner">
-    <div class="section-head reveal">
-      <p class="section-label">الخدمات</p>
-      <h2>مسار واضح بدل قائمة طويلة.</h2>
-      <a class="text-link" href="services.html">تفاصيل الخدمات</a>
-    </div>
-    <div class="service-rows">
-      <article class="service-row reveal"><small>01</small><h3>تصميم داخلي</h3><p>نقرأ حركة المكان أولا، ثم نبني المخططات، التوجه البصري، ولوحات المواد على قرارات قابلة للتنفيذ.</p></article><article class="service-row reveal"><small>02</small><h3>تنفيذ وتشطيبات</h3><p>إدارة موقع دقيقة، تنسيق فرق العمل، ومعالجة التفاصيل حتى يصل المشروع إلى تسليم جاهز للتشغيل.</p></article><article class="service-row reveal"><small>03</small><h3>توريد وتجهيز</h3><p>أثاث، إنارة، خامات، وتجهيزات مختارة لطبيعة الاستخدام والميزانية ودرجة الانطباع المطلوبة.</p></article><article class="service-row reveal"><small>04</small><h3>تأثيث وفنشنغ</h3><p>اللمسة الأخيرة ليست زينة؛ هي اختيار القطع، الألوان، والملمس الذي يجعل تجربة الضيف مكتملة.</p></article>
-    </div>
-  </div>
-</section>
-<section class="cta-band">
-  <div class="section-inner split">
-    <div>
-      <p class="section-label">طلب عرض سعر</p>
-      <h2>أرسل تفاصيل المساحة لنقترح بداية واضحة.</h2>
-    </div>
-    <div class="cta-actions">
-      <a class="command primary" href="quote.html">اطلب قراءة أولية</a>
-      <a class="command" href="https://wa.me/966531100366">تحدث مع ديفاني</a>
-    </div>
-  </div>
-</section>
-</main>
-<a class="whatsapp-float" href="https://wa.me/966531100366" aria-label="واتساب مباشر">واتساب</a>
-<footer class="footer">
-  <div>
-    <img src="assets/divani-logo.png" alt="ديفاني">
-    <p>مساحات ضيافة وتجارية مصممة لتعمل بهدوء وتبقى في الذاكرة.</p>
-  </div>
-  <nav aria-label="روابط سريعة">
-    <a href="projects.html">المشاريع</a>
-    <a href="clients.html">العملاء</a>
-    <a href="quote.html">طلب عرض سعر</a>
-    <a href="contact.html">تواصل معنا</a>
-  </nav>
-  <small>© 2026 ديفاني</small>
-</footer>
-<script src="assets/site.js"></script>
+  </footer>
 </body>
 </html>

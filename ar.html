@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="ar" dir="rtl" class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#11100e">
+  <meta name="description" content="ديفاني — التصميم الداخلي والمعماري، حلول التشطيب الفاخر، والتطوير العقاري في المملكة العربية السعودية.">
+  <title>ديفاني — من الخط إلى المكان</title>
+  <link rel="alternate" hreflang="en" href="index.html">
+  <link rel="alternate" hreflang="ar" href="ar.html">
+  <script>
+    (function () {
+      var connection = navigator.connection;
+      var supported = window.fetch && window.requestAnimationFrame && window.CSS && CSS.supports && CSS.supports("height", "100svh");
+      var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if ((connection && connection.saveData) || reduced || !supported) {
+        document.documentElement.className += " static-hero static-motion";
+      } else {
+        document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, "").trim() +
+          " js-pending brief-render-pending capabilities-render-pending hero-text-render-pending threshold-render-pending design-copy-render-pending";
+        window.setTimeout(function () {
+          document.documentElement.classList.remove(
+            "brief-render-pending", "capabilities-render-pending", "hero-text-render-pending",
+            "threshold-render-pending", "design-copy-render-pending"
+          );
+          document.querySelectorAll("[data-initial-render-ready]").forEach(function (element) {
+            element.removeAttribute("data-initial-render-ready");
+          });
+        }, 2000);
+      }
+    }());
+  </script>
+  <link rel="stylesheet" href="assets/home-monumental.css">
+  <script src="assets/home-loader.js" defer></script>
+</head>
+<body data-page="home" data-locale="ar">
+  <a class="skip-link" href="#about-title">تجاوز الفيلم التصوري</a>
+
+  <div class="site-intro" aria-hidden="true">
+    <div class="site-intro__identity" data-hero-ident>
+      <span class="site-intro__mark-shell">
+        <img class="site-intro__mark" src="assets/divani-logo.png" width="256" height="256" alt="">
+      </span>
+      <span class="site-intro__wordmark">DIVANI</span>
+    </div>
+  </div>
+
+  <main>
+    <section
+      class="hero-sequence"
+      id="proof"
+      aria-labelledby="proof-title"
+      data-hero-sequence
+      data-hero-manifest="assets/cinematic/hero-v1/manifest.json"
+      data-mode="poster"
+      data-ready="false"
+      data-current-frame="0"
+      data-frame-count="75"
+      data-variant="desktop"
+    >
+      <div class="hero-stage">
+        <header class="site-header" aria-label="اختيار اللغة">
+          <div class="site-header__actions">
+            <a class="language-switch" href="index.html#proof" lang="en" dir="ltr" data-language-switch>English</a>
+          </div>
+        </header>
+        <picture>
+          <source media="(max-width: 767px)" srcset="assets/cinematic/hero-v1/mobile/frame-001.webp" width="720" height="1280" data-hero-mobile-poster>
+          <img
+            class="hero-poster"
+            src="assets/cinematic/hero-v1/poster.webp"
+            width="1600"
+            height="900"
+            alt=""
+            fetchpriority="high"
+            decoding="async"
+            aria-hidden="true"
+          >
+        </picture>
+        <canvas id="hero-canvas" data-hero-canvas aria-hidden="true"></canvas>
+        <div class="hero-wash" aria-hidden="true"></div>
+
+        <div class="hero-semantic">
+          <h1 id="proof-title">يصبح الخط مكانًا.</h1>
+        </div>
+        <p class="hero-work-mark" lang="en" dir="ltr" aria-hidden="true">DIVANI</p>
+        <div class="hero-work-logo" data-hero-work-logo aria-hidden="true">
+          <img src="assets/divani-logo.png" width="256" height="256" alt="">
+          <span>DIVANI</span>
+        </div>
+        <div class="hero-copy">
+          <p class="hero-divisions" aria-label="تصميم وتشطيب وتطوير">تصميم · تشطيب · تطوير</p>
+          <a class="hero-cta" href="#project-brief">ابدأ مشروعك <span aria-hidden="true">↓</span></a>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="readiness editorial-section" id="about" aria-labelledby="about-title" data-motion-stage="readiness" data-motion-direction="right-to-left">
+      <div class="readiness-visual" data-motion-enter="readiness-media">
+        <img
+          src="assets/restored/web/project-house-restored.jpg"
+          width="1672"
+          height="941"
+          alt="صورة أرشيفية مرممة لمساحة استقبال بكسوة خشبية وحجرية دافئة"
+          loading="lazy"
+          decoding="async"
+        >
+      </div>
+      <div class="readiness-copy" data-motion-enter="readiness-copy">
+        <p class="eyebrow">من نحن</p>
+        <h2 id="about-title" tabindex="-1">خبرة تتشكل<br>منذ عام 2009.</h2>
+        <p>تأسست ديفاني عام 2009، وهي شركة سعودية متخصصة في التصميم الداخلي والمعماري، وحلول التشطيب الفاخر، والتطوير العقاري. نعمل على مشاريع الضيافة والسكن والتجارة والوجهات، ونرافق كل مشروع من فكرته المكانية الواضحة حتى تنفيذه المنضبط.</p>
+        <a href="#capabilities">اكتشف خبراتنا</a>
+      </div>
+    </section>
+
+    <section class="delivery editorial-section" id="why-divani" aria-labelledby="delivery-title" data-motion-stage="delivery" data-motion-direction="right-to-left">
+      <header class="section-intro" data-motion-enter="delivery-heading">
+        <p class="eyebrow">لماذا ديفاني</p>
+        <h2 id="delivery-title">كل تفصيل.<br>مصمم بعناية.</h2>
+        <p>تحافظ ديفاني على رؤية تصميمية واحدة من الفكرة حتى التسليم. يجمع نهجنا متعدد التخصصات بين الحس التصميمي، ومعرفة المواد، والتنسيق الفني، ودقة التنفيذ، لنصنع مساحات مصممة وفق احتياجات العميل وهوية المكان وطريقة استخدامه.</p>
+      </header>
+      <ol class="delivery-path">
+        <li data-motion-enter="delivery-step" data-motion-index="0"><strong>نقرأ الطموح</strong><span>نفهم المكان وهدفه والمستوى الذي يجب أن يحافظ عليه.</span></li>
+        <li data-motion-enter="delivery-step" data-motion-index="1"><strong>نضبط المنظومة</strong><span>نجمع المساحة والمواد والقرارات الأساسية في اتجاه واضح.</span></li>
+        <li data-motion-enter="delivery-step" data-motion-index="2"><strong>نحمل الفكرة</strong><span>نبقي جوهرها حاضرًا حين تنتقل من النية إلى الواقع.</span></li>
+        <li data-motion-enter="delivery-step" data-motion-index="3"><strong>نراجع المكان كله</strong><span>نتعامل مع البيئة ككل، لا كمجموعة تفاصيل منفصلة.</span></li>
+      </ol>
+    </section>
+
+    <section class="capabilities editorial-section" id="capabilities" aria-labelledby="capabilities-title">
+      <article class="capability-chapter capability-chapter--design" data-motion-stage="capability" data-motion-variant="design" data-motion-direction="right-to-left" data-capability-id="design">
+      <div class="threshold-stage" data-motion-stage="threshold" data-motion-direction="right-to-left" data-threshold-stage>
+        <div class="threshold-stage__sticky">
+          <div class="threshold-handoff" aria-hidden="true">
+            <picture>
+              <source media="(max-width: 767px)" srcset="assets/cinematic/hero-v1/mobile-handoff.webp" data-cinematic-srcset="assets/cinematic/hero-v1/mobile/frame-075.webp" width="720" height="1280">
+              <img src="assets/cinematic/hero-v1/handoff.webp" data-cinematic-src="assets/cinematic/hero-v1/desktop/frame-075.webp" width="1600" height="900" alt="" loading="lazy" fetchpriority="low" decoding="async" data-cinematic-handoff>
+            </picture>
+          </div>
+          <div class="threshold-portal" data-threshold-portal>
+            <div class="threshold-design-media" data-threshold-design-media aria-hidden="true">
+              <img src="assets/cinematic/division-v3/media/design-poster.webp" width="1280" height="720" alt="" loading="lazy" decoding="async" data-threshold-design-poster>
+              <video
+                data-capability-film="design"
+                data-film-gate="threshold"
+                data-film-eligible="false"
+                muted
+                playsinline
+                preload="none"
+                data-poster="assets/cinematic/division-v3/media/design-poster.webp"
+                aria-hidden="true"
+                tabindex="-1"
+              >
+                <source data-src="assets/cinematic/division-v3/media/design.mp4" type="video/mp4">
+              </video>
+            </div>
+            <header class="section-intro threshold-portal__content" data-motion-enter="threshold-copy">
+              <p class="eyebrow handoff-disclosure">خبراتنا</p>
+              <h2 id="capabilities-title" tabindex="-1">نحوّل الأفكار إلى<br>مساحات استثنائية.</h2>
+            </header>
+          </div>
+        </div>
+      </div>
+        <div class="capability-copy" data-motion-enter="capability-copy">
+          <h3>التصميم الداخلي والمعماري</h3>
+          <p>ننظر إلى العمارة والداخل كخبرة واحدة؛ تتوازن فيها النسب والحركة والمواد والضوء وطريقة الاستخدام.</p>
+          <a href="#project-brief" data-brief-division="التصميم الداخلي والمعماري">أرسل موجز التصميم</a>
+        </div>
+      </article>
+
+      <article class="capability-chapter capability-chapter--fitout" data-motion-stage="capability" data-motion-variant="fitout" data-motion-direction="center-out" data-capability-id="fitout">
+        <div class="capability-media">
+          <video
+            data-capability-film="fitout"
+            muted
+            playsinline
+            preload="none"
+            data-poster="assets/cinematic/division-v3/media/fitout-poster.webp"
+            aria-hidden="true"
+            tabindex="-1"
+          >
+            <source data-src="assets/cinematic/division-v3/media/fitout.mp4" type="video/mp4">
+          </video>
+          <noscript><img class="capability-loop-fallback" src="assets/cinematic/division-v3/media/fitout-poster.webp" width="1280" height="720" alt=""></noscript>
+          <span class="capability-occluder capability-occluder--fitout-start" data-motion-occluder="fitout-start" aria-hidden="true"></span>
+          <span class="capability-occluder capability-occluder--fitout-end" data-motion-occluder="fitout-end" aria-hidden="true"></span>
+        </div>
+        <div class="capability-copy" data-motion-enter="capability-copy">
+          <h3>حلول التشطيب الفاخر</h3>
+          <p>التقاءات دقيقة بين المواد والعناصر المصممة خصيصًا واللمسات النهائية، لتخرج المساحة كلًّا واحدًا متماسكًا.</p>
+          <a href="#project-brief" data-brief-division="حلول التشطيب الفاخر">أرسل موجز التشطيب</a>
+        </div>
+      </article>
+
+      <article class="capability-chapter capability-chapter--development" data-motion-stage="capability" data-motion-variant="development" data-motion-direction="left-to-right" data-capability-id="development">
+        <div class="capability-media">
+          <video
+            data-capability-film="development"
+            muted
+            playsinline
+            preload="none"
+            data-poster="assets/cinematic/division-v3/media/development-poster.webp"
+            aria-hidden="true"
+            tabindex="-1"
+          >
+            <source data-src="assets/cinematic/division-v3/media/development.mp4" type="video/mp4">
+          </video>
+          <noscript><img class="capability-loop-fallback" src="assets/cinematic/division-v3/media/development-poster.webp" width="1280" height="720" alt=""></noscript>
+          <span class="capability-occluder capability-occluder--timber" data-motion-occluder="timber" aria-hidden="true"></span>
+        </div>
+        <div class="capability-copy" data-motion-enter="capability-copy">
+          <h3>التطوير العقاري</h3>
+          <p>هوية مكانية وقيمة معمارية تتشكلان حول طموح المشروع وسياقه والحياة التي سيحتضنها مستقبلًا.</p>
+          <a href="#project-brief" data-brief-division="التطوير العقاري">ناقش مشروعًا تطويريًا</a>
+        </div>
+      </article>
+    </section>
+
+    <section class="relationships editorial-section" id="relationships" aria-labelledby="relationships-title" data-motion-stage="relationships" data-motion-direction="center-out">
+      <header class="section-intro section-intro--light" data-motion-enter="relationships-heading">
+        <p class="eyebrow">عملاؤنا</p>
+        <h2 id="relationships-title">موثوقون عبر<br>وجهات متميزة.</h2>
+      </header>
+      <div class="relationship-marks" aria-label="عملاء ديفاني">
+        <p class="relationship-group-label relationship-group-label--featured">علاقات مختارة</p>
+        <p class="relationship-group-label relationship-group-label--complete">شبكة العملاء الكاملة · 49 علاقة</p>
+        <figure data-motion-enter="relationship-mark" data-motion-index="0"><img src="assets/client-logos-monochrome/siac.png" width="1200" height="448" alt="سياك" loading="lazy"><figcaption>سياك</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="1"><img src="assets/client-logos-monochrome/jedco-jeddah-airports.png" width="1140" height="320" alt="جيدكو · مطارات جدة" loading="lazy"><figcaption>جيدكو · مطارات جدة</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="2"><img src="assets/client-logos-monochrome/watania-business-group.png" width="315" height="320" alt="مجموعة أعمال الوطنية" loading="lazy"><figcaption>مجموعة أعمال الوطنية</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="3"><img src="assets/client-logos-monochrome/ibtech.png" width="412" height="320" alt="آي بي تك" loading="lazy"><figcaption>آي بي تك</figcaption></figure>
+        <figure data-motion-enter="relationship-mark" data-motion-index="4"><img src="assets/client-logos-monochrome/amaala.png" width="1200" height="448" alt="أمالا" loading="lazy"><figcaption>أمالا</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="5"><img src="assets/client-logos-monochrome/mastery-house.png" width="848" height="320" alt="بيت الإجادة" loading="lazy"><figcaption>بيت الإجادة</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="6"><img src="assets/client-logos-monochrome/alsharif-group-holding.png" width="766" height="320" alt="مجموعة الشريف القابضة" loading="lazy"><figcaption>مجموعة الشريف القابضة</figcaption></figure>
+        <figure data-motion-enter="relationship-mark" data-motion-index="7"><img src="assets/client-logos-monochrome/red-sea-global.png" width="1200" height="448" alt="البحر الأحمر الدولية" loading="lazy"><figcaption>البحر الأحمر الدولية</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="8"><img src="assets/client-logos-monochrome/elegancia-arabia.png" width="940" height="320" alt="إليجانسيا العربية" loading="lazy"><figcaption>إليجانسيا العربية</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="9"><img src="assets/client-logos-monochrome/diriyah-company.png" width="322" height="320" alt="شركة الدرعية" loading="lazy"><figcaption>شركة الدرعية</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="10"><img src="assets/client-logos-monochrome/cce.png" width="727" height="320" alt="CCE" loading="lazy"><figcaption>CCE</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="11"><img src="assets/client-logos-monochrome/mas-engineering-construction.png" width="1644" height="320" alt="ماس للهندسة والإنشاءات" loading="lazy"><figcaption>ماس للهندسة والإنشاءات</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="12"><img src="assets/client-logos-monochrome/havelock-one.png" width="393" height="320" alt="هافلوك ون" loading="lazy"><figcaption>هافلوك ون</figcaption></figure>
+        <figure class="relationship-mark--wide" data-motion-enter="relationship-mark" data-motion-index="13"><img src="assets/client-logos-monochrome/rcu-mono-v3.png" width="328" height="91" alt="الهيئة الملكية لمحافظة العلا" loading="lazy"><figcaption>الهيئة الملكية لمحافظة العلا</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="14"><img src="assets/client-logos-monochrome/astra-construction.png" width="493" height="320" alt="أسترا للإنشاءات" loading="lazy"><figcaption>أسترا للإنشاءات</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="15"><img src="assets/client-logos-monochrome/alfanar-engineering-services.png" width="718" height="320" alt="الفنار للخدمات الهندسية" loading="lazy"><figcaption>الفنار للخدمات الهندسية</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="16"><img src="assets/client-logos-monochrome/china-comservice.png" width="386" height="320" alt="تشاينا كومسيرفيس" loading="lazy"><figcaption>تشاينا كومسيرفيس</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="17"><img src="assets/client-logos-monochrome/national-housing-company.png" width="407" height="320" alt="الشركة الوطنية للإسكان" loading="lazy"><figcaption>الشركة الوطنية للإسكان</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="18"><img src="assets/client-logos-monochrome/albaddad-engineering.png" width="1705" height="320" alt="البغدادي للهندسة" loading="lazy"><figcaption>البغدادي للهندسة</figcaption></figure>
+        <figure data-motion-enter="relationship-mark" data-motion-index="19"><img src="assets/client-logos-monochrome/hayyak.png" width="1200" height="448" alt="هاياك لاونج" loading="lazy"><figcaption>هاياك لاونج</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="20"><img src="assets/client-logos-monochrome/al-tanfeethi.png" width="426" height="320" alt="التنفيذي" loading="lazy"><figcaption>التنفيذي</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="21"><img src="assets/client-logos-monochrome/abdul-mohsen-al-tamimi-group.png" width="1182" height="320" alt="مجموعة عبدالمحسن التميمي" loading="lazy"><figcaption>مجموعة عبدالمحسن التميمي</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="22"><img src="assets/client-logos-monochrome/kidana.png" width="968" height="320" alt="كدانة" loading="lazy"><figcaption>كدانة</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="23"><img src="assets/client-logos-monochrome/ministry-civil-service.png" width="585" height="320" alt="وزارة الخدمة المدنية" loading="lazy"><figcaption>وزارة الخدمة المدنية</figcaption></figure>
+        <figure data-motion-enter="relationship-mark" data-motion-index="24"><img src="assets/client-logos-monochrome/bec-arabia.png" width="1200" height="448" alt="بي إي سي العربية" loading="lazy"><figcaption>بي إي سي العربية</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="25"><img src="assets/client-logos-monochrome/civil-affairs.png" width="382" height="320" alt="الأحوال المدنية" loading="lazy"><figcaption>الأحوال المدنية</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="26"><img src="assets/client-logos-monochrome/national-talents-company.png" width="1523" height="320" alt="شركة المواهب الوطنية" loading="lazy"><figcaption>شركة المواهب الوطنية</figcaption></figure>
+        <figure class="relationship-mark--wide" data-motion-enter="relationship-mark" data-motion-index="27"><img src="assets/client-logos-monochrome/neom-mono-v3.png" width="623" height="232" alt="نيوم" loading="lazy"><figcaption>نيوم</figcaption></figure>
+        <figure data-motion-enter="relationship-mark" data-motion-index="28"><img src="assets/client-logos-monochrome/gaca.png" width="1200" height="448" alt="الهيئة العامة للطيران المدني" loading="lazy"><figcaption>الهيئة العامة للطيران المدني</figcaption></figure>
+        <figure data-motion-enter="relationship-mark" data-motion-index="29"><img src="assets/client-logos-monochrome/six-senses.png" width="1200" height="448" alt="سيكس سينسز" loading="lazy"><figcaption>سيكس سينسز</figcaption></figure>
+        <figure data-motion-enter="relationship-mark" data-motion-index="30"><img src="assets/client-logos-monochrome/le-meridien.png" width="1200" height="448" alt="لو ميريديان" loading="lazy"><figcaption>لو ميريديان</figcaption></figure>
+        <figure data-motion-enter="relationship-mark" data-motion-index="31"><img src="assets/client-logos-monochrome/house-express.png" width="1200" height="448" alt="هاوس إكسبرس" loading="lazy"><figcaption>هاوس إكسبرس</figcaption></figure>
+        <figure class="relationship-mark--wide" data-motion-enter="relationship-mark" data-motion-index="32"><img src="assets/client-logos-monochrome/rosewood-mono-v3.png" width="1280" height="269" alt="مجموعة فنادق روزوود" loading="lazy"><figcaption>مجموعة فنادق روزوود</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="33"><img src="assets/client-logos-monochrome/raleen-hotel-resorts.png" width="595" height="320" alt="رالين للفنادق والمنتجعات" loading="lazy"><figcaption>رالين للفنادق والمنتجعات</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="34"><img src="assets/client-logos-monochrome/aris-star.png" width="352" height="320" alt="نجم آريس" loading="lazy"><figcaption>نجم آريس</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="35"><img src="assets/client-logos-monochrome/swiss-inn-hotels-resorts.png" width="978" height="320" alt="سويس إن للفنادق والمنتجعات" loading="lazy"><figcaption>سويس إن للفنادق والمنتجعات</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="36"><img src="assets/client-logos-monochrome/swiss-inn-tabuk.png" width="1023" height="320" alt="سويس إن تبوك" loading="lazy"><figcaption>سويس إن تبوك</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="37"><img src="assets/client-logos-monochrome/lilac-park.png" width="211" height="320" alt="ليلاك بارك" loading="lazy"><figcaption>ليلاك بارك</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="38"><img src="assets/client-logos-monochrome/five-seasons-hotel.png" width="561" height="320" alt="فندق فايف سيزونز" loading="lazy"><figcaption>فندق فايف سيزونز</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="39"><img src="assets/client-logos-monochrome/skyline-tabuk-hotel.png" width="364" height="320" alt="فندق سكاي لاين تبوك" loading="lazy"><figcaption>فندق سكاي لاين تبوك</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="40"><img src="assets/client-logos-monochrome/marvelous-hotel.png" width="695" height="320" alt="فندق مارفيلوس" loading="lazy"><figcaption>فندق مارفيلوس</figcaption></figure>
+        <figure data-motion-enter="relationship-mark" data-motion-index="41"><img src="assets/client-logos-monochrome/crowne-plaza.png" width="1200" height="448" alt="فنادق ومنتجعات كراون بلازا" loading="lazy"><figcaption>فنادق ومنتجعات كراون بلازا</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="42"><img src="assets/client-logos-monochrome/rose-land.png" width="216" height="320" alt="روز لاند" loading="lazy"><figcaption>روز لاند</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="43"><img src="assets/client-logos-monochrome/hikari-sushi-lounge.png" width="549" height="320" alt="هيكاري سوشي لاونج" loading="lazy"><figcaption>هيكاري سوشي لاونج</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="44"><img src="assets/client-logos-monochrome/diwan-al-kashi.png" width="209" height="320" alt="ديوان الكاشي" loading="lazy"><figcaption>ديوان الكاشي</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="45"><img src="assets/client-logos-monochrome/top-grill.png" width="418" height="320" alt="توب جريل" loading="lazy"><figcaption>توب جريل</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="46"><img src="assets/client-logos-monochrome/north-coffee.png" width="290" height="320" alt="نورث كوفي" loading="lazy"><figcaption>نورث كوفي</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="47"><img src="assets/client-logos-monochrome/hirola.png" width="163" height="320" alt="هيرولا" loading="lazy"><figcaption>هيرولا</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="48"><img src="assets/client-logos-monochrome/mazyan.png" width="292" height="320" alt="مزيان" loading="lazy"><figcaption>مزيان</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="selected-work editorial-section" id="selected-work" aria-labelledby="selected-work-title" data-motion-stage="selected-work" data-motion-direction="right-to-left">
+      <header class="section-intro section-intro--light" data-motion-enter="selected-work-copy">
+        <p class="eyebrow">مشاريعنا</p>
+        <h2 id="selected-work-title">مساحات تروي<br>قصصًا.</h2>
+      </header>
+
+      <div class="project-runway" data-project-showcase style="--project-count: 8; --project-runway-height: 580svh">
+        <figure class="project-runway__stage" data-project-frame data-motion-enter="selected-work-media">
+          <img
+            data-project-layer="primary"
+            data-project-asset-slot="project-01-primary"
+            src="assets/client-projects/2026-07-22/01-desert-pool-retreat.jpeg"
+            width="1280"
+            height="960"
+            alt="شرفة منتجع صحراوي مع مسبح ومظلة خشبية"
+            loading="lazy"
+            decoding="async"
+          >
+          <img
+            class="project-runway__incoming-layer"
+            data-project-layer="incoming"
+            data-project-asset-slot="project-incoming"
+            src="assets/client-projects/2026-07-22/01-desert-pool-retreat.jpeg"
+            width="1280"
+            height="960"
+            alt=""
+            aria-hidden="true"
+            loading="lazy"
+            decoding="async"
+          >
+          <span class="project-cut-occluder" data-project-occluder data-motion-direction="right-to-left" aria-hidden="true"></span>
+          <figcaption aria-live="polite" aria-atomic="true">
+            <span class="project-runway__counter" data-project-counter>01 / 08</span>
+            <span class="project-runway__caption-copy">
+              <strong data-project-title>مشاريعنا</strong>
+            </span>
+          </figcaption>
+        </figure>
+
+        <aside class="project-runway__navigator" aria-label="التنقل بين مشاريعنا">
+          <span class="project-runway__navigator-count" data-project-navigator-counter>01 / 08</span>
+          <strong>مشاريعنا</strong>
+          <div class="project-runway__navigator-list" aria-label="اختر صورة المشروع">
+            <button type="button" data-project-static-select data-project-index="0" aria-label="استعرض المشروع 01" aria-pressed="true">01</button>
+            <button type="button" data-project-static-select data-project-index="1" aria-label="استعرض المشروع 02" aria-pressed="false">02</button>
+            <button type="button" data-project-static-select data-project-index="2" aria-label="استعرض المشروع 03" aria-pressed="false">03</button>
+            <button type="button" data-project-static-select data-project-index="3" aria-label="استعرض المشروع 04" aria-pressed="false">04</button>
+            <button type="button" data-project-static-select data-project-index="4" aria-label="استعرض المشروع 05" aria-pressed="false">05</button>
+            <button type="button" data-project-static-select data-project-index="5" aria-label="استعرض المشروع 06" aria-pressed="false">06</button>
+            <button type="button" data-project-static-select data-project-index="6" aria-label="استعرض المشروع 07" aria-pressed="false">07</button>
+            <button type="button" data-project-static-select data-project-index="7" aria-label="استعرض المشروع 08" aria-pressed="false">08</button>
+          </div>
+        </aside>
+
+        <div class="project-runway__chapters" data-project-chapters>
+          <article class="project-runway__chapter" data-project-chapter data-project-index="0" data-project-id="project-01" data-src="assets/client-projects/2026-07-22/01-desert-pool-retreat.jpeg" data-alt="شرفة منتجع صحراوي مع مسبح ومظلة خشبية" data-title="مشاريعنا">
+            <img class="project-runway__mobile-image" data-project-mobile-image data-project-asset-slot="project-01-mobile" data-project-id="project-01" src="assets/client-projects/2026-07-22/01-desert-pool-retreat.jpeg" width="1280" height="960" alt="شرفة منتجع صحراوي مع مسبح ومظلة خشبية" loading="lazy" decoding="async">
+            <div class="project-runway__chapter-copy"><span class="project-runway__index">01 / 08</span><h3>مشاريعنا</h3><button type="button" data-project-select data-project-id="project-01" aria-pressed="true">استعرض المشروع 01</button></div>
+          </article>
+          <article class="project-runway__chapter" data-project-chapter data-project-index="1" data-project-id="project-02" data-src="assets/client-projects/2026-07-22/02-illuminated-modern-villa.jpeg" data-alt="فيلا معاصرة مضاءة خلف واجهة خشبية أفقية" data-title="مشاريعنا">
+            <img class="project-runway__mobile-image" data-project-mobile-image data-project-asset-slot="project-02-mobile" data-project-id="project-02" src="assets/client-projects/2026-07-22/02-illuminated-modern-villa.jpeg" width="1113" height="738" alt="فيلا معاصرة مضاءة خلف واجهة خشبية أفقية" loading="lazy" decoding="async">
+            <div class="project-runway__chapter-copy"><span class="project-runway__index">02 / 08</span><h3>مشاريعنا</h3><button type="button" data-project-select data-project-id="project-02" aria-pressed="false">استعرض المشروع 02</button></div>
+          </article>
+          <article class="project-runway__chapter" data-project-chapter data-project-index="2" data-project-id="project-03" data-src="assets/client-projects/2026-07-22/03-destination-retail-interior.jpeg" data-alt="مساحة تجزئة مشرقة مع وحدات عرض منحنية" data-title="مشاريعنا">
+            <img class="project-runway__mobile-image" data-project-mobile-image data-project-asset-slot="project-03-mobile" data-project-id="project-03" src="assets/client-projects/2026-07-22/03-destination-retail-interior.jpeg" width="1215" height="811" alt="مساحة تجزئة مشرقة مع وحدات عرض منحنية" loading="lazy" decoding="async">
+            <div class="project-runway__chapter-copy"><span class="project-runway__index">03 / 08</span><h3>مشاريعنا</h3><button type="button" data-project-select data-project-id="project-03" aria-pressed="false">استعرض المشروع 03</button></div>
+          </article>
+          <article class="project-runway__chapter" data-project-chapter data-project-index="3" data-project-id="project-04" data-src="assets/client-projects/2026-07-22/04-alula-auditorium.jpeg" data-alt="قاعة محاضرات مكسوة بالخشب مع مقاعد متدرجة" data-title="مشاريعنا">
+            <img class="project-runway__mobile-image" data-project-mobile-image data-project-asset-slot="project-04-mobile" data-project-id="project-04" src="assets/client-projects/2026-07-22/04-alula-auditorium.jpeg" width="1280" height="960" alt="قاعة محاضرات مكسوة بالخشب مع مقاعد متدرجة" loading="lazy" decoding="async">
+            <div class="project-runway__chapter-copy"><span class="project-runway__index">04 / 08</span><h3>مشاريعنا</h3><button type="button" data-project-select data-project-id="project-04" aria-pressed="false">استعرض المشروع 04</button></div>
+          </article>
+          <article class="project-runway__chapter" data-project-chapter data-project-index="4" data-project-id="project-05" data-src="assets/client-projects/2026-07-22/05-hospitality-reception.jpeg" data-alt="استقبال ضيافة بجدار نحتي وتفاصيل خشبية" data-title="مشاريعنا">
+            <img class="project-runway__mobile-image" data-project-mobile-image data-project-asset-slot="project-05-mobile" data-project-id="project-05" src="assets/client-projects/2026-07-22/05-hospitality-reception.jpeg" width="627" height="468" alt="استقبال ضيافة بجدار نحتي وتفاصيل خشبية" loading="lazy" decoding="async">
+            <div class="project-runway__chapter-copy"><span class="project-runway__index">05 / 08</span><h3>مشاريعنا</h3><button type="button" data-project-select data-project-id="project-05" aria-pressed="false">استعرض المشروع 05</button></div>
+          </article>
+          <article class="project-runway__chapter" data-project-chapter data-project-index="5" data-project-id="project-06" data-src="assets/client-projects/2026-07-22/06-woven-sculpture-interior.jpeg" data-alt="مساحة داخلية تضم تركيبًا فنيًا معلقًا منسوجًا" data-title="مشاريعنا">
+            <img class="project-runway__mobile-image" data-project-mobile-image data-project-asset-slot="project-06-mobile" data-project-id="project-06" src="assets/client-projects/2026-07-22/06-woven-sculpture-interior.jpeg" width="1280" height="960" alt="مساحة داخلية تضم تركيبًا فنيًا معلقًا منسوجًا" loading="lazy" decoding="async">
+            <div class="project-runway__chapter-copy"><span class="project-runway__index">06 / 08</span><h3>مشاريعنا</h3><button type="button" data-project-select data-project-id="project-06" aria-pressed="false">استعرض المشروع 06</button></div>
+          </article>
+          <article class="project-runway__chapter" data-project-chapter data-project-index="6" data-project-id="project-07" data-src="assets/client-projects/2026-07-22/07-contemporary-prayer-hall.jpeg" data-alt="قاعة صلاة معاصرة بسقف هندسي مضاء" data-title="مشاريعنا">
+            <img class="project-runway__mobile-image" data-project-mobile-image data-project-asset-slot="project-07-mobile" data-project-id="project-07" src="assets/client-projects/2026-07-22/07-contemporary-prayer-hall.jpeg" width="929" height="756" alt="قاعة صلاة معاصرة بسقف هندسي مضاء" loading="lazy" decoding="async">
+            <div class="project-runway__chapter-copy"><span class="project-runway__index">07 / 08</span><h3>مشاريعنا</h3><button type="button" data-project-select data-project-id="project-07" aria-pressed="false">استعرض المشروع 07</button></div>
+          </article>
+          <article class="project-runway__chapter" data-project-chapter data-project-index="7" data-project-id="project-08" data-src="assets/client-projects/2026-07-22/08-workplace-lounge.jpeg" data-alt="استراحة مكان عمل بخزائن خشبية مدمجة" data-title="مشاريعنا">
+            <img class="project-runway__mobile-image" data-project-mobile-image data-project-asset-slot="project-08-mobile" data-project-id="project-08" src="assets/client-projects/2026-07-22/08-workplace-lounge.jpeg" width="1280" height="960" alt="استراحة مكان عمل بخزائن خشبية مدمجة" loading="lazy" decoding="async">
+            <div class="project-runway__chapter-copy"><span class="project-runway__index">08 / 08</span><h3>مشاريعنا</h3><button type="button" data-project-select data-project-id="project-08" aria-pressed="false">استعرض المشروع 08</button></div>
+          </article>
+          <div class="project-runway__hold" data-project-runway-hold aria-hidden="true"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="project-brief editorial-section" id="project-brief" aria-labelledby="project-brief-title" data-motion-stage="project-brief" data-motion-direction="left-to-right">
+      <div class="project-brief__intro" data-motion-enter="project-brief-copy">
+        <p class="eyebrow">ابدأ مشروعك</p>
+        <h2 id="project-brief-title">كل مساحة عظيمة<br>تبدأ هنا.</h2>
+        <p>أخبرنا عن مشروعك، وسيقوم فريقنا بإرشادك من الفكرة إلى الإنجاز.</p>
+        <a href="https://wa.me/966531100366" target="_blank" rel="noopener noreferrer">أو افتح واتساب مباشرة</a>
+      </div>
+
+      <form
+        class="brief-form"
+        id="projectBriefForm"
+        data-project-brief-form
+        data-whatsapp-number="966531100366"
+        action="https://wa.me/966531100366"
+        method="get"
+        target="_blank"
+        aria-describedby="brief-note"
+      >
+        <div class="brief-field">
+          <label for="brief-name">الاسم</label>
+          <input id="brief-name" name="name" type="text" autocomplete="name" required>
+        </div>
+        <div class="brief-field">
+          <label for="brief-contact">رقم الهاتف أو البريد الإلكتروني</label>
+          <input id="brief-contact" name="contact" type="text" autocomplete="tel" required>
+        </div>
+        <div class="brief-field">
+          <label for="brief-city">المدينة</label>
+          <input id="brief-city" name="city" type="text" autocomplete="address-level2" required>
+        </div>
+        <div class="brief-field">
+          <label for="brief-division">المجال</label>
+          <select id="brief-division" name="division" required>
+            <option value="" selected disabled>اختر المجال</option>
+            <option>التصميم الداخلي والمعماري</option>
+            <option>حلول التشطيب الفاخر</option>
+            <option>التطوير العقاري</option>
+            <option>لست متأكدًا بعد</option>
+          </select>
+        </div>
+        <div class="brief-field">
+          <label for="brief-stage">مرحلة المشروع</label>
+          <select id="brief-stage" name="stage" required>
+            <option value="" selected disabled>اختر المرحلة الحالية</option>
+            <option>موجز أولي</option>
+            <option>فكرة أو تصميم</option>
+            <option>تسعير أو مشتريات</option>
+            <option>التنفيذ جارٍ</option>
+            <option>لست متأكدًا بعد</option>
+          </select>
+        </div>
+        <div class="brief-field brief-field--message">
+          <label for="brief-message">الموجز</label>
+          <textarea id="brief-message" name="brief" rows="6" required placeholder="ماذا تصنع، وإلى أي مكان يجب أن يتحول؟"></textarea>
+        </div>
+        <div class="brief-form__footer">
+          <p id="brief-note">لا تُحفظ إجاباتك هنا. ستفتح كمسودة داخل واتساب، وأنت تقرر إن كنت تريد إرسالها.</p>
+          <button type="submit">جهّز موجز واتساب <span aria-hidden="true">↗</span></button>
+          <a class="brief-form__fallback" href="https://wa.me/966531100366" target="_blank" rel="noopener noreferrer" data-whatsapp-fallback hidden>افتح مسودة واتساب الجاهزة</a>
+        </div>
+        <p class="brief-status" data-brief-status role="status" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <section class="final-frame" id="contact" aria-labelledby="final-frame-title" data-motion-stage="final-frame" data-motion-direction="right-to-left">
+      <div class="final-frame__content" data-motion-enter="final-frame-copy">
+        <p class="eyebrow">تواصل معنا</p>
+        <h2 id="final-frame-title">لنبتكر<br>مساحتك القادمة.</h2>
+        <div class="contact-links">
+          <a href="tel:+966531100366" dir="ltr">+966 53 110 0366</a>
+          <a href="https://wa.me/966531100366" target="_blank" rel="noopener noreferrer">واتساب</a>
+          <a href="mailto:info@divaniworld.com" dir="ltr">info@divaniworld.com</a>
+          <span>المروج، تبوك</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <a class="site-footer__brand" href="#proof" aria-label="العودة إلى بداية موقع ديفاني">
+      <img src="assets/divani-logo.png" width="256" height="256" alt="">
+      <span>DIVANI</span>
+    </a>
+    <nav aria-label="روابط التذييل">
+      <a href="#about">من نحن</a>
+      <a href="#why-divani">لماذا ديفاني</a>
+      <a href="#capabilities">خبراتنا</a>
+      <a href="#relationships">عملاؤنا</a>
+      <a href="#selected-work">مشاريعنا</a>
+      <a href="#project-brief">ابدأ مشروعك</a>
+      <a href="#contact">تواصل معنا</a>
+      <a href="index.html" lang="en" dir="ltr" data-footer-language-switch>English</a>
+    </nav>
+    <div class="site-footer__contact" dir="ltr">
+      <a href="tel:+966531100366">+966 53 110 0366</a>
+      <a href="https://wa.me/966531100366" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+      <a href="mailto:info@divaniworld.com">info@divaniworld.com</a>
+      <span dir="rtl">المروج، تبوك</span>
+    </div>
+  </footer>
+</body>
+</html>
