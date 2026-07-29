@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import io
 import os
 import subprocess
 import sys
@@ -17,6 +18,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PROFILE_DIR = ROOT / "assets" / "profile-client-logos"
 OFFICIAL_DIR = ROOT / "assets" / "hires" / "client-logos"
 OUTPUT_DIR = ROOT / "assets" / "client-logos-monochrome"
+PROFILE_PDF = Path.home() / "Downloads" / "Divani" / "divani profile.pdf"
 CANVAS_SIZE = (1200, 448)
 CONTENT_SIZE = (1080, 320)
 
@@ -44,6 +46,28 @@ BRAND_EXPECTED = frozenset({
     "abdul-mohsen-al-tamimi-group", "ministry-civil-service",
     "house-express", "albaddad-engineering", "crowne-plaza",
 })
+
+# Fresh crops from divani profile.pdf pages 7-10, in 1650x928 page coordinates.
+# These replace the legacy double-upscaled sources: the old path was
+# ~300px crop -> 4x GDI+ bicubic -> LANCZOS rescale, and the second resample is
+# why marks like astra-construction render with holes in the wordmark.
+PROFILE_PAGE_CROPS: dict[str, tuple[int, int, int, int, int]] = {
+    # stem: (page, left, top, right, bottom)
+    "astra-construction": (8, 52, 188, 272, 342),
+    "hayyak": (8, 1325, 210, 1605, 345),
+    "kidana": (8, 645, 450, 895, 545),
+    "albaddad-engineering": (8, 970, 270, 1265, 335),
+    "siac": (7, 56, 274, 370, 362),
+    "jedco-jeddah-airports": (7, 425, 273, 741, 361),
+    "alsharif-group-holding": (7, 416, 482, 703, 601),
+    "elegancia-arabia": (7, 1105, 500, 1390, 620),
+    "abdul-mohsen-al-tamimi-group": (8, 296, 447, 628, 540),
+    "ministry-civil-service": (8, 950, 409, 1189, 540),
+    "six-senses": (9, 69, 159, 327, 342),
+    "house-express": (9, 835, 205, 1105, 372),
+    "swiss-inn-hotels-resorts": (9, 822, 488, 1100, 579),
+    "swiss-inn-tabuk": (9, 1202, 455, 1594, 579),
+}
 
 OFFICIAL_FILES = (
     "siac.png",
@@ -217,16 +241,36 @@ def prepare_brand_raster(source: Path) -> tuple[Path, object]:
     return raster, report
 
 
-def build_from_brand_source(filename: str, source: Path) -> Image.Image:
+def build_from_brand_source(
+    filename: str, source: Path, *, allow_upscale: bool = False
+) -> Image.Image:
     raster, _ = prepare_brand_raster(source)
     alpha, report = ingest(raster)
     print(f"  {describe(filename, report)}")
-    if report.upscales:
+    if report.upscales and not allow_upscale:
         raise SourceError(
             f"{filename}: {source.name} would be enlarged {report.fit_scale:.2f}x to fill "
             f"the content box - supply larger artwork rather than upscaling again"
         )
     return normalise(raster, alpha=alpha)
+
+
+def profile_page_source(stem: str) -> Path | None:
+    """Cache a native-resolution colour crop from the profile pages."""
+    entry = PROFILE_PAGE_CROPS.get(stem)
+    if entry is None:
+        return None
+    page, *box = entry
+    destination = BRAND_CACHE / f"page-crop-{stem}.png"
+    if destination.exists():
+        return destination
+    BRAND_CACHE.mkdir(parents=True, exist_ok=True)
+    import fitz
+    with fitz.open(PROFILE_PDF) as doc:
+        xref = doc[page - 1].get_images(full=True)[0][0]
+        image = Image.open(io.BytesIO(doc.extract_image(xref)["image"])).convert("RGB")
+    image.crop(tuple(box)).save(destination)
+    return destination
 
 
 def main() -> None:
@@ -240,8 +284,12 @@ def main() -> None:
     replaced: set[str] = set()
     for filename in OFFICIAL_FILES + PROFILE_FILES:
         brand = resolve_brand_source(filename)
+        from_page_crop = False
+        if brand is None:
+            brand = profile_page_source(Path(filename).stem)
+            from_page_crop = brand is not None
         if brand is not None:
-            output = build_from_brand_source(filename, brand)
+            output = build_from_brand_source(filename, brand, allow_upscale=from_page_crop)
             replaced.add(Path(filename).stem)
         elif filename in OFFICIAL_FILES:
             output = normalise(
