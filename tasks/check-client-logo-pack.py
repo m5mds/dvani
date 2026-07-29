@@ -67,6 +67,12 @@ GATE_REPLACED = 1.20
 # GATE_ALL is only a regression guard, set just above the worst current keeper
 # (cce, 1.87) so an untouched mark cannot silently degrade.
 GATE_ALL = 1.95
+# Centring is measured on the alpha > 8 bounding box, whose extreme rows can be a
+# 4%-opacity resampling fringe (kidana's outermost ink rows peak at alpha 11). LANCZOS
+# leaves that fringe asymmetric by a pixel or two, which is 0.45% of the 448px canvas
+# and invisible. Anything beyond this is a real centring bug in normalise().
+CENTRE_TOLERANCE_PX = 2
+
 # Diagnostic only, never a gate: rosewood-mono-v3 is the sharpest mark in the pack
 # and still measures 0.68, so a hard floor here would fail the reference standard.
 # A low value means fine sublines will alias at served size — send it to human review.
@@ -213,7 +219,7 @@ def check(measurements: list[Measurement]) -> tuple[list[str], list[str]]:
                 f"{m.stem}: blur {m.blur_dev:.2f} device px exceeds the {gate:.2f} gate "
                 f"(served at {m.served_width:.0f}px)"
             )
-        if abs(m.offset_dx) > 1 or abs(m.offset_dy) > 1:
+        if abs(m.offset_dx) > CENTRE_TOLERANCE_PX or abs(m.offset_dy) > CENTRE_TOLERANCE_PX:
             failures.append(
                 f"{m.stem}: ink is off-centre by ({m.offset_dx}, {m.offset_dy}) px"
             )
