@@ -26,8 +26,20 @@ tasks/*contactsheet.jpg
 __pycache__/
 *.pyc
 
-# Local source, QA, prototypes, and exported recordings
-tasks/
+# Local source, QA, prototypes, and exported recordings.
+# `tasks/*` rather than `tasks/` so the negations below can take effect - git will
+# not descend into an excluded directory, so `!tasks/file` is silently ignored when
+# the parent is excluded as `tasks/`.
+tasks/*
+# The client-logo pipeline is tracked: without it a fresh clone cannot rebuild
+# assets/client-logos-monochrome, and code review of logo changes is impossible
+# because the commits contain only binary PNGs.
+!tasks/build-client-logo-pack.py
+!tasks/check-client-logo-pack.py
+!tasks/logo_ingest.py
+!tasks/rasterise-brand-svg.js
+!tasks/tune-logo-hardening.py
+!tasks/extract-profile-logo-crops.py
 docs/
 prototypes/
 exports/
