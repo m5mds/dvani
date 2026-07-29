@@ -120,8 +120,18 @@ const PROBE = `(async () => {
     toggleShown: !!document.querySelector('[data-client-marquee-controls]:not([hidden])')
   };
 
-  document.getElementById('selected-work').scrollIntoView();
-  await wait(3000);
+  // Step through the section rather than jumping to its top. Each chapter is
+  // ~400px tall against an 844px viewport, so a single scrollIntoView() can only
+  // ever reveal one or two of them - which reads as broken motion when it is not.
+  const work = document.getElementById('selected-work');
+  work.scrollIntoView();
+  await wait(600);
+  const end = work.getBoundingClientRect().bottom + window.scrollY;
+  for (let y = window.scrollY; y < end + innerHeight; y += Math.round(innerHeight * 0.5)) {
+    window.scrollTo(0, y);
+    await wait(320);
+  }
+  await wait(1200);
   const media = [...document.querySelectorAll('[data-motion-enter="project-chapter-media"]')];
   const copy = [...document.querySelectorAll('[data-motion-enter="project-chapter-copy"]')];
   const projects = {
@@ -206,6 +216,9 @@ function report(results) {
       ["logos served from /640/", r.marquee.allFrom640 === true],
       ["alt matches figcaption", r.marquee.altMatchesCaption === true],
       ["no horizontal scroll", r.horizontalScroll === false],
+      ["every project image has a motion hook", r.projects.mediaHooks > 0],
+      ["every project image entered", r.projects.mediaHooks > 0 && r.projects.mediaEntered === r.projects.mediaHooks],
+      ["every project copy block entered", r.projects.copyHooks > 0 && r.projects.copyEntered === r.projects.copyHooks],
     ];
     for (const [label, ok] of checks) {
       if (!ok) { console.log(`  FAIL: ${label}`); failures += 1; }

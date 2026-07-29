@@ -2620,6 +2620,32 @@ html[dir="rtl"] .site-footer__contact {
   .site-footer__contact {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+  .motion-ready:not(.static-motion) [data-motion-enter="project-chapter-media"] {
+    opacity: 0;
+    transform: scale(1.04);
+    transition:
+      opacity 720ms var(--ease-architectural) var(--motion-delay, 0ms),
+      transform 1080ms var(--ease-architectural) var(--motion-delay, 0ms);
+    will-change: opacity, transform;
+  }
+
+  .motion-ready:not(.static-motion) [data-motion-enter="project-chapter-media"].is-entered {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .motion-ready:not(.static-motion) [data-motion-enter="project-chapter-copy"] {
+    opacity: 0;
+    transform: translate3d(0, 1.25rem, 0);
+    transition:
+      opacity 620ms var(--ease-architectural) var(--motion-delay, 0ms),
+      transform 780ms var(--ease-architectural) var(--motion-delay, 0ms);
+  }
+
+  .motion-ready:not(.static-motion) [data-motion-enter="project-chapter-copy"].is-entered {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
 }
 
 @media (max-width: 23rem) {
