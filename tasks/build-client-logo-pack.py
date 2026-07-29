@@ -21,6 +21,8 @@ OUTPUT_DIR = ROOT / "assets" / "client-logos-monochrome"
 PROFILE_PDF = Path.home() / "Downloads" / "Divani" / "divani profile.pdf"
 CANVAS_SIZE = (1200, 448)
 CONTENT_SIZE = (1080, 320)
+MOBILE_DIR = OUTPUT_DIR / "640"
+MOBILE_SIZE = (640, 239)   # covers the 546 device px a DPR-3 phone paints at 182 CSS px
 
 # Official brand artwork, which supersedes the PDF-derived sources above. Every
 # mark here traces back to divani profile.pdf, whose pages are 1650x928 JPEGs at
@@ -320,6 +322,15 @@ def main() -> None:
             trim_right = 0.86 if filename == "top-grill.png" else 1.0
             output = normalise(PROFILE_DIR / filename, trim_right=trim_right)
         output.save(OUTPUT_DIR / filename, optimize=True)
+
+        # Downscale first, then harden: resampling a hardened mask reintroduces
+        # intermediate alpha values that compress worse than hardening after.
+        MOBILE_DIR.mkdir(parents=True, exist_ok=True)
+        small = output.resize(MOBILE_SIZE, Image.Resampling.LANCZOS)
+        small_alpha = harden_alpha(np.asarray(small)[:, :, 3], 4.0)
+        mobile = Image.new("RGBA", MOBILE_SIZE, (255, 255, 255, 0))
+        mobile.putalpha(Image.fromarray(small_alpha))
+        mobile.save(MOBILE_DIR / filename, optimize=True)
 
     # Fail closed. A misspelt source filename would otherwise fall through to the
     # legacy path, keep the blurry mark, and still report success.
