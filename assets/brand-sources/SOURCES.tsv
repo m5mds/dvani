@@ -1,0 +1,36 @@
+# Provenance record for official client logo artwork.
+# The masters themselves are gitignored: this repo is public and they are third-party
+# trademarked assets. Only the derived silhouettes in assets/client-logos-monochrome ship.
+#
+# Rebuild with: python tasks/build-client-logo-pack.py   (node must be on PATH for SVG sources)
+# sharp/librsvg resolves from "deco deployment/deco-corners-v1-old-main/node_modules"
+# and is not a declared dependency of this repo.
+#
+# status: confirmed = verified correct brand, resolution sufficient
+#         pending   = not located publicly yet, needs the client's brand kit
+#         rejected  = located but unusable, see note
+stem	brand	source_url	kind	status	note
+gaca	General Authority of Civil Aviation (Saudi Arabia)	https://gaca.gov.sa/assets/images/LogoNew.svg	svg	confirmed	Official Saudi government site. Vector paths clipped over a raster gradient fill - harmless, the pack keeps only the silhouette. WARNING: Wikimedia "Civil Aviation Authority logo.svg" is the UNITED KINGDOM CAA - do not use it.
+rcu-mono-v3	Royal Commission for AlUla	https://www.rcu.gov.sa/assets/img/icon/royal-commission-for-alula-logo.svg	svg	confirmed	Official government site. Output stem must stay rcu-mono-v3 - home-monumental.css:1880 keys on the filename.
+bec-arabia	BEC Arabia	https://www.becarabia.com/assets/img/logo-light.svg	svg	confirmed	Official company site. Light variant suits the dark marquee section.
+crowne-plaza	Crowne Plaza Hotels & Resorts (IHG)	https://en.wikipedia.org/wiki/File:Crowne_Plaza_by_IHG_logo.svg	svg	confirmed	Public domain. Current "by IHG" lockup.
+le-meridien	Le Meridien (Marriott)	https://commons.wikimedia.org/wiki/File:LeMeridien.svg	svg	confirmed	Public domain.
+red-sea-global	Red Sea Global	https://en.wikipedia.org/wiki/File:Red_Sea_Global_Logo.svg	svg	confirmed	Hosted under a fair-use rationale; prefer the client's own brand kit if available. Vector paths over raster gradient fills.
+amaala	AMAALA (Red Sea Global)	https://en.wikipedia.org/wiki/File:Amaala_Logo.svg	svg	confirmed	Hosted under a fair-use rationale; prefer the client's own brand kit if available.
+#	NOTE	crowne-plaza	-	review	The sourced mark is the current "CROWNE PLAZA (R) BY IHG" lockup. The mark it replaced was the older crown-emblem + "HOTELS & RESORTS" lockup. Both are genuine; confirm which suits the engagement.
+#	NOTE	le-meridien	-	fixed	The replaced asset was truncated - it rendered "MERIDIE" with the final N clipped, plus a white box artifact. Now complete.
+#	NOTE	rcu-mono-v3	-	fixed	The replaced asset carried a white rectangle of background bleed around the emblem. Now cleanly knocked out.
+siac	SIAC Construction	https://www.siac.com.eg/	png	rejected	Site serves siac-logo-200.png at 200x200 - far below the 1080px the content box needs. Needs the client brand kit.
+albaddad-engineering	Al Baddad International	https://albaddad.com/	png	rejected	Site serves 652x652 PNG only; would still be enlarged to fill the box.
+alsharif-group-holding	Al Sharif Group Holding	https://alsharifgroup.com/	png	pending	Site serves asg-logo.png; resolution not yet measured.
+astra-construction	Astra Construction	-	-	pending	Site unreachable from here (connection reset).
+jedco-jeddah-airports	Jeddah Airports Company (JEDCO)	-	-	pending	Official domain did not resolve; no public SVG found.
+kidana	Kidana Development Company	https://kidana.com.sa/	png	pending	Raster logo present but asset fetch returned 403.
+six-senses	Six Senses Hotels Resorts Spas (IHG)	-	-	pending	sixsenses.com blocks automated access; no Wikimedia SVG.
+elegancia-arabia	Elegancia Arabia	-	-	pending	Site unreachable; aggregator hits are for the unrelated "Elegancia Hotels".
+house-express	House Express	-	-	pending	Site unreachable.
+hayyak	Hayyak	-	-	pending	No public brand asset located.
+swiss-inn-hotels-resorts	Swiss Inn Hotels & Resorts	-	-	pending	No logo asset found in site HTML. See the Tabuk note below.
+swiss-inn-tabuk	Swiss Inn Tabuk	-	-	pending	Probably the same brand as swiss-inn-hotels-resorts - confirm whether these are two marquee entries or one.
+abdul-mohsen-al-tamimi-group	Abdul Mohsen Al Tamimi Group	-	-	pending	No logo asset found in site HTML.
+ministry-civil-service	Ministry of Civil Service (Saudi Arabia)	-	-	pending	Ministry merged into the Ministry of Human Resources and Social Development; the historic mark may no longer be published.
