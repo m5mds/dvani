@@ -40,6 +40,7 @@ tasks/*
 !tasks/rasterise-brand-svg.js
 !tasks/tune-logo-hardening.py
 !tasks/extract-profile-logo-crops.py
+!tasks/verify-mobile.js
 docs/
 prototypes/
 exports/
