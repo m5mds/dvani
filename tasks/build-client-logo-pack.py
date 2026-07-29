@@ -93,6 +93,24 @@ OFFICIAL_ALPHA_FLOORS = {
     "six-senses.png": 104,
 }
 
+# Narrows the soft antialiasing fringe left by PDF-derived sources while keeping
+# some antialiasing. Per mark, never global: gain 4 sharpens hayyak and kidana but
+# erodes astra-construction's thin strokes. See tasks/lessons.md:249.
+HARDEN_DEFAULT = 3.0
+HARDEN_GAINS: dict[str, float] = {
+    "astra-construction": 1.5,
+    "elegancia-arabia": 1.5,
+    "jedco-jeddah-airports": 1.5,
+}
+
+
+def harden_alpha(alpha: np.ndarray, gain: float) -> np.ndarray:
+    if gain <= 1.0:
+        return alpha
+    scaled = alpha.astype(np.float32) / 255.0
+    return (np.clip((scaled - 0.5) * gain + 0.5, 0.0, 1.0) * 255.0).astype(np.uint8)
+
+
 PROFILE_FILES = (
     "jedco-jeddah-airports.png",
     "watania-business-group.png",
@@ -247,6 +265,9 @@ def build_from_brand_source(
     raster, _ = prepare_brand_raster(source)
     alpha, report = ingest(raster)
     print(f"  {describe(filename, report)}")
+    gain = HARDEN_GAINS.get(Path(filename).stem, 1.0)
+    if gain > 1.0:
+        alpha = harden_alpha(alpha, gain)
     if report.upscales and not allow_upscale:
         raise SourceError(
             f"{filename}: {source.name} would be enlarged {report.fit_scale:.2f}x to fill "

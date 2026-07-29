@@ -6,9 +6,13 @@
 # sharp/librsvg resolves from "deco deployment/deco-corners-v1-old-main/node_modules"
 # and is not a declared dependency of this repo.
 #
-# status: confirmed = verified correct brand, resolution sufficient
-#         pending   = not located publicly yet, needs the client's brand kit
-#         rejected  = located but unusable, see note
+# status: confirmed  = verified correct brand, resolution sufficient
+#         pending    = not located publicly yet, needs the client's brand kit
+#         rejected   = located but unusable, see note
+#         page-crop  = re-extracted from a native-resolution colour crop of divani
+#                      profile.pdf (Task 3), optionally edge-hardened (Task 4); still
+#                      a 150 DPI source, so it needs the client's brand kit for a
+#                      fully sharp mark
 stem	brand	source_url	kind	status	note
 gaca	General Authority of Civil Aviation (Saudi Arabia)	https://gaca.gov.sa/assets/images/LogoNew.svg	svg	confirmed	Official Saudi government site. Vector paths clipped over a raster gradient fill - harmless, the pack keeps only the silhouette. WARNING: Wikimedia "Civil Aviation Authority logo.svg" is the UNITED KINGDOM CAA - do not use it.
 rcu-mono-v3	Royal Commission for AlUla	https://www.rcu.gov.sa/assets/img/icon/royal-commission-for-alula-logo.svg	svg	confirmed	Official government site. Output stem must stay rcu-mono-v3 - home-monumental.css:1880 keys on the filename.
@@ -20,17 +24,17 @@ amaala	AMAALA (Red Sea Global)	https://en.wikipedia.org/wiki/File:Amaala_Logo.sv
 #	NOTE	crowne-plaza	-	review	The sourced mark is the current "CROWNE PLAZA (R) BY IHG" lockup. The mark it replaced was the older crown-emblem + "HOTELS & RESORTS" lockup. Both are genuine; confirm which suits the engagement.
 #	NOTE	le-meridien	-	fixed	The replaced asset was truncated - it rendered "MERIDIE" with the final N clipped, plus a white box artifact. Now complete.
 #	NOTE	rcu-mono-v3	-	fixed	The replaced asset carried a white rectangle of background bleed around the emblem. Now cleanly knocked out.
-siac	SIAC Construction	https://www.siac.com.eg/	png	rejected	Site serves siac-logo-200.png at 200x200 - far below the 1080px the content box needs. Needs the client brand kit.
-albaddad-engineering	Al Baddad International	https://albaddad.com/	png	rejected	Site serves 652x652 PNG only; would still be enlarged to fill the box.
-alsharif-group-holding	Al Sharif Group Holding	https://alsharifgroup.com/	png	pending	Site serves asg-logo.png; resolution not yet measured.
-astra-construction	Astra Construction	-	-	pending	Site unreachable from here (connection reset).
-jedco-jeddah-airports	Jeddah Airports Company (JEDCO)	-	-	pending	Official domain did not resolve; no public SVG found.
-kidana	Kidana Development Company	https://kidana.com.sa/	png	pending	Raster logo present but asset fetch returned 403.
-six-senses	Six Senses Hotels Resorts Spas (IHG)	-	-	pending	sixsenses.com blocks automated access; no Wikimedia SVG.
-elegancia-arabia	Elegancia Arabia	-	-	pending	Site unreachable; aggregator hits are for the unrelated "Elegancia Hotels".
-house-express	House Express	-	-	pending	Site unreachable.
-hayyak	Hayyak	-	-	pending	No public brand asset located.
-swiss-inn-hotels-resorts	Swiss Inn Hotels & Resorts	-	-	pending	No logo asset found in site HTML. See the Tabuk note below.
-swiss-inn-tabuk	Swiss Inn Tabuk	-	-	pending	Probably the same brand as swiss-inn-hotels-resorts - confirm whether these are two marquee entries or one.
-abdul-mohsen-al-tamimi-group	Abdul Mohsen Al Tamimi Group	-	-	pending	No logo asset found in site HTML.
-ministry-civil-service	Ministry of Civil Service (Saudi Arabia)	-	-	pending	Ministry merged into the Ministry of Human Resources and Social Development; the historic mark may no longer be published.
+siac	SIAC Construction	https://www.siac.com.eg/	png	page-crop	Site serves siac-logo-200.png at 200x200 - far below the 1080px the content box needs. Re-extracted from divani profile.pdf p.7 at native page resolution (Task 3); no hardening gain cleared the detail-preservation gate without dropping components, left at gain 1.0 (Task 4). Still above the 150 DPI blur gate - needs the client's brand kit for a sharp mark.
+albaddad-engineering	Al Baddad International	https://albaddad.com/	png	page-crop	Site serves 652x652 PNG only; would still be enlarged to fill the box. Re-extracted from divani profile.pdf p.8 at native page resolution (Task 3); no hardening gain cleared the detail-preservation gate without dropping components, left at gain 1.0 (Task 4). Still above the 150 DPI blur gate - needs the client's brand kit for a sharp mark.
+alsharif-group-holding	Al Sharif Group Holding	https://alsharifgroup.com/	png	page-crop	Site serves asg-logo.png; resolution not yet measured. Re-extracted from divani profile.pdf p.7 at native page resolution (Task 3); no hardening gain cleared the detail-preservation gate without dropping components, left at gain 1.0 (Task 4). Still above the 150 DPI blur gate - needs the client's brand kit for a sharp mark.
+astra-construction	Astra Construction	-	-	page-crop	Site unreachable from here (connection reset). Re-extracted from divani profile.pdf p.8 at native page resolution (Task 3); edge-hardened at gain 1.5 (Task 4) - higher gains up to 5.0 broke the "ASTRA CONSTRUCTION" subtext into disconnected dashes on the contact sheet. Still above the 150 DPI blur gate - needs the client's brand kit for a sharp mark.
+jedco-jeddah-airports	Jeddah Airports Company (JEDCO)	-	-	page-crop	Official domain did not resolve; no public SVG found. Re-extracted from divani profile.pdf p.7 at native page resolution (Task 3); edge-hardened at gain 1.5 (Task 4), confirmed clean on the contact sheet. Still above the 150 DPI blur gate - needs the client's brand kit for a sharp mark.
+kidana	Kidana Development Company	https://kidana.com.sa/	png	page-crop	Raster logo present but asset fetch returned 403. Re-extracted from divani profile.pdf p.8 at native page resolution (Task 3); no hardening gain cleared the detail-preservation gate without dropping components, left at gain 1.0 (Task 4). Still above the 150 DPI blur gate - needs the client's brand kit for a sharp mark.
+six-senses	Six Senses Hotels Resorts Spas (IHG)	-	-	page-crop	sixsenses.com blocks automated access; no Wikimedia SVG. Re-extracted from divani profile.pdf p.9 at native page resolution (Task 3); no hardening gain cleared the detail-preservation gate without dropping components, left at gain 1.0 (Task 4). Still above the 150 DPI blur gate - needs the client's brand kit for a sharp mark.
+elegancia-arabia	Elegancia Arabia	-	-	page-crop	Site unreachable; aggregator hits are for the unrelated "Elegancia Hotels". Re-extracted from divani profile.pdf p.7 at native page resolution (Task 3); edge-hardened at gain 1.5 (Task 4) - higher gains up to 5.0 nearly erased the small "arabia" subtitle beneath the wordmark on the contact sheet. Still above the 150 DPI blur gate - needs the client's brand kit for a sharp mark.
+house-express	House Express	-	-	page-crop	Site unreachable. Re-extracted from divani profile.pdf p.9 at native page resolution (Task 3); no hardening gain cleared the detail-preservation gate without dropping components, left at gain 1.0 (Task 4). Still above the 150 DPI blur gate - needs the client's brand kit for a sharp mark.
+hayyak	Hayyak	-	-	page-crop	No public brand asset located. Re-extracted from divani profile.pdf p.8 at native page resolution (Task 3); no hardening gain cleared the detail-preservation gate without dropping components, left at gain 1.0 (Task 4). Still above the 150 DPI blur gate - needs the client's brand kit for a sharp mark.
+swiss-inn-hotels-resorts	Swiss Inn Hotels & Resorts	-	-	page-crop	No logo asset found in site HTML. See the Tabuk note below. Re-extracted from divani profile.pdf p.9 at native page resolution (Task 3); no hardening gain cleared the detail-preservation gate without dropping components, left at gain 1.0 (Task 4). Still above the 150 DPI blur gate - needs the client's brand kit for a sharp mark.
+swiss-inn-tabuk	Swiss Inn Tabuk	-	-	page-crop	Probably the same brand as swiss-inn-hotels-resorts - confirm whether these are two marquee entries or one. Re-extracted from divani profile.pdf p.9 at native page resolution (Task 3); no hardening gain cleared the detail-preservation gate without dropping components, left at gain 1.0 (Task 4). Still above the 150 DPI blur gate - needs the client's brand kit for a sharp mark.
+abdul-mohsen-al-tamimi-group	Abdul Mohsen Al Tamimi Group	-	-	page-crop	No logo asset found in site HTML. Re-extracted from divani profile.pdf p.8 at native page resolution (Task 3); no hardening gain cleared the detail-preservation gate without dropping components, left at gain 1.0 (Task 4). Still above the 150 DPI blur gate - needs the client's brand kit for a sharp mark.
+ministry-civil-service	Ministry of Civil Service (Saudi Arabia)	-	-	page-crop	Ministry merged into the Ministry of Human Resources and Social Development; the historic mark may no longer be published. Re-extracted from divani profile.pdf p.8 at native page resolution (Task 3); no hardening gain cleared the detail-preservation gate without dropping components, left at gain 1.0 (Task 4). Still above the 150 DPI blur gate - needs the client's brand kit for a sharp mark.
