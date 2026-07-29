@@ -1,0 +1,271 @@
+"""Verify the served sharpness and shape of assets/client-logos-monochrome.
+
+The pack is a set of white-on-transparent silhouettes rendered on a dark section.
+Softness is what makes a mark read as "unclear", so the primary gate measures the
+antialiasing band width at the size the browser actually paints:
+
+    blur_dev = |{p : 26 <= alpha(p) < 230}| / perimeter(alpha >= 128)
+               * served_device_width / CANVAS_WIDTH
+
+A mark rendered from real vector art lands near 0.3-0.5; one upscaled from a
+150 DPI PDF crop lands above 1.45.
+
+Usage:
+    python tasks/check-client-logo-pack.py              # check against the gates
+    python tasks/check-client-logo-pack.py --baseline   # rewrite the stored baseline
+    python tasks/check-client-logo-pack.py --table      # print measurements, never fail
+"""
+
+from __future__ import annotations
+
+import json
+import sys
+from dataclasses import dataclass, asdict
+from pathlib import Path
+
+import cv2
+import numpy as np
+from PIL import Image
+
+
+ROOT = Path(__file__).resolve().parents[1]
+PACK_DIR = ROOT / "assets" / "client-logos-monochrome"
+BASELINE_PATH = ROOT / "tasks" / "client-logo-baseline.json"
+
+CANVAS_SIZE = (1200, 448)
+CONTENT_SIZE = (1080, 320)
+
+# Served size in device pixels at DPR 2, viewport >= 1768 CSS px (every clamp saturates).
+#   .relationship-marks figure  flex-basis 21rem = 336px, padding-inline 2.4rem = 38.4px
+#     -> content 259.2 CSS px; img width:100% -> 259.2 x 96.8, under the 6.6rem max-height.
+SERVED_DEVICE_WIDTH = 518.4
+#   .relationship-mark--wide  padding 1.75rem -> content 280px, but max-height 4.75rem = 76px
+#     binds first, so object-fit: contain paints 76 * 1200/448 = 203.6 CSS px.
+SERVED_DEVICE_WIDTH_WIDE = 407.1
+WIDE_MARKS = frozenset({"rcu-mono-v3", "neom-mono-v3", "rosewood-mono-v3"})
+
+# The marks whose artwork is being replaced with official brand sources.
+REPLACED = frozenset({
+    "gaca", "astra-construction", "six-senses", "siac", "elegancia-arabia",
+    "jedco-jeddah-airports", "kidana", "rcu-mono-v3", "le-meridien",
+    "red-sea-global", "amaala", "hayyak", "swiss-inn-hotels-resorts",
+    "bec-arabia", "swiss-inn-tabuk", "alsharif-group-holding",
+    "abdul-mohsen-al-tamimi-group", "ministry-civil-service",
+    "house-express", "albaddad-engineering", "crowne-plaza",
+})
+
+EXPECTED_COUNT = 49
+
+# Measured on the pack before replacement: the 28 keepers span 0.38-1.87, the 21
+# targets span 1.82-3.70. The bands overlap around 1.8-1.9, so a single threshold
+# cannot separate them — hence two gates with different jobs.
+#
+# GATE_REPLACED is the goal: land inside the better half of the keeper population.
+# The two marks in the pack built from real vector art score 0.38 (rosewood-mono-v3)
+# and 0.69 (neom-mono-v3), so this is comfortably achievable with official artwork.
+GATE_REPLACED = 1.20
+# GATE_ALL is only a regression guard, set just above the worst current keeper
+# (cce, 1.87) so an untouched mark cannot silently degrade.
+GATE_ALL = 1.95
+# Diagnostic only, never a gate: rosewood-mono-v3 is the sharpest mark in the pack
+# and still measures 0.68, so a hard floor here would fail the reference standard.
+# A low value means fine sublines will alias at served size — send it to human review.
+MIN_STROKE_WARN_DEVICE_PX = 1.0
+
+
+class CheckError(RuntimeError):
+    """A pack-level failure that should stop the build."""
+
+
+@dataclass(frozen=True)
+class Measurement:
+    stem: str
+    blur_dev: float
+    ink_w: int
+    ink_h: int
+    offset_dx: int
+    offset_dy: int
+    min_stroke_dev: float
+    holes: int
+    coverage: float
+    served_width: float
+
+
+def _served_width(stem: str) -> float:
+    return SERVED_DEVICE_WIDTH_WIDE if stem in WIDE_MARKS else SERVED_DEVICE_WIDTH
+
+
+def _perimeter(alpha: np.ndarray) -> int:
+    """Count solid pixels that touch a non-solid neighbour (4-connected)."""
+    solid = alpha >= 128
+    edge = np.zeros_like(solid)
+    edge[1:, :] |= solid[1:, :] & ~solid[:-1, :]
+    edge[:-1, :] |= solid[:-1, :] & ~solid[1:, :]
+    edge[:, 1:] |= solid[:, 1:] & ~solid[:, :-1]
+    edge[:, :-1] |= solid[:, :-1] & ~solid[:, 1:]
+    return int(edge.sum())
+
+
+def _min_stroke(alpha: np.ndarray, scale: float) -> float:
+    """Thinnest stroke that survives to the served size, in device pixels."""
+    core = (alpha >= 128).astype(np.uint8)
+    if not core.any():
+        return 0.0
+    dist = cv2.distanceTransform(core, cv2.DIST_L2, 5)
+    ridge = (dist >= cv2.dilate(dist, np.ones((3, 3), np.float32)) - 1e-6) & (dist > 0)
+    values = dist[ridge]
+    if values.size == 0:
+        return 0.0
+    return float(np.percentile(values, 5) * 2.0 * scale)
+
+
+def _hole_count(alpha: np.ndarray, bbox: tuple[int, int, int, int]) -> int:
+    """Enclosed background regions — counters, knockouts. Guards against fill-in."""
+    x, y, width, height = bbox
+    core = (alpha[y : y + height, x : x + width] >= 128).astype(np.uint8)
+    count, labels = cv2.connectedComponents(1 - core, 4)
+    touching = set(labels[0, :]) | set(labels[-1, :]) | set(labels[:, 0]) | set(labels[:, -1])
+    return sum(1 for component in range(1, count) if component not in touching)
+
+
+def measure(path: Path) -> Measurement:
+    stem = path.stem
+    image = Image.open(path)
+    if image.mode != "RGBA":
+        raise CheckError(f"{stem}: mode is {image.mode}, expected RGBA")
+    if image.size != CANVAS_SIZE:
+        raise CheckError(f"{stem}: canvas is {image.width}x{image.height}, expected 1200x448")
+
+    rgba = np.asarray(image)
+    rgb, alpha = rgba[:, :, :3], rgba[:, :, 3]
+
+    visible = alpha > 0
+    if not visible.any():
+        raise CheckError(f"{stem}: no visible pixels")
+    if not np.all(rgb[visible] == 255):
+        raise CheckError(f"{stem}: ink is not pure white — colour fringing survived the build")
+
+    ys, xs = np.nonzero(alpha > 8)
+    x0, x1, y0, y1 = int(xs.min()), int(xs.max()), int(ys.min()), int(ys.max())
+    ink_w, ink_h = x1 - x0 + 1, y1 - y0 + 1
+    bbox = (x0, y0, ink_w, ink_h)
+
+    if ink_w > CONTENT_SIZE[0] or ink_h > CONTENT_SIZE[1]:
+        raise CheckError(f"{stem}: ink {ink_w}x{ink_h} exceeds the {CONTENT_SIZE} content box")
+
+    served = _served_width(stem)
+    scale = served / CANVAS_SIZE[0]
+    band = int(((alpha >= 26) & (alpha < 230)).sum())
+    perimeter = max(_perimeter(alpha), 1)
+
+    return Measurement(
+        stem=stem,
+        blur_dev=band / perimeter * scale,
+        ink_w=ink_w,
+        ink_h=ink_h,
+        offset_dx=x0 + x1 + 1 - CANVAS_SIZE[0],
+        offset_dy=y0 + y1 + 1 - CANVAS_SIZE[1],
+        min_stroke_dev=_min_stroke(alpha, scale),
+        holes=_hole_count(alpha, bbox),
+        coverage=float((alpha[y0 : y1 + 1, x0 : x1 + 1] >= 128).mean()),
+        served_width=served,
+    )
+
+
+def measure_pack() -> list[Measurement]:
+    paths = sorted(PACK_DIR.glob("*.png"))
+    if len(paths) != EXPECTED_COUNT:
+        raise CheckError(f"Expected {EXPECTED_COUNT} logos in {PACK_DIR}, found {len(paths)}")
+    return [measure(path) for path in paths]
+
+
+def _load_baseline() -> dict[str, dict]:
+    if not BASELINE_PATH.exists():
+        return {}
+    return json.loads(BASELINE_PATH.read_text(encoding="utf-8"))
+
+
+def print_table(measurements: list[Measurement]) -> None:
+    baseline = _load_baseline()
+    print(f"{'mark':34} {'blur':>6} {'was':>6} {'ink':>10} {'stroke':>7} {'holes':>6} {'cover':>6}")
+    print("-" * 82)
+    for m in sorted(measurements, key=lambda m: -m.blur_dev):
+        previous = baseline.get(m.stem, {}).get("blur_dev")
+        was = "     -" if previous is None else f"{previous:6.2f}"
+        flag = " *" if m.stem in REPLACED else "  "
+        print(
+            f"{m.stem:34}{flag}{m.blur_dev:5.2f} {was} "
+            f"{m.ink_w:4}x{m.ink_h:<4} {m.min_stroke_dev:7.2f} {m.holes:6} {m.coverage:6.2f}"
+        )
+    print("\n* = replaced with official brand artwork")
+
+
+def check(measurements: list[Measurement]) -> tuple[list[str], list[str]]:
+    """Return (failures, warnings). Only failures stop the build."""
+    failures: list[str] = []
+    warnings: list[str] = []
+    baseline = _load_baseline()
+
+    for m in measurements:
+        gate = GATE_REPLACED if m.stem in REPLACED else GATE_ALL
+        if m.blur_dev > gate:
+            failures.append(
+                f"{m.stem}: blur {m.blur_dev:.2f} device px exceeds the {gate:.2f} gate "
+                f"(served at {m.served_width:.0f}px)"
+            )
+        if abs(m.offset_dx) > 1 or abs(m.offset_dy) > 1:
+            failures.append(
+                f"{m.stem}: ink is off-centre by ({m.offset_dx}, {m.offset_dy}) px"
+            )
+        if m.min_stroke_dev and m.min_stroke_dev < MIN_STROKE_WARN_DEVICE_PX:
+            warnings.append(
+                f"{m.stem}: thinnest stroke is {m.min_stroke_dev:.2f} device px - "
+                f"fine detail will alias at served size; check the contact sheet"
+            )
+        previous = baseline.get(m.stem)
+        if previous:
+            if previous["holes"] >= 3 and m.holes < previous["holes"] * 0.6:
+                failures.append(
+                    f"{m.stem}: counters dropped from {previous['holes']} to {m.holes} - "
+                    f"interior detail was filled in"
+                )
+            if m.coverage < previous["coverage"] * 0.65:
+                warnings.append(
+                    f"{m.stem}: ink coverage fell from {previous['coverage']:.2f} to "
+                    f"{m.coverage:.2f} - may read anaemic beside the untouched marks"
+                )
+    return failures, warnings
+
+
+def main() -> None:
+    args = set(sys.argv[1:])
+    measurements = measure_pack()
+
+    if "--baseline" in args:
+        BASELINE_PATH.write_text(
+            json.dumps({m.stem: asdict(m) for m in measurements}, indent=2, sort_keys=True),
+            encoding="utf-8",
+        )
+        print_table(measurements)
+        print(f"\nBaseline written to {BASELINE_PATH.relative_to(ROOT)}")
+        return
+
+    print_table(measurements)
+    if "--table" in args:
+        return
+
+    failures, warnings = check(measurements)
+    if warnings:
+        print(f"\n{len(warnings)} warning(s):")
+        for warning in warnings:
+            print(f"  ! {warning}")
+    if failures:
+        print(f"\n{len(failures)} failure(s):", file=sys.stderr)
+        for failure in failures:
+            print(f"  - {failure}", file=sys.stderr)
+        raise SystemExit(1)
+    print(f"\nAll {len(measurements)} marks pass.")
+
+
+if __name__ == "__main__":
+    main()
