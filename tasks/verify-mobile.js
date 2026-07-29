@@ -1,0 +1,223 @@
+#!/usr/bin/env node
+"use strict";
+
+/**
+ * Verify the mobile client-logo and projects behaviour in a real compositing browser.
+ *
+ * The in-app browser pane used during development does not composite - its
+ * `visibilityState` is "hidden" and `requestAnimationFrame` never ticks - so no
+ * IntersectionObserver on the page ever fires. That makes it useless for checking
+ * anything observer-driven: the deferred marquee build, and the projects entrance
+ * motion, both look broken there even when they are correct. Headless Chrome with
+ * `--headless=new` composites properly and does fire observers.
+ *
+ * Checks, per locale:
+ *   1. Cold load, no scroll  -> zero client-logo requests (the marquee is deferred)
+ *   2. Scroll to #relationships -> marquee builds, 49 marks, served from /640/
+ *   3. Scroll to #selected-work -> project chapters receive .is-entered
+ *
+ * Usage: node tasks/verify-mobile.js [port]
+ */
+
+const fs = require("node:fs");
+const os = require("node:os");
+const path = require("node:path");
+const { spawn } = require("node:child_process");
+
+const ROOT = path.resolve(__dirname, "..");
+const { startStaticServer } = require("./serve-static");
+
+const CHROME_CANDIDATES = [
+  "C:/Program Files/Google/Chrome/Application/chrome.exe",
+  "C:/Program Files (x86)/Google/Chrome/Application/chrome.exe",
+  "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe",
+  "C:/Program Files/Microsoft/Edge/Application/msedge.exe",
+];
+const CHROME_EXE = CHROME_CANDIDATES.find((candidate) => fs.existsSync(candidate));
+
+const VIEWPORT = { width: 390, height: 844, deviceScaleFactor: 3 };
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+class CDP {
+  constructor(socket) {
+    this.socket = socket;
+    this.id = 0;
+    this.pending = new Map();
+    socket.addEventListener("message", (event) => {
+      const message = JSON.parse(event.data);
+      const entry = this.pending.get(message.id);
+      if (!entry) return;
+      this.pending.delete(message.id);
+      if (message.error) entry.reject(new Error(`${entry.method}: ${message.error.message}`));
+      else entry.resolve(message.result);
+    });
+  }
+  send(method, params = {}) {
+    const id = ++this.id;
+    this.socket.send(JSON.stringify({ id, method, params }));
+    return new Promise((resolve, reject) => {
+      this.pending.set(id, { method, resolve, reject });
+      setTimeout(() => {
+        if (!this.pending.has(id)) return;
+        this.pending.delete(id);
+        reject(new Error(`CDP timeout: ${method}`));
+      }, 30000);
+    });
+  }
+  async evaluate(expression) {
+    const response = await this.send("Runtime.evaluate", {
+      expression, returnByValue: true, awaitPromise: true,
+    });
+    if (response.exceptionDetails) throw new Error(JSON.stringify(response.exceptionDetails));
+    return response.result.value;
+  }
+}
+
+async function waitForChrome(port, child) {
+  for (let attempt = 0; attempt < 150; attempt += 1) {
+    if (child.exitCode !== null) throw new Error(`Chrome exited early (${child.exitCode})`);
+    try {
+      const response = await fetch(`http://127.0.0.1:${port}/json/version`);
+      if (response.ok) return response.json();
+    } catch {}
+    await sleep(100);
+  }
+  throw new Error("Chrome DevTools endpoint did not start");
+}
+
+const PROBE = `(async () => {
+  const wait = (ms) => new Promise(r => setTimeout(r, ms));
+  const logoReqs = () => performance.getEntriesByType('resource').filter(r => r.name.includes('client-logos'));
+  const totalKB = () => Math.round(performance.getEntriesByType('resource')
+    .reduce((a, r) => a + (r.transferSize || r.encodedBodySize || 0), 0) / 1024);
+
+  await wait(2500);
+  const cold = {
+    scrollY: window.scrollY,
+    visibilityState: document.visibilityState,
+    logoRequests: logoReqs().length,
+    totalKB: totalKB(),
+    marqueeBuilt: document.querySelector('.relationship-marks')?.dataset?.marqueeReady === 'true'
+  };
+
+  document.getElementById('relationships').scrollIntoView();
+  await wait(3000);
+  const imgs = [...document.querySelectorAll('.relationship-marks img')];
+  const originals = [...document.querySelectorAll('.relationship-marks figure')]
+    .filter(f => !f.closest('.client-marquee__set--duplicate'));
+  const marquee = {
+    marqueeBuilt: document.querySelector('.relationship-marks')?.dataset?.marqueeReady === 'true',
+    lanes: document.querySelectorAll('.client-marquee__lane').length,
+    originalFigures: originals.length,
+    uniqueSrcs: new Set(originals.map(f => f.querySelector('img')?.getAttribute('src'))).size,
+    imgsLoaded: imgs.filter(i => i.complete && i.naturalWidth > 0).length + '/' + imgs.length,
+    logoRequests: logoReqs().length,
+    allFrom640: logoReqs().length > 0 && logoReqs().every(r => r.name.includes('/640/')),
+    altMatchesCaption: originals.every(f => {
+      const a = f.querySelector('img')?.alt?.trim(), c = f.querySelector('figcaption')?.textContent?.trim();
+      return a && a === c;
+    }),
+    toggleShown: !!document.querySelector('[data-client-marquee-controls]:not([hidden])')
+  };
+
+  document.getElementById('selected-work').scrollIntoView();
+  await wait(3000);
+  const media = [...document.querySelectorAll('[data-motion-enter="project-chapter-media"]')];
+  const copy = [...document.querySelectorAll('[data-motion-enter="project-chapter-copy"]')];
+  const projects = {
+    mediaHooks: media.length,
+    mediaEntered: media.filter(e => e.classList.contains('is-entered')).length,
+    copyHooks: copy.length,
+    copyEntered: copy.filter(e => e.classList.contains('is-entered')).length,
+    siteMotionEntered: document.querySelectorAll('[data-motion-enter].is-entered').length,
+    siteMotionTotal: document.querySelectorAll('[data-motion-enter]').length
+  };
+
+  return { cold, marquee, projects,
+           finalTotalKB: totalKB(),
+           horizontalScroll: document.documentElement.scrollWidth > document.documentElement.clientWidth };
+})()`;
+
+async function run(port) {
+  if (!CHROME_EXE) throw new Error(`No Chrome/Edge found in: ${CHROME_CANDIDATES.join(", ")}`);
+  const server = await startStaticServer({ root: ROOT, port });
+  const debugPort = 9200 + Math.floor(Math.random() * 500);
+  const profile = fs.mkdtempSync(path.join(os.tmpdir(), "divani-verify-"));
+  const child = spawn(CHROME_EXE, [
+    "--headless=new", `--remote-debugging-port=${debugPort}`, `--user-data-dir=${profile}`,
+    "--no-first-run", "--no-default-browser-check", "--disable-extensions",
+    `--window-size=${VIEWPORT.width},${VIEWPORT.height}`, "about:blank",
+  ], { stdio: "ignore" });
+
+  const results = {};
+  try {
+    await waitForChrome(debugPort, child);
+    for (const locale of ["index.html", "ar.html"]) {
+      const created = await (await fetch(
+        `http://127.0.0.1:${debugPort}/json/new?${encodeURIComponent("about:blank")}`,
+        { method: "PUT" })).json();
+      const socket = new WebSocket(created.webSocketDebuggerUrl);
+      await new Promise((resolve, reject) => {
+        socket.addEventListener("open", resolve, { once: true });
+        socket.addEventListener("error", reject, { once: true });
+      });
+      const cdp = new CDP(socket);
+      await cdp.send("Runtime.enable");
+      await cdp.send("Page.enable");
+      await cdp.send("Network.enable");
+      await cdp.send("Network.setCacheDisabled", { cacheDisabled: true });
+      await cdp.send("Emulation.setDeviceMetricsOverride", { ...VIEWPORT, mobile: true });
+      await cdp.send("Page.navigate", { url: `${server.url}/${locale}` });
+      await sleep(1500);
+      results[locale] = await cdp.evaluate(PROBE);
+      socket.close();
+      await fetch(`http://127.0.0.1:${debugPort}/json/close/${created.id}`);
+    }
+  } finally {
+    // Teardown must never discard results: Chrome holds a lock on its profile
+    // directory for a moment after kill(), and on Windows rmSync then throws EPERM.
+    child.kill();
+    await server.close().catch(() => {});
+    await sleep(500);
+    try { fs.rmSync(profile, { recursive: true, force: true }); } catch {}
+  }
+  return results;
+}
+
+function report(results) {
+  let failures = 0;
+  for (const [locale, r] of Object.entries(results)) {
+    console.log(`\n=== ${locale} @ ${VIEWPORT.width}x${VIEWPORT.height} DPR ${VIEWPORT.deviceScaleFactor} ===`);
+    console.log(`  compositing        : ${r.cold.visibilityState} (must be "visible" for observers to fire)`);
+    console.log(`  cold: logo requests: ${r.cold.logoRequests}  total ${r.cold.totalKB} KB  marqueeBuilt=${r.cold.marqueeBuilt}`);
+    console.log(`  after scroll       : built=${r.marquee.marqueeBuilt} lanes=${r.marquee.lanes} figures=${r.marquee.originalFigures} imgs=${r.marquee.imgsLoaded}`);
+    console.log(`  logos from /640/   : ${r.marquee.allFrom640}   requests=${r.marquee.logoRequests}`);
+    console.log(`  alt === figcaption : ${r.marquee.altMatchesCaption}   toggle shown=${r.marquee.toggleShown}`);
+    console.log(`  projects motion    : media ${r.projects.mediaEntered}/${r.projects.mediaHooks} entered, copy ${r.projects.copyEntered}/${r.projects.copyHooks}`);
+    console.log(`  site motion overall: ${r.projects.siteMotionEntered}/${r.projects.siteMotionTotal} entered`);
+    console.log(`  final total        : ${r.finalTotalKB} KB   horizontalScroll=${r.horizontalScroll}`);
+
+    const checks = [
+      ["cold load fetches no logos", r.cold.logoRequests === 0],
+      ["marquee deferred on cold load", r.cold.marqueeBuilt === false],
+      ["marquee builds after scroll", r.marquee.marqueeBuilt === true],
+      ["49 original figures", r.marquee.originalFigures === 49],
+      ["49 unique srcs", r.marquee.uniqueSrcs === 49],
+      ["logos served from /640/", r.marquee.allFrom640 === true],
+      ["alt matches figcaption", r.marquee.altMatchesCaption === true],
+      ["no horizontal scroll", r.horizontalScroll === false],
+    ];
+    for (const [label, ok] of checks) {
+      if (!ok) { console.log(`  FAIL: ${label}`); failures += 1; }
+    }
+  }
+  return failures;
+}
+
+run(Number(process.argv[2]) || 8978)
+  .then((results) => {
+    const failures = report(results);
+    console.log(failures ? `\n${failures} check(s) failed.` : "\nAll checks passed.");
+    process.exit(failures ? 1 : 0);
+  })
+  .catch((error) => { console.error(error.stack || error.message); process.exit(1); });

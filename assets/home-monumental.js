@@ -1524,9 +1524,29 @@
     marquee.dataset.marqueeReady = "true";
   }
 
+  function deferClientMarquee() {
+    const section = document.querySelector("#relationships");
+    if (!(section instanceof HTMLElement) || !("IntersectionObserver" in window)) {
+      initialiseClientMarquee();
+      return;
+    }
+    // Building the marquee makes the browser fetch all 49 logos regardless of
+    // loading="lazy" - measured at 2621 KB on a cold mobile load, for a section
+    // that sits 7800px below the fold. Holding the build until the section is
+    // approached keeps the static markup's lazy behaviour intact on first paint.
+    const observer = new IntersectionObserver((entries, self) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        self.disconnect();
+        initialiseClientMarquee();
+      }
+    }, { rootMargin: "200% 0px" });
+    observer.observe(section);
+  }
+
   function initialiseSite() {
     initialiseSkipLink();
-    initialiseClientMarquee();
+    deferClientMarquee();
     window.setTimeout(initialiseHeroSequence, 0);
     window.setTimeout(initialiseMotionSystem, 0);
     window.setTimeout(initialiseCapabilityMedia, 0);
