@@ -34,6 +34,7 @@ BASELINE_PATH = ROOT / "tasks" / "client-logo-baseline.json"
 
 CANVAS_SIZE = (1200, 448)
 CONTENT_SIZE = (1080, 320)
+MOBILE_SIZE = (640, 239)
 
 # Served size in device pixels at DPR 2, viewport >= 1768 CSS px (every clamp saturates).
 #   .relationship-marks figure  flex-basis 21rem = 336px, padding-inline 2.4rem = 38.4px
@@ -223,9 +224,58 @@ def print_table(measurements: list[Measurement]) -> None:
     print("\n* = replaced with official brand artwork")
 
 
+def check_mobile_variants() -> list[str]:
+    """The 640px variants are what phones are actually served - gate them too.
+
+    They were unmeasured while a flat hardening gain was applied, which destroyed
+    ink components on 16 of 49 marks. Component count against the master is the
+    check that matters: blur looks better the more detail you erase.
+    """
+    failures: list[str] = []
+    mobile_dir = PACK_DIR / "640"
+    if not mobile_dir.is_dir():
+        return ["mobile variants missing: assets/client-logos-monochrome/640/"]
+
+    masters = sorted(PACK_DIR.glob("*.png"))
+    variants = {path.name for path in mobile_dir.glob("*.png")}
+    missing = {path.name for path in masters} - variants
+    if missing:
+        failures.append(f"mobile variants missing for: {sorted(missing)}")
+
+    for master_path in masters:
+        variant_path = mobile_dir / master_path.name
+        if not variant_path.exists():
+            continue
+        variant = Image.open(variant_path)
+        if variant.size != MOBILE_SIZE:
+            failures.append(
+                f"{master_path.stem} (640): canvas is {variant.width}x{variant.height}, "
+                f"expected {MOBILE_SIZE[0]}x{MOBILE_SIZE[1]}"
+            )
+            continue
+        master_alpha = np.asarray(Image.open(master_path).convert("RGBA"))[:, :, 3]
+        reference = np.asarray(
+            Image.fromarray(master_alpha).resize(MOBILE_SIZE, Image.Resampling.LANCZOS)
+        )
+        shipped = np.asarray(variant.convert("RGBA"))[:, :, 3]
+        expected = _ink_components(reference)
+        actual = _ink_components(shipped)
+        if actual < expected:
+            failures.append(
+                f"{master_path.stem} (640): {expected - actual} ink component(s) lost to "
+                f"hardening ({expected} -> {actual}); lower its mobile gain"
+            )
+    return failures
+
+
+def _ink_components(alpha: np.ndarray) -> int:
+    count, _ = cv2.connectedComponents((alpha > 10).astype(np.uint8), 8)
+    return count - 1
+
+
 def check(measurements: list[Measurement]) -> tuple[list[str], list[str]]:
     """Return (failures, warnings). Only failures stop the build."""
-    failures: list[str] = []
+    failures: list[str] = check_mobile_variants()
     warnings: list[str] = []
     baseline = _load_baseline()
 
@@ -234,7 +284,11 @@ def check(measurements: list[Measurement]) -> tuple[list[str], list[str]]:
         if m.stem in PAGE_CROP:
             # Source-capped: fail only on regression against the recorded value.
             if recorded is None:
-                gate, why = GATE_ALL, "no baseline recorded"
+                failures.append(
+                    f"{m.stem}: no baseline recorded, so its page-crop gate cannot be "
+                    f"evaluated - run --baseline and commit tasks/client-logo-baseline.json"
+                )
+                continue
             else:
                 gate, why = recorded * PAGE_CROP_DRIFT, f"page-crop ceiling, baseline {recorded:.2f}"
         else:
