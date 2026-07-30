@@ -114,6 +114,8 @@ const PROBE = `(async () => {
     originalFigures: originals.length,
     uniqueSrcs: new Set(originals.map(f => f.querySelector('img')?.getAttribute('src'))).size,
     imgsLoaded: imgs.filter(i => i.complete && i.naturalWidth > 0).length + '/' + imgs.length,
+    imgsLoadedCount: imgs.filter(i => i.complete && i.naturalWidth > 0).length,
+    imgsTotal: imgs.length,
     logoRequests: logoReqs().length,
     allFrom640: logoReqs().length > 0 && logoReqs().every(r => r.name.includes('/640/')),
     altMatchesCaption: originals.every(f => {
@@ -231,6 +233,11 @@ function report(results) {
       ["49 original figures", r.marquee.originalFigures === 49],
       ["49 unique srcs", r.marquee.uniqueSrcs === 49],
       ["logos served from /640/", r.marquee.allFrom640 === true],
+      // The lanes scroll marks in by transform, which does not reliably re-run
+      // lazy loading - unloaded marks appear as blanks mid-scroll. This shipped
+      // once because the count was printed but never asserted.
+      ["every marquee image loaded (no blanks mid-scroll)",
+        r.marquee.imgsTotal > 0 && r.marquee.imgsLoadedCount === r.marquee.imgsTotal],
       ["alt matches figcaption", r.marquee.altMatchesCaption === true],
       ["no horizontal scroll", r.horizontalScroll === false],
       ["all 8 project chapters have motion hooks", r.projects.mediaHooks === PROJECT_CHAPTERS && r.projects.copyHooks === PROJECT_CHAPTERS],

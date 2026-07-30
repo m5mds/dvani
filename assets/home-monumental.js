@@ -1506,6 +1506,12 @@
         if (originalImage instanceof HTMLImageElement) {
           originalImage.width = 1200;
           originalImage.height = 448;
+          // The lanes bring marks into view by transform, and a transform does not
+          // reliably re-run lazy-load evaluation - so marks scrolled in blank and
+          // filled a beat later, which reads as logos disappearing. deferClientMarquee
+          // already holds this build until the section is two viewports away, so the
+          // whole strip can load now: nothing is fetched on first paint either way.
+          originalImage.loading = "eager";
         }
         originalSet.append(client);
         const duplicate = client.cloneNode(true);
