@@ -1135,7 +1135,8 @@ html[dir="rtl"] .handoff-disclosure {
   width: 100%;
   height: auto;
   aspect-ratio: 16 / 9;
-  object-fit: contain;
+  object-fit: cover;
+  object-position: center;
   background: #090909;
   outline: 1px solid var(--line-light-soft);
   outline-offset: -1px;
@@ -1225,7 +1226,8 @@ html[dir="rtl"] .handoff-disclosure {
     grid-row: 1;
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    object-fit: cover;
+    object-position: center;
     transform: scale(var(--scene-scale, 1));
     transform-origin: center;
     backface-visibility: hidden;
