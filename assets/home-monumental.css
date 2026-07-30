@@ -1723,6 +1723,15 @@ html[dir="rtl"] .readiness-copy {
   animation: client-marquee-forward 78s linear infinite;
 }
 
+/* The lanes translate negatively to scroll. Under dir="rtl" the flex track is laid
+   out from the right edge, so a negative translate walks the whole strip off-screen
+   to the left and the Arabic marquee renders empty. Force the scrolling geometry to
+   ltr; the mirrored feel comes from swapping which keyframe each lane uses below. */
+html.js:not(.static-motion) .client-marquee__lane,
+html.js:not(.static-motion) .client-marquee__track {
+  direction: ltr;
+}
+
 .client-marquee__lane:nth-child(even) .client-marquee__track {
   animation-name: client-marquee-reverse;
   animation-duration: 86s;
