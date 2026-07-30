@@ -1160,7 +1160,13 @@ html[dir="rtl"] .handoff-disclosure {
   letter-spacing: 0.12em;
 }
 
+/* Every chapter carries the same <h3>Our Projects</h3>, which is the large title
+   revealed beside the sticky stage on desktop. In the stacked layout those eight
+   identical headings run down the page, repeating words the section already shows
+   as its eyebrow - so hide them here and re-enable in the runway block below, the
+   same way __stage, __navigator and the chapter button are handled. */
 .project-runway__chapter h3 {
+  display: none;
   margin-block-end: 1rem;
   font-size: clamp(2.2rem, 7vw, 4rem);
 }
@@ -1391,6 +1397,7 @@ html[dir="rtl"] .handoff-disclosure {
   }
 
   .motion-ready:not(.static-motion) .project-runway__chapter h3 {
+    display: block;
     font-size: clamp(2.4rem, 4vw, 4.25rem);
   }
 
