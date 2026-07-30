@@ -122,7 +122,23 @@ const PROBE = `(async () => {
       const a = f.querySelector('img')?.alt?.trim(), c = f.querySelector('figcaption')?.textContent?.trim();
       return a && a === c;
     }),
-    toggleShown: !!document.querySelector('[data-client-marquee-controls]:not([hidden])')
+    toggleShown: !!document.querySelector('[data-client-marquee-controls]:not([hidden])'),
+    laneDirection: getComputedStyle(document.querySelector('.client-marquee__track')).direction,
+    worstLaneGapPx: (() => {
+      let worst = 0;
+      for (const lane of document.querySelectorAll('.client-marquee__lane')) {
+        const lr = lane.getBoundingClientRect();
+        const spans = [...lane.querySelectorAll('figure')].map(f => f.getBoundingClientRect())
+          .filter(r => r.right > lr.left && r.left < lr.right)
+          .map(r => [Math.max(r.left, lr.left), Math.min(r.right, lr.right)])
+          .sort((a, b) => a[0] - b[0]);
+        let cursor = lr.left, gap = 0;
+        for (const [a, b] of spans) { if (a > cursor) gap = Math.max(gap, a - cursor); cursor = Math.max(cursor, b); }
+        if (lr.right > cursor) gap = Math.max(gap, lr.right - cursor);
+        worst = Math.max(worst, Math.round(gap));
+      }
+      return worst;
+    })()
   };
 
   // Step through the section rather than jumping to its top. Each chapter is
@@ -236,6 +252,12 @@ function report(results) {
       // The lanes scroll marks in by transform, which does not reliably re-run
       // lazy loading - unloaded marks appear as blanks mid-scroll. This shipped
       // once because the count was printed but never asserted.
+      // Under dir=rtl the flex track lays out from the right edge, so the negative
+      // scroll translate walked the whole strip off-screen and the Arabic marquee
+      // rendered empty. Every other check passed throughout: the marks existed, were
+      // loaded and were the right count - they simply were not on screen.
+      ["lane is covered by marks (no empty stretch)", r.marquee.worstLaneGapPx <= 40],
+      ["marquee track forced to ltr geometry", r.marquee.laneDirection === "ltr"],
       ["every marquee image loaded (no blanks mid-scroll)",
         r.marquee.imgsTotal > 0 && r.marquee.imgsLoadedCount === r.marquee.imgsTotal],
       ["alt matches figcaption", r.marquee.altMatchesCaption === true],
