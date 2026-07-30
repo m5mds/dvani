@@ -41,6 +41,11 @@ tasks/*
 !tasks/tune-logo-hardening.py
 !tasks/extract-profile-logo-crops.py
 !tasks/verify-mobile.js
+# verify-mobile.js requires serve-static.js, and the PAGE_CROP gate in
+# check-client-logo-pack.py is inert without its baseline - both were
+# untracked, so the harness and the gate only worked on one machine.
+!tasks/serve-static.js
+!tasks/client-logo-baseline.json
 docs/
 prototypes/
 exports/

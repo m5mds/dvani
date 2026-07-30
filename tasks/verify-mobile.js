@@ -35,6 +35,9 @@ const CHROME_CANDIDATES = [
 ];
 const CHROME_EXE = CHROME_CANDIDATES.find((candidate) => fs.existsSync(candidate));
 
+const PROJECT_CHAPTERS = 8;
+// Cold load was 3164 KB before this work; budget guards the win, not a hard target.
+const COLD_BUDGET_KB = 800;
 const VIEWPORT = { width: 390, height: 844, deviceScaleFactor: 3 };
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -133,12 +136,26 @@ const PROBE = `(async () => {
   }
   await wait(1200);
   const media = [...document.querySelectorAll('[data-motion-enter="project-chapter-media"]')];
+  // A class landing is not motion: if the CSS media query stopped matching, .is-entered
+  // would still be added and a class-only check would pass while nothing animated.
+  const probeEl = document.querySelector('[data-motion-enter="project-chapter-media"]');
+  const probeAfter = probeEl ? parseFloat(getComputedStyle(probeEl).opacity) : null;
+  const fresh = probeEl ? probeEl.cloneNode(true) : null;
+  let probeBefore = null;
+  if (fresh) {
+    fresh.classList.remove('is-entered');
+    probeEl.parentNode.appendChild(fresh);
+    probeBefore = parseFloat(getComputedStyle(fresh).opacity);
+    fresh.remove();
+  }
   const copy = [...document.querySelectorAll('[data-motion-enter="project-chapter-copy"]')];
   const projects = {
     mediaHooks: media.length,
     mediaEntered: media.filter(e => e.classList.contains('is-entered')).length,
     copyHooks: copy.length,
     copyEntered: copy.filter(e => e.classList.contains('is-entered')).length,
+    mediaOpacityBefore: probeBefore,
+    mediaOpacityAfter: probeAfter,
     siteMotionEntered: document.querySelectorAll('[data-motion-enter].is-entered').length,
     siteMotionTotal: document.querySelectorAll('[data-motion-enter]').length
   };
@@ -216,9 +233,12 @@ function report(results) {
       ["logos served from /640/", r.marquee.allFrom640 === true],
       ["alt matches figcaption", r.marquee.altMatchesCaption === true],
       ["no horizontal scroll", r.horizontalScroll === false],
-      ["every project image has a motion hook", r.projects.mediaHooks > 0],
-      ["every project image entered", r.projects.mediaHooks > 0 && r.projects.mediaEntered === r.projects.mediaHooks],
-      ["every project copy block entered", r.projects.copyHooks > 0 && r.projects.copyEntered === r.projects.copyHooks],
+      ["all 8 project chapters have motion hooks", r.projects.mediaHooks === PROJECT_CHAPTERS && r.projects.copyHooks === PROJECT_CHAPTERS],
+      ["every project image entered", r.projects.mediaEntered === PROJECT_CHAPTERS],
+      ["every project copy block entered", r.projects.copyEntered === PROJECT_CHAPTERS],
+      ["project motion actually animates (not just the class)", r.projects.mediaOpacityBefore < 0.5 && r.projects.mediaOpacityAfter > 0.9],
+      ["browser is compositing (else no observer fires)", r.cold.visibilityState === "visible"],
+      [`cold load under ${COLD_BUDGET_KB} KB`, r.cold.totalKB < COLD_BUDGET_KB],
     ];
     for (const [label, ok] of checks) {
       if (!ok) { console.log(`  FAIL: ${label}`); failures += 1; }

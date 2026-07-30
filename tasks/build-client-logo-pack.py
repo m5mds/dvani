@@ -98,12 +98,14 @@ OFFICIAL_ALPHA_FLOORS = {
 # Narrows the soft antialiasing fringe left by PDF-derived sources while keeping
 # some antialiasing. Per mark, never global: gain 4 sharpens hayyak and kidana but
 # erodes astra-construction's thin strokes. See tasks/lessons.md:249.
-HARDEN_DEFAULT = 3.0
 HARDEN_GAINS: dict[str, float] = {
     "astra-construction": 1.5,
     "elegancia-arabia": 1.5,
     "jedco-jeddah-airports": 1.5,
 }
+
+# Gains tried for the mobile variant, strongest first.
+MOBILE_GAIN_SEARCH = (4.0, 3.5, 3.0, 2.5, 2.0, 1.5)
 
 
 def harden_alpha(alpha: np.ndarray, gain: float) -> np.ndarray:
@@ -111,6 +113,29 @@ def harden_alpha(alpha: np.ndarray, gain: float) -> np.ndarray:
         return alpha
     scaled = alpha.astype(np.float32) / 255.0
     return (np.clip((scaled - 0.5) * gain + 0.5, 0.0, 1.0) * 255.0).astype(np.uint8)
+
+
+def ink_components(alpha: np.ndarray) -> int:
+    count, _ = cv2.connectedComponents((alpha > 10).astype(np.uint8), 8)
+    return count - 1
+
+
+def mobile_gain(alpha: np.ndarray) -> float:
+    """Strongest hardening the downscaled mark survives without losing ink.
+
+    The mobile variant is what phones are actually served, so it needs the same
+    detail-preservation rule the masters get - not a flat gain. A hardcoded 4.0
+    destroyed ink components on 16 of 49 marks, including neom-mono-v3 (pristine
+    vector art) and jedco-jeddah-airports, whose master was deliberately capped at
+    1.5 because higher gains broke its subtext. Hardening compresses far better, so
+    take the most it tolerates rather than skipping it: per-mark search lands the
+    pack at ~630 KB against 1109 KB unhardened and 365 KB for the damaging flat 4.0.
+    """
+    baseline = ink_components(alpha)
+    for gain in MOBILE_GAIN_SEARCH:
+        if ink_components(harden_alpha(alpha, gain)) >= baseline:
+            return gain
+    return 1.0
 
 
 PROFILE_FILES = (
@@ -305,6 +330,7 @@ def main() -> None:
         raise RuntimeError("The false Al Eiman split must not enter the authoritative logo pack")
 
     replaced: set[str] = set()
+    mobile_reduced: list[tuple[str, float]] = []
     for filename in OFFICIAL_FILES + PROFILE_FILES:
         brand = resolve_brand_source(filename)
         from_page_crop = False
@@ -327,10 +353,13 @@ def main() -> None:
         # intermediate alpha values that compress worse than hardening after.
         MOBILE_DIR.mkdir(parents=True, exist_ok=True)
         small = output.resize(MOBILE_SIZE, Image.Resampling.LANCZOS)
-        small_alpha = harden_alpha(np.asarray(small)[:, :, 3], 4.0)
+        downscaled = np.asarray(small)[:, :, 3]
+        gain = mobile_gain(downscaled)
         mobile = Image.new("RGBA", MOBILE_SIZE, (255, 255, 255, 0))
-        mobile.putalpha(Image.fromarray(small_alpha))
+        mobile.putalpha(Image.fromarray(harden_alpha(downscaled, gain)))
         mobile.save(MOBILE_DIR / filename, optimize=True)
+        if gain < MOBILE_GAIN_SEARCH[0]:
+            mobile_reduced.append((Path(filename).stem, gain))
 
     # Fail closed. A misspelt source filename would otherwise fall through to the
     # legacy path, keep the blurry mark, and still report success.
@@ -353,6 +382,10 @@ def main() -> None:
     unexpected = produced - expected
     if missing or unexpected:
         raise RuntimeError(f"Logo pack mismatch; missing={sorted(missing)}, unexpected={sorted(unexpected)}")
+    if mobile_reduced:
+        print(f"  mobile variant gain reduced to preserve ink on {len(mobile_reduced)} mark(s):")
+        for stem, gain in sorted(mobile_reduced):
+            print(f"    {stem:32} {gain}")
     note = f", {len(replaced)} from official brand artwork" if replaced else ""
     print(f"Created {len(produced)} monochrome client logos in {OUTPUT_DIR}{note}")
     if outstanding:
