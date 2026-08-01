@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "recipeVersion": "division-loops-v7",
+  "disclosure": "Concept film",
+  "generation": "deterministic local animation of approved concept stills; accepted fitout/development bytes reused from division-v2; no external video-generation credits",
+  "reusedFrom": {
+    "version": "division-v2",
+    "loops": [
+      "development",
+      "fitout"
+    ]
+  },
+  "builderSha256": "8FA1C901BAB028ACAC9F00657C5E1CD7075E594A1EC2C45422FE14551D344364",
+  "runtime": {
+    "python": "3.14.3",
+    "numpy": "2.4.4",
+    "pillow": "12.2.0"
+  },
+  "toolchain": {
+    "ffmpegSha256": "AD8F211BC894755E0061C55AB280AE00E8D3D4F15A8CC4372B24CFA247B5942E",
+    "ffprobeSha256": "9DF3B0B5275E830961DF6D94E1F7A71121A7ABD5FF708E9FEC8A0B6084A55015"
+  },
+  "dimensions": {
+    "width": 1280,
+    "height": 720
+  },
+  "fps": 24,
+  "durationSeconds": 5.0,
+  "frameCount": 120,
+  "loops": [
+    {
+      "id": "design",
+      "disclosure": "Concept film",
+      "source": "assets/restored/masters/project-house-restored.png",
+      "sourceSha256": "436CB440CE46EBE68B0F87FF7636CF37007D73485134A91B87F0B2E724DCBEC8",
+      "video": "assets/cinematic/division-v3/media/design.mp4",
+      "poster": "assets/cinematic/division-v3/media/design-poster.webp",
+      "videoSha256": "5DE07325ACC0658EF5D8278806D75548F263EE590A1748EF047492F3DED42748",
+      "posterSha256": "95B6219267A347CB21B5FC68FAB80EBDC372302521B31ABEB721F64957A15298"
+    },
+    {
+      "id": "fitout",
+      "disclosure": "Concept film",
+      "source": "assets/cinematic/division-v1/source/fitout.png",
+      "sourceSha256": "FCF2021CC0B71B1408A61F1A9D5DF0F82B6E4369046636534E9BA1B940E3EBC1",
+      "video": "assets/cinematic/division-v3/media/fitout.mp4",
+      "poster": "assets/cinematic/division-v3/media/fitout-poster.webp",
+      "videoSha256": "C3B75767A38CC072212469B7CFD48473D412A0B0501B1BAA9376AD27B1A28E79",
+      "posterSha256": "B7CB4D2117B68EE6C4A143460F755066B5B1572D5F25832BFD67A38E45C2F86F"
+    },
+    {
+      "id": "development",
+      "disclosure": "Concept film",
+      "source": "assets/cinematic/division-v1/source/development-clean.png",
+      "sourceSha256": "40F55B910E30E0C751F0FD3CF5F3E1920ACDCF93E9877428B1DFC3938AEE5FDA",
+      "video": "assets/cinematic/division-v3/media/development.mp4",
+      "poster": "assets/cinematic/division-v3/media/development-poster.webp",
+      "videoSha256": "EA8F4F52663CB39486B4B60EAAEB8AD98FA8F0942FC568110E74079FF986645C",
+      "posterSha256": "FBE0C0BCF9B543DF6F47EB87D66BE74B34C12337625B57EC309DF09CC11D58D9"
+    }
+  ]
+}
