@@ -1,0 +1,15 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "redirects": [
+    {
+      "source": "/index.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/Divani%20\\(1\\).html",
+      "destination": "/",
+      "permanent": true
+    }
+  ]
+}

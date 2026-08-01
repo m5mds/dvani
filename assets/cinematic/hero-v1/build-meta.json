@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 2,
+  "source": {
+    "sha256": "0F0B3834E2761016490E3E132B2B7F04C5FAFB5364E8966305775A3A8080E895",
+    "stagedCopySha256": "0F0B3834E2761016490E3E132B2B7F04C5FAFB5364E8966305775A3A8080E895",
+    "inputPolicy": "private-hash-verified-staging-copy",
+    "durationSeconds": 5.041667,
+    "firstFrameTime": 0,
+    "firstFrameIndex": 0,
+    "finalFrameTime": 5,
+    "finalFrameIndex": 120,
+    "decodedFrameCount": 121,
+    "video": {
+      "codec": "h264",
+      "width": 1920,
+      "height": 1080
+    },
+    "audioStreams": 0
+  },
+  "toolchain": {
+    "definition": "tasks/cinematic-toolchain.json",
+    "ffmpegSha256": "AD8F211BC894755E0061C55AB280AE00E8D3D4F15A8CC4372B24CFA247B5942E",
+    "ffprobeSha256": "9DF3B0B5275E830961DF6D94E1F7A71121A7ABD5FF708E9FEC8A0B6084A55015"
+  },
+  "encoding": {
+    "frameRate": 15,
+    "frameCount": 75,
+    "desktopQuality": 76,
+    "mobileQuality": 76,
+    "endpointPolicy": "fresh-encodes-from-ffprobe-counted-source-endpoints",
+    "retimePolicy": "setpts-source-duration-to-exact-5.000-seconds-before-15fps",
+    "sourceToTimelineRatio": 0.991735471621,
+    "normalizedDurationSeconds": 5,
+    "firstHoldFrames": [
+      1,
+      7
+    ],
+    "finalHoldFrames": [
+      68,
+      75
+    ],
+    "posterPolicy": "byte-identical-copy-of-desktop-frame-001",
+    "handoffPolicy": "byte-identical-copy-of-desktop-frame-075",
+    "mobileHandoffPolicy": "byte-identical-copy-of-mobile-frame-075",
+    "scaleFlags": "lanczos",
+    "webpCompressionLevel": 6,
+    "threads": 1
+  },
+  "outputs": {
+    "manifestSha256": "8276CAFFE5236F52DB55E747F2DBD8F13F08FB971E51AA84D261A9B88CE47E8A",
+    "posterSha256": "3894A10856B81FBB37759EF6A0CDD26B30C9F92C274337449BA78A689EF7FF18",
+    "handoffSha256": "D96E2791A27FE5A9CC09F61A781A24C8C97609AE60F7D9DDEB871F0EF79396C2",
+    "mobileHandoffSha256": "3CE0BA3CBC32D4265331C6B3474CA3915F36D15B9DC4DF172B6C5C7E23D326F1",
+    "desktopFirstFrameSha256": "3894A10856B81FBB37759EF6A0CDD26B30C9F92C274337449BA78A689EF7FF18",
+    "mobileFirstFrameSha256": "407C2D99CB7FD29FE4B40C1DC29485DAC9B29945E44B204F1F0C330534B0472A",
+    "desktopFinalFrameSha256": "D96E2791A27FE5A9CC09F61A781A24C8C97609AE60F7D9DDEB871F0EF79396C2",
+    "mobileFinalFrameSha256": "3CE0BA3CBC32D4265331C6B3474CA3915F36D15B9DC4DF172B6C5C7E23D326F1",
+    "desktopSequenceSha256": "262E4BFC0FBA0D118F36C6F692D4E4A28636FE40D196982D7F1F3B202A3B6407",
+    "mobileSequenceSha256": "65C80C59512919AC52EF7C8D8F374276B9E9F00A209CB3431770B0F50B7CD3DC"
+  }
+}
