@@ -6,8 +6,12 @@
   <meta name="theme-color" content="#11100e">
   <meta name="description" content="ديفاني — التصميم الداخلي والمعماري، حلول التشطيب الفاخر، والتطوير العقاري في المملكة العربية السعودية.">
   <title>ديفاني — من الخط إلى المكان</title>
-  <link rel="alternate" hreflang="en" href="index.html">
-  <link rel="alternate" hreflang="ar" href="ar.html">
+  <link rel="canonical" href="https://divaniworld.com/ar.html">
+  <link rel="alternate" hreflang="en" href="https://divaniworld.com/">
+  <link rel="alternate" hreflang="ar" href="https://divaniworld.com/ar.html">
+  <link rel="alternate" hreflang="x-default" href="https://divaniworld.com/">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" href="/assets/divani-logo.png">
   <script>
     (function () {
       var connection = navigator.connection;
@@ -17,11 +21,12 @@
         document.documentElement.className += " static-hero static-motion";
       } else {
         document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, "").trim() +
-          " js-pending brief-render-pending capabilities-render-pending hero-text-render-pending threshold-render-pending design-copy-render-pending";
+          " js-pending brief-render-pending readiness-render-pending delivery-render-pending capabilities-render-pending hero-text-render-pending threshold-render-pending design-copy-render-pending";
         window.setTimeout(function () {
           document.documentElement.classList.remove(
-            "brief-render-pending", "capabilities-render-pending", "hero-text-render-pending",
-            "threshold-render-pending", "design-copy-render-pending"
+            "brief-render-pending", "readiness-render-pending", "delivery-render-pending",
+            "capabilities-render-pending", "hero-text-render-pending", "threshold-render-pending",
+            "design-copy-render-pending"
           );
           document.querySelectorAll("[data-initial-render-ready]").forEach(function (element) {
             element.removeAttribute("data-initial-render-ready");
@@ -35,6 +40,33 @@
 </head>
 <body data-page="home" data-locale="ar">
   <a class="skip-link" href="#about-title">تجاوز الفيلم التصوري</a>
+
+  <header class="site-nav" data-site-nav data-nav-state="film">
+    <a class="site-nav__brand" href="#proof" aria-label="ديفاني — العودة إلى البداية">
+      <img src="assets/divani-logo.png" width="256" height="256" alt="">
+      <span>DIVANI</span>
+    </a>
+    <button
+      class="site-nav__toggle"
+      type="button"
+      data-site-nav-toggle
+      aria-expanded="false"
+      aria-controls="site-nav-menu"
+    >
+      <span class="site-nav__toggle-mark" aria-hidden="true"></span>
+      <span class="site-nav__toggle-label" data-open-label="القائمة" data-close-label="إغلاق">القائمة</span>
+    </button>
+    <nav class="site-nav__menu" id="site-nav-menu" aria-label="أقسام الصفحة">
+      <a href="#about" data-nav-link="about">من نحن</a>
+      <a href="#why-divani" data-nav-link="why-divani">لماذا ديفاني</a>
+      <a href="#capabilities" data-nav-link="capabilities">خبراتنا</a>
+      <a href="#relationships" data-nav-link="relationships">عملاؤنا</a>
+      <a href="#selected-work" data-nav-link="selected-work">مشاريعنا</a>
+      <a href="#project-brief" data-nav-link="project-brief">ابدأ مشروعك</a>
+      <a href="#contact" data-nav-link="contact">تواصل معنا</a>
+      <a class="language-switch" href="index.html#proof" lang="en" dir="ltr" data-language-switch>English</a>
+    </nav>
+  </header>
 
   <div class="site-intro" aria-hidden="true">
     <div class="site-intro__identity" data-hero-ident>
@@ -59,11 +91,6 @@
       data-variant="desktop"
     >
       <div class="hero-stage">
-        <header class="site-header" aria-label="اختيار اللغة">
-          <div class="site-header__actions">
-            <a class="language-switch" href="index.html#proof" lang="en" dir="ltr" data-language-switch>English</a>
-          </div>
-        </header>
         <picture>
           <source media="(max-width: 767px)" srcset="assets/cinematic/hero-v1/mobile/frame-001.webp" width="720" height="1280" data-hero-mobile-poster>
           <img
@@ -89,7 +116,7 @@
           <span>DIVANI</span>
         </div>
         <div class="hero-copy">
-          <p class="hero-divisions" aria-label="تصميم وتشطيب وتطوير">تصميم · تشطيب · تطوير</p>
+          <p class="hero-divisions">تصميم · تشطيب · تطوير</p>
           <a class="hero-cta" href="#project-brief">ابدأ مشروعك <span aria-hidden="true">↓</span></a>
         </div>
 
@@ -163,6 +190,18 @@
           </div>
         </div>
       </div>
+        <div class="capability-media">
+          <img
+            class="capability-still"
+            data-motion-enter="capability-media"
+            src="assets/division-design-blueprint.jpg"
+            width="1600"
+            height="900"
+            alt="مخططات معمارية ولفات رسومات وفرجار على طاولة رسم"
+            loading="lazy"
+            decoding="async"
+          >
+        </div>
         <div class="capability-copy" data-motion-enter="capability-copy">
           <h3>التصميم الداخلي والمعماري</h3>
           <p>ننظر إلى العمارة والداخل كخبرة واحدة؛ تتوازن فيها النسب والحركة والمواد والضوء وطريقة الاستخدام.</p>
@@ -174,6 +213,7 @@
         <div class="capability-media">
           <video
             data-capability-film="fitout"
+            data-motion-enter="capability-media"
             muted
             playsinline
             preload="none"
@@ -184,8 +224,6 @@
             <source data-src="assets/cinematic/division-v3/media/fitout.mp4" type="video/mp4">
           </video>
           <noscript><img class="capability-loop-fallback" src="assets/cinematic/division-v3/media/fitout-poster.webp" width="1280" height="720" alt=""></noscript>
-          <span class="capability-occluder capability-occluder--fitout-start" data-motion-occluder="fitout-start" aria-hidden="true"></span>
-          <span class="capability-occluder capability-occluder--fitout-end" data-motion-occluder="fitout-end" aria-hidden="true"></span>
         </div>
         <div class="capability-copy" data-motion-enter="capability-copy">
           <h3>حلول التشطيب الفاخر</h3>
@@ -196,19 +234,16 @@
 
       <article class="capability-chapter capability-chapter--development" data-motion-stage="capability" data-motion-variant="development" data-motion-direction="left-to-right" data-capability-id="development">
         <div class="capability-media">
-          <video
-            data-capability-film="development"
-            muted
-            playsinline
-            preload="none"
-            data-poster="assets/cinematic/division-v3/media/development-poster.webp"
-            aria-hidden="true"
-            tabindex="-1"
+          <img
+            class="capability-still"
+            data-motion-enter="capability-media"
+            src="assets/division-development-tower.jpg"
+            width="1080"
+            height="720"
+            alt="أبراج مكتبية زجاجية تعكس واجهاتها السماء والسحاب"
+            loading="lazy"
+            decoding="async"
           >
-            <source data-src="assets/cinematic/division-v3/media/development.mp4" type="video/mp4">
-          </video>
-          <noscript><img class="capability-loop-fallback" src="assets/cinematic/division-v3/media/development-poster.webp" width="1280" height="720" alt=""></noscript>
-          <span class="capability-occluder capability-occluder--timber" data-motion-occluder="timber" aria-hidden="true"></span>
         </div>
         <div class="capability-copy" data-motion-enter="capability-copy">
           <h3>التطوير العقاري</h3>
@@ -223,7 +258,18 @@
         <p class="eyebrow">عملاؤنا</p>
         <h2 id="relationships-title">موثوقون عبر<br>وجهات متميزة.</h2>
       </header>
-      <div class="relationship-marks" aria-label="عملاء ديفاني">
+      <div class="client-marquee__controls" data-client-marquee-controls hidden>
+        <button
+          class="client-marquee__toggle"
+          type="button"
+          data-client-marquee-toggle
+          data-pause-label="إيقاف حركة شعارات العملاء مؤقتًا"
+          data-resume-label="استئناف حركة شعارات العملاء"
+          aria-controls="client-marquee"
+          aria-pressed="false"
+        >إيقاف حركة شعارات العملاء مؤقتًا</button>
+      </div>
+      <div class="relationship-marks" id="client-marquee">
         <p class="relationship-group-label relationship-group-label--featured">علاقات مختارة</p>
         <p class="relationship-group-label relationship-group-label--complete">شبكة العملاء الكاملة · 49 علاقة</p>
         <figure data-motion-enter="relationship-mark" data-motion-index="0"><img srcset="assets/client-logos-monochrome/640/siac.png 640w, assets/client-logos-monochrome/siac.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/siac.png" width="1200" height="448" alt="سياك" loading="lazy"><figcaption>سياك</figcaption></figure>
@@ -231,20 +277,20 @@
         <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="2"><img srcset="assets/client-logos-monochrome/640/watania-business-group.png 640w, assets/client-logos-monochrome/watania-business-group.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/watania-business-group.png" width="315" height="320" alt="مجموعة أعمال الوطنية" loading="lazy"><figcaption>مجموعة أعمال الوطنية</figcaption></figure>
         <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="3"><img srcset="assets/client-logos-monochrome/640/ibtech.png 640w, assets/client-logos-monochrome/ibtech.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/ibtech.png" width="412" height="320" alt="آي بي تك" loading="lazy"><figcaption>آي بي تك</figcaption></figure>
         <figure data-motion-enter="relationship-mark" data-motion-index="4"><img srcset="assets/client-logos-monochrome/640/amaala.png 640w, assets/client-logos-monochrome/amaala.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/amaala.png" width="1200" height="448" alt="أمالا" loading="lazy"><figcaption>أمالا</figcaption></figure>
-        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="5"><img srcset="assets/client-logos-monochrome/640/mastery-house.png 640w, assets/client-logos-monochrome/mastery-house.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/mastery-house.png" width="848" height="320" alt="بيت الإجادة" loading="lazy"><figcaption>بيت الإجادة</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="5"><img srcset="assets/client-logos-monochrome/640/mastery-house.png 640w, assets/client-logos-monochrome/mastery-house.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/mastery-house.png" width="1200" height="448" alt="بيت الإجادة" loading="lazy"><figcaption>بيت الإجادة</figcaption></figure>
         <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="6"><img srcset="assets/client-logos-monochrome/640/alsharif-group-holding.png 640w, assets/client-logos-monochrome/alsharif-group-holding.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/alsharif-group-holding.png" width="766" height="320" alt="مجموعة الشريف القابضة" loading="lazy"><figcaption>مجموعة الشريف القابضة</figcaption></figure>
         <figure data-motion-enter="relationship-mark" data-motion-index="7"><img srcset="assets/client-logos-monochrome/640/red-sea-global.png 640w, assets/client-logos-monochrome/red-sea-global.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/red-sea-global.png" width="1200" height="448" alt="البحر الأحمر الدولية" loading="lazy"><figcaption>البحر الأحمر الدولية</figcaption></figure>
         <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="8"><img srcset="assets/client-logos-monochrome/640/elegancia-arabia.png 640w, assets/client-logos-monochrome/elegancia-arabia.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/elegancia-arabia.png" width="940" height="320" alt="إليجانسيا العربية" loading="lazy"><figcaption>إليجانسيا العربية</figcaption></figure>
         <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="9"><img srcset="assets/client-logos-monochrome/640/diriyah-company.png 640w, assets/client-logos-monochrome/diriyah-company.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/diriyah-company.png" width="322" height="320" alt="شركة الدرعية" loading="lazy"><figcaption>شركة الدرعية</figcaption></figure>
-        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="10"><img srcset="assets/client-logos-monochrome/640/cce.png 640w, assets/client-logos-monochrome/cce.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/cce.png" width="727" height="320" alt="CCE" loading="lazy"><figcaption>CCE</figcaption></figure>
-        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="11"><img srcset="assets/client-logos-monochrome/640/mas-engineering-construction.png 640w, assets/client-logos-monochrome/mas-engineering-construction.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/mas-engineering-construction.png" width="1644" height="320" alt="ماس للهندسة والإنشاءات" loading="lazy"><figcaption>ماس للهندسة والإنشاءات</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="10"><img srcset="assets/client-logos-monochrome/640/cce.png 640w, assets/client-logos-monochrome/cce.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/cce.png" width="1200" height="448" alt="CCE" loading="lazy"><figcaption>CCE</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="11"><img srcset="assets/client-logos-monochrome/640/mas-engineering-construction.png 640w, assets/client-logos-monochrome/mas-engineering-construction.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/mas-engineering-construction.png" width="1200" height="448" alt="ماس للهندسة والإنشاءات" loading="lazy"><figcaption>ماس للهندسة والإنشاءات</figcaption></figure>
         <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="12"><img srcset="assets/client-logos-monochrome/640/havelock-one.png 640w, assets/client-logos-monochrome/havelock-one.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/havelock-one.png" width="393" height="320" alt="هافلوك ون" loading="lazy"><figcaption>هافلوك ون</figcaption></figure>
         <figure class="relationship-mark--wide" data-motion-enter="relationship-mark" data-motion-index="13"><img srcset="assets/client-logos-monochrome/640/rcu-mono-v3.png 640w, assets/client-logos-monochrome/rcu-mono-v3.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/rcu-mono-v3.png" width="328" height="91" alt="الهيئة الملكية لمحافظة العلا" loading="lazy"><figcaption>الهيئة الملكية لمحافظة العلا</figcaption></figure>
-        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="14"><img srcset="assets/client-logos-monochrome/640/astra-construction.png 640w, assets/client-logos-monochrome/astra-construction.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/astra-construction.png" width="493" height="320" alt="أسترا للإنشاءات" loading="lazy"><figcaption>أسترا للإنشاءات</figcaption></figure>
-        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="15"><img srcset="assets/client-logos-monochrome/640/alfanar-engineering-services.png 640w, assets/client-logos-monochrome/alfanar-engineering-services.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/alfanar-engineering-services.png" width="718" height="320" alt="الفنار للخدمات الهندسية" loading="lazy"><figcaption>الفنار للخدمات الهندسية</figcaption></figure>
-        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="16"><img srcset="assets/client-logos-monochrome/640/china-comservice.png 640w, assets/client-logos-monochrome/china-comservice.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/china-comservice.png" width="386" height="320" alt="تشاينا كومسيرفيس" loading="lazy"><figcaption>تشاينا كومسيرفيس</figcaption></figure>
-        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="17"><img srcset="assets/client-logos-monochrome/640/national-housing-company.png 640w, assets/client-logos-monochrome/national-housing-company.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/national-housing-company.png" width="407" height="320" alt="الشركة الوطنية للإسكان" loading="lazy"><figcaption>الشركة الوطنية للإسكان</figcaption></figure>
-        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="18"><img srcset="assets/client-logos-monochrome/640/albaddad-engineering.png 640w, assets/client-logos-monochrome/albaddad-engineering.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/albaddad-engineering.png" width="1705" height="320" alt="البغدادي للهندسة" loading="lazy"><figcaption>البغدادي للهندسة</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="14"><img srcset="assets/client-logos-monochrome/640/astra-construction.png 640w, assets/client-logos-monochrome/astra-construction.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/astra-construction.png" width="1200" height="448" alt="أسترا للإنشاءات" loading="lazy"><figcaption>أسترا للإنشاءات</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="15"><img srcset="assets/client-logos-monochrome/640/alfanar-engineering-services.png 640w, assets/client-logos-monochrome/alfanar-engineering-services.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/alfanar-engineering-services.png" width="1200" height="448" alt="الفنار للخدمات الهندسية" loading="lazy"><figcaption>الفنار للخدمات الهندسية</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="16"><img srcset="assets/client-logos-monochrome/640/china-comservice.png 640w, assets/client-logos-monochrome/china-comservice.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/china-comservice.png" width="1200" height="448" alt="تشاينا كومسيرفيس" loading="lazy"><figcaption>تشاينا كومسيرفيس</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="17"><img srcset="assets/client-logos-monochrome/640/national-housing-company.png 640w, assets/client-logos-monochrome/national-housing-company.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/national-housing-company.png" width="1200" height="448" alt="الشركة الوطنية للإسكان" loading="lazy"><figcaption>الشركة الوطنية للإسكان</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="18"><img srcset="assets/client-logos-monochrome/640/albaddad-engineering.png 640w, assets/client-logos-monochrome/albaddad-engineering.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/albaddad-engineering.png" width="1200" height="448" alt="البغدادي للهندسة" loading="lazy"><figcaption>البغدادي للهندسة</figcaption></figure>
         <figure data-motion-enter="relationship-mark" data-motion-index="19"><img srcset="assets/client-logos-monochrome/640/hayyak.png 640w, assets/client-logos-monochrome/hayyak.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/hayyak.png" width="1200" height="448" alt="هاياك لاونج" loading="lazy"><figcaption>هاياك لاونج</figcaption></figure>
         <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="20"><img srcset="assets/client-logos-monochrome/640/al-tanfeethi.png 640w, assets/client-logos-monochrome/al-tanfeethi.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/al-tanfeethi.png" width="426" height="320" alt="التنفيذي" loading="lazy"><figcaption>التنفيذي</figcaption></figure>
         <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="21"><img srcset="assets/client-logos-monochrome/640/abdul-mohsen-al-tamimi-group.png 640w, assets/client-logos-monochrome/abdul-mohsen-al-tamimi-group.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/abdul-mohsen-al-tamimi-group.png" width="1182" height="320" alt="مجموعة عبدالمحسن التميمي" loading="lazy"><figcaption>مجموعة عبدالمحسن التميمي</figcaption></figure>
@@ -252,7 +298,7 @@
         <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="23"><img srcset="assets/client-logos-monochrome/640/ministry-civil-service.png 640w, assets/client-logos-monochrome/ministry-civil-service.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/ministry-civil-service.png" width="585" height="320" alt="وزارة الخدمة المدنية" loading="lazy"><figcaption>وزارة الخدمة المدنية</figcaption></figure>
         <figure data-motion-enter="relationship-mark" data-motion-index="24"><img srcset="assets/client-logos-monochrome/640/bec-arabia.png 640w, assets/client-logos-monochrome/bec-arabia.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/bec-arabia.png" width="1200" height="448" alt="بي إي سي العربية" loading="lazy"><figcaption>بي إي سي العربية</figcaption></figure>
         <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="25"><img srcset="assets/client-logos-monochrome/640/civil-affairs.png 640w, assets/client-logos-monochrome/civil-affairs.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/civil-affairs.png" width="382" height="320" alt="الأحوال المدنية" loading="lazy"><figcaption>الأحوال المدنية</figcaption></figure>
-        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="26"><img srcset="assets/client-logos-monochrome/640/national-talents-company.png 640w, assets/client-logos-monochrome/national-talents-company.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/national-talents-company.png" width="1523" height="320" alt="شركة المواهب الوطنية" loading="lazy"><figcaption>شركة المواهب الوطنية</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="26"><img srcset="assets/client-logos-monochrome/640/national-talents-company.png 640w, assets/client-logos-monochrome/national-talents-company.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/national-talents-company.png" width="1200" height="448" alt="شركة المواهب الوطنية" loading="lazy"><figcaption>شركة المواهب الوطنية</figcaption></figure>
         <figure class="relationship-mark--wide" data-motion-enter="relationship-mark" data-motion-index="27"><img srcset="assets/client-logos-monochrome/640/neom-mono-v3.png 640w, assets/client-logos-monochrome/neom-mono-v3.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/neom-mono-v3.png" width="623" height="232" alt="نيوم" loading="lazy"><figcaption>نيوم</figcaption></figure>
         <figure data-motion-enter="relationship-mark" data-motion-index="28"><img srcset="assets/client-logos-monochrome/640/gaca.png 640w, assets/client-logos-monochrome/gaca.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/gaca.png" width="1200" height="448" alt="الهيئة العامة للطيران المدني" loading="lazy"><figcaption>الهيئة العامة للطيران المدني</figcaption></figure>
         <figure data-motion-enter="relationship-mark" data-motion-index="29"><img srcset="assets/client-logos-monochrome/640/six-senses.png 640w, assets/client-logos-monochrome/six-senses.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/six-senses.png" width="1200" height="448" alt="سيكس سينسز" loading="lazy"><figcaption>سيكس سينسز</figcaption></figure>
@@ -263,17 +309,17 @@
         <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="34"><img srcset="assets/client-logos-monochrome/640/aris-star.png 640w, assets/client-logos-monochrome/aris-star.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/aris-star.png" width="352" height="320" alt="نجم آريس" loading="lazy"><figcaption>نجم آريس</figcaption></figure>
         <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="35"><img srcset="assets/client-logos-monochrome/640/swiss-inn-hotels-resorts.png 640w, assets/client-logos-monochrome/swiss-inn-hotels-resorts.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/swiss-inn-hotels-resorts.png" width="978" height="320" alt="سويس إن للفنادق والمنتجعات" loading="lazy"><figcaption>سويس إن للفنادق والمنتجعات</figcaption></figure>
         <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="36"><img srcset="assets/client-logos-monochrome/640/swiss-inn-tabuk.png 640w, assets/client-logos-monochrome/swiss-inn-tabuk.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/swiss-inn-tabuk.png" width="1023" height="320" alt="سويس إن تبوك" loading="lazy"><figcaption>سويس إن تبوك</figcaption></figure>
-        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="37"><img srcset="assets/client-logos-monochrome/640/lilac-park.png 640w, assets/client-logos-monochrome/lilac-park.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/lilac-park.png" width="211" height="320" alt="ليلاك بارك" loading="lazy"><figcaption>ليلاك بارك</figcaption></figure>
-        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="38"><img srcset="assets/client-logos-monochrome/640/five-seasons-hotel.png 640w, assets/client-logos-monochrome/five-seasons-hotel.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/five-seasons-hotel.png" width="561" height="320" alt="فندق فايف سيزونز" loading="lazy"><figcaption>فندق فايف سيزونز</figcaption></figure>
-        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="39"><img srcset="assets/client-logos-monochrome/640/skyline-tabuk-hotel.png 640w, assets/client-logos-monochrome/skyline-tabuk-hotel.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/skyline-tabuk-hotel.png" width="364" height="320" alt="فندق سكاي لاين تبوك" loading="lazy"><figcaption>فندق سكاي لاين تبوك</figcaption></figure>
-        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="40"><img srcset="assets/client-logos-monochrome/640/marvelous-hotel.png 640w, assets/client-logos-monochrome/marvelous-hotel.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/marvelous-hotel.png" width="695" height="320" alt="فندق مارفيلوس" loading="lazy"><figcaption>فندق مارفيلوس</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="37"><img srcset="assets/client-logos-monochrome/640/lilac-park.png 640w, assets/client-logos-monochrome/lilac-park.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/lilac-park.png" width="1200" height="448" alt="ليلاك بارك" loading="lazy"><figcaption>ليلاك بارك</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="38"><img srcset="assets/client-logos-monochrome/640/five-seasons-hotel.png 640w, assets/client-logos-monochrome/five-seasons-hotel.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/five-seasons-hotel.png" width="1200" height="448" alt="فندق فايف سيزونز" loading="lazy"><figcaption>فندق فايف سيزونز</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="39"><img srcset="assets/client-logos-monochrome/640/skyline-tabuk-hotel.png 640w, assets/client-logos-monochrome/skyline-tabuk-hotel.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/skyline-tabuk-hotel.png" width="1200" height="448" alt="فندق سكاي لاين تبوك" loading="lazy"><figcaption>فندق سكاي لاين تبوك</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="40"><img srcset="assets/client-logos-monochrome/640/marvelous-hotel.png 640w, assets/client-logos-monochrome/marvelous-hotel.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/marvelous-hotel.png" width="1200" height="448" alt="فندق مارفيلوس" loading="lazy"><figcaption>فندق مارفيلوس</figcaption></figure>
         <figure data-motion-enter="relationship-mark" data-motion-index="41"><img srcset="assets/client-logos-monochrome/640/crowne-plaza.png 640w, assets/client-logos-monochrome/crowne-plaza.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/crowne-plaza.png" width="1200" height="448" alt="فنادق ومنتجعات كراون بلازا" loading="lazy"><figcaption>فنادق ومنتجعات كراون بلازا</figcaption></figure>
-        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="42"><img srcset="assets/client-logos-monochrome/640/rose-land.png 640w, assets/client-logos-monochrome/rose-land.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/rose-land.png" width="216" height="320" alt="روز لاند" loading="lazy"><figcaption>روز لاند</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="42"><img srcset="assets/client-logos-monochrome/640/rose-land.png 640w, assets/client-logos-monochrome/rose-land.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/rose-land.png" width="1200" height="448" alt="روز لاند" loading="lazy"><figcaption>روز لاند</figcaption></figure>
         <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="43"><img srcset="assets/client-logos-monochrome/640/hikari-sushi-lounge.png 640w, assets/client-logos-monochrome/hikari-sushi-lounge.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/hikari-sushi-lounge.png" width="549" height="320" alt="هيكاري سوشي لاونج" loading="lazy"><figcaption>هيكاري سوشي لاونج</figcaption></figure>
         <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="44"><img srcset="assets/client-logos-monochrome/640/diwan-al-kashi.png 640w, assets/client-logos-monochrome/diwan-al-kashi.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/diwan-al-kashi.png" width="209" height="320" alt="ديوان الكاشي" loading="lazy"><figcaption>ديوان الكاشي</figcaption></figure>
         <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="45"><img srcset="assets/client-logos-monochrome/640/top-grill.png 640w, assets/client-logos-monochrome/top-grill.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/top-grill.png" width="418" height="320" alt="توب جريل" loading="lazy"><figcaption>توب جريل</figcaption></figure>
         <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="46"><img srcset="assets/client-logos-monochrome/640/north-coffee.png 640w, assets/client-logos-monochrome/north-coffee.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/north-coffee.png" width="290" height="320" alt="نورث كوفي" loading="lazy"><figcaption>نورث كوفي</figcaption></figure>
-        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="47"><img srcset="assets/client-logos-monochrome/640/hirola.png 640w, assets/client-logos-monochrome/hirola.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/hirola.png" width="163" height="320" alt="هيرولا" loading="lazy"><figcaption>هيرولا</figcaption></figure>
+        <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="47"><img srcset="assets/client-logos-monochrome/640/hirola.png 640w, assets/client-logos-monochrome/hirola.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/hirola.png" width="1200" height="448" alt="هيرولا" loading="lazy"><figcaption>هيرولا</figcaption></figure>
         <figure class="relationship-mark--profile" data-motion-enter="relationship-mark" data-motion-index="48"><img srcset="assets/client-logos-monochrome/640/mazyan.png 640w, assets/client-logos-monochrome/mazyan.png 1200w" sizes="(max-width: 47.9375rem) 182px, 259px" src="assets/client-logos-monochrome/mazyan.png" width="292" height="320" alt="مزيان" loading="lazy"><figcaption>مزيان</figcaption></figure>
       </div>
     </section>
@@ -320,7 +366,7 @@
         <aside class="project-runway__navigator" aria-label="التنقل بين مشاريعنا">
           <span class="project-runway__navigator-count" data-project-navigator-counter>01 / 08</span>
           <strong>مشاريعنا</strong>
-          <div class="project-runway__navigator-list" aria-label="اختر صورة المشروع">
+          <div class="project-runway__navigator-list" role="group" aria-label="اختر صورة المشروع">
             <button type="button" data-project-static-select data-project-index="0" aria-label="استعرض المشروع 01" aria-pressed="true">01</button>
             <button type="button" data-project-static-select data-project-index="1" aria-label="استعرض المشروع 02" aria-pressed="false">02</button>
             <button type="button" data-project-static-select data-project-index="2" aria-label="استعرض المشروع 03" aria-pressed="false">03</button>
@@ -379,6 +425,31 @@
       </div>
 
       <form
+        class="brief-form brief-form--native"
+        data-project-brief-native
+        action="https://wa.me/966531100366"
+        method="get"
+        aria-describedby="brief-native-note"
+      >
+        <p class="brief-form__required-note">رسالة واحدة مطلوبة.</p>
+        <div class="brief-field brief-field--message">
+          <label for="brief-native-text">تفاصيل المشروع</label>
+          <p class="brief-field__help">اذكر اسمك، وسيلة التواصل، المدينة، المجال، مرحلة المشروع، والموجز.</p>
+          <textarea
+            id="brief-native-text"
+            name="text"
+            rows="10"
+            required
+            placeholder="الاسم:&#10;رقم الهاتف أو البريد الإلكتروني:&#10;المدينة:&#10;المجال:&#10;مرحلة المشروع:&#10;الموجز:"
+          ></textarea>
+        </div>
+        <div class="brief-form__footer">
+          <p id="brief-native-note">لا تُحفظ رسالتك هنا. ستفتح كمسودة داخل واتساب، وأنت تقرر إن كنت تريد إرسالها.</p>
+          <button type="submit">افتح موجز المشروع في واتساب <span aria-hidden="true">↗</span></button>
+        </div>
+      </form>
+
+      <form
         class="brief-form"
         id="projectBriefForm"
         data-project-brief-form
@@ -386,15 +457,17 @@
         action="https://wa.me/966531100366"
         method="get"
         target="_blank"
-        aria-describedby="brief-note"
+        aria-describedby="brief-required brief-note"
+        hidden
       >
+        <p class="brief-form__required-note" id="brief-required">جميع الحقول مطلوبة.</p>
         <div class="brief-field">
           <label for="brief-name">الاسم</label>
           <input id="brief-name" name="name" type="text" autocomplete="name" required>
         </div>
         <div class="brief-field">
           <label for="brief-contact">رقم الهاتف أو البريد الإلكتروني</label>
-          <input id="brief-contact" name="contact" type="text" autocomplete="tel" required>
+          <input id="brief-contact" name="contact" type="text" required>
         </div>
         <div class="brief-field">
           <label for="brief-city">المدينة</label>

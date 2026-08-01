@@ -7,11 +7,17 @@
 
   const LANGUAGE_ANCHOR_ALLOWLIST = new Set(["proof", "about", "why-divani", "capabilities", "relationships", "selected-work", "project-brief", "contact"]);
   const MOBILE_QUERY = "(max-width: 767px)";
+  const NAV_COLLAPSED_QUERY = "(max-width: 63.9375rem)";
+  // 75 frames at 11fps reads as a ~7s opening title, which lands the composed
+  // final frame just after the intro curtain has lifted.
+  const FILM_FRAME_RATE = 11;
+  const FILM_INTRO_HOLD_MS = 2200;
   const PROJECT_RUNWAY_QUERY = "(min-width: 900px)";
   const WHATSAPP_NUMBER = "966531100366";
   const INITIAL_RENDER_LOCKS = [
-    "brief-render-pending", "capabilities-render-pending", "hero-text-render-pending",
-    "threshold-render-pending", "design-copy-render-pending",
+    "brief-render-pending", "readiness-render-pending", "delivery-render-pending",
+    "capabilities-render-pending", "hero-text-render-pending", "threshold-render-pending",
+    "design-copy-render-pending",
   ];
   const INITIAL_RENDER_READY_ATTRIBUTE = "data-initial-render-ready";
   const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -56,11 +62,11 @@
       element.classList.add("is-entered");
       element.style.removeProperty("--motion-progress");
       element.style.removeProperty("--scene-scale");
-      element.style.removeProperty("--scene-shift");
+      element.style.removeProperty("--scene-veil");
       element.style.removeProperty("--scene-exposure");
-      element.style.removeProperty("--scene-shift-opposite");
       element.classList.remove("is-motion-active");
     }
+    revealSiteNav();
     for (const portal of document.querySelectorAll("[data-threshold-portal]")) {
       if (!(portal instanceof HTMLElement)) continue;
       portal.style.removeProperty("clip-path");
@@ -93,6 +99,15 @@
       video.dataset.playback = "poster";
       video.dataset.playable = "false";
       video.load();
+    }
+  }
+
+  // The opening film owns the first screen, so the bar is held back until the
+  // film settles. Any path that gives up on the film has to release it too.
+  function revealSiteNav() {
+    for (const nav of document.querySelectorAll("[data-site-nav]")) {
+      if (!(nav instanceof HTMLElement) || nav.dataset.navState === "page") continue;
+      nav.dataset.navState = "page";
     }
   }
 
@@ -173,15 +188,15 @@
   }
 
   function initialiseSkipLink() {
-    const link = document.querySelector("a.skip-link[href='#capabilities-title']");
-    const target = document.querySelector("#capabilities-title[tabindex='-1']");
+    const link = document.querySelector("a.skip-link[href='#about-title']");
+    const target = document.querySelector("#about-title[tabindex='-1']");
     if (!(link instanceof HTMLAnchorElement) || !(target instanceof HTMLElement)) return;
     link.addEventListener("click", (event) => {
       event.preventDefault();
       try {
-        window.history.pushState(null, "", "#capabilities");
+        window.history.pushState(null, "", "#about");
       } catch {
-        window.location.hash = "capabilities";
+        window.location.hash = "about";
       }
       syncLanguageSwitch();
       try {
@@ -189,7 +204,8 @@
       } catch {
         target.focus();
       }
-      scrollToCapabilitiesIntro(target);
+      const section = target.closest("#about");
+      (section instanceof HTMLElement ? section : target).scrollIntoView({ block: "start" });
     });
   }
 
@@ -218,28 +234,25 @@
     let loadGeneration = 0;
     let requestedFrame = 0;
     let renderedFrame = -1;
-    let lastScheduledTarget = 0;
-    let scrollDirection = 1;
     let frameQueue = [];
     let schedulerEnabled = false;
-    let prefetchArmed = false;
-    let prefetchWindowTarget = null;
-    let prefetchWindowDirection = 0;
     let designPosterPrewarmed = false;
-    let unsubscribeScroll = null;
     let unsubscribeFramePump = null;
     let destroyed = false;
-    let scrollMetrics = null;
     let identMetrics = null;
     let reflectedAct = "";
+    let playhead = 0;
+    let filmClock = 0;
+    let filmFrame = 0;
+    let filmSettled = false;
+    let bytesWarming = false;
     const cache = new Map();
     const inflight = new Map();
     const reflectedVariables = new Map();
 
     function fallback() {
       schedulerEnabled = false;
-      unsubscribeScroll?.();
-      unsubscribeScroll = null;
+      stopFilm();
       unsubscribeFramePump?.();
       unsubscribeFramePump = null;
       resetFrameLoads();
@@ -250,7 +263,7 @@
       hero.dataset.mode = "poster";
       hero.dataset.ready = "true";
       hero.dataset.act = "poster";
-      hero.style.setProperty("--hero-progress", "0");
+      hero.dataset.film = "static";
       hero.style.setProperty("--hero-camera-scale", "1");
       hero.style.setProperty("--hero-exposure", "0");
       hero.style.setProperty("--hero-copy-progress", "1");
@@ -285,8 +298,6 @@
     function resetFrameLoads() {
       loadGeneration += 1;
       frameQueue = [];
-      prefetchWindowTarget = null;
-      prefetchWindowDirection = 0;
       for (const entry of inflight.values()) entry.controller?.abort();
       inflight.clear();
     }
@@ -382,22 +393,12 @@
       return Math.round(clamp(index, 0, frameCount - 1));
     }
 
-    function directionalFrameWindow(target) {
+    // Playback only ever runs forward now, so the decode window is simply the
+    // frames immediately ahead of the playhead.
+    function forwardFrameWindow(target) {
       const desired = [];
-      const seen = new Set();
       const limit = cacheLimit();
-      const add = (index) => {
-        if (index < 0 || index >= frameCount || seen.has(index)) return;
-        seen.add(index);
-        desired.push(index);
-      };
-      add(target);
-      const aheadBudget = Math.ceil((limit - 1) * 0.67);
-      for (let distance = 1; distance <= aheadBudget; distance += 1) add(target + (scrollDirection * distance));
-      for (let distance = 1; desired.length < limit && distance < frameCount; distance += 1) add(target - (scrollDirection * distance));
-      for (let distance = aheadBudget + 1; desired.length < limit && distance < frameCount; distance += 1) {
-        add(target + (scrollDirection * distance));
-      }
+      for (let index = target; index < frameCount && desired.length < limit; index += 1) desired.push(index);
       return desired;
     }
 
@@ -416,12 +417,12 @@
             return false;
           }
           touchCache(index, frame);
-          const liveTarget = hero.dataset.mode === "sequence" ? scrollState().target : requestedFrame;
+          const liveTarget = hero.dataset.mode === "sequence" ? filmState().target : requestedFrame;
           if (requestedFrame === index && liveTarget === index) drawFrame(frame, index);
           return true;
         } catch {
           const aborted = Boolean(controller?.signal.aborted);
-          const liveTarget = hero.dataset.mode === "sequence" ? scrollState().target : requestedFrame;
+          const liveTarget = hero.dataset.mode === "sequence" ? filmState().target : requestedFrame;
           if (!aborted && generation === loadGeneration && requestedVariant === variant && requestedFrame === index && liveTarget === index) fallback();
           return false;
         } finally {
@@ -445,12 +446,9 @@
       if (inflight.size < concurrency && frameQueue.length) motionDirector.schedule();
     }
 
-    function requestScheduledFrame(index, { allowPrefetch = false } = {}) {
+    function requestScheduledFrame(index) {
       if (!frameUrls.length) return;
       const safeIndex = safeFrameIndex(index);
-      const delta = safeIndex - lastScheduledTarget;
-      if (delta) scrollDirection = Math.sign(delta);
-      lastScheduledTarget = safeIndex;
       requestedFrame = safeIndex;
 
       if (cache.has(safeIndex)) {
@@ -459,17 +457,14 @@
         drawFrame(frame, safeIndex);
       }
 
-      const desired = allowPrefetch ? directionalFrameWindow(safeIndex) : [safeIndex];
-      frameQueue = desired.filter((candidate) => !cache.has(candidate) && !inflight.has(candidate));
-      prefetchWindowTarget = allowPrefetch ? safeIndex : null;
-      prefetchWindowDirection = allowPrefetch ? scrollDirection : 0;
+      frameQueue = forwardFrameWindow(safeIndex)
+        .filter((candidate) => !cache.has(candidate) && !inflight.has(candidate));
       motionDirector.schedule();
     }
 
     async function loadInitialFrame(index) {
       const safeIndex = safeFrameIndex(index);
       requestedFrame = safeIndex;
-      lastScheduledTarget = safeIndex;
       if (cache.has(safeIndex)) {
         drawFrame(cache.get(safeIndex), safeIndex);
         return true;
@@ -484,17 +479,9 @@
       return "hold";
     }
 
-    function scrollState() {
-      if (!scrollMetrics || scrollMetrics.viewportHeight !== window.innerHeight) {
-        const rect = hero.getBoundingClientRect();
-        scrollMetrics = {
-          start: window.scrollY + rect.top,
-          travel: Math.max(1, hero.offsetHeight - window.innerHeight),
-          viewportHeight: window.innerHeight,
-        };
-      }
-      const progress = clamp((window.scrollY - scrollMetrics.start) / scrollMetrics.travel);
-      return { progress, target: Math.round(progress * (frameCount - 1)) };
+    function filmState() {
+      const span = Math.max(1, frameCount - 1);
+      return { progress: clamp(playhead / span), target: safeFrameIndex(Math.round(playhead)) };
     }
 
     function reflectVariable(name, value) {
@@ -552,17 +539,16 @@
     }
 
     ident?.addEventListener("focusout", () => {
-      requestAnimationFrame(() => reflectHeroIdent(scrollState().progress));
+      requestAnimationFrame(() => reflectHeroIdent(filmState().progress));
     });
 
-    function reflectScrollState(state) {
+    function reflectFilmState(state) {
       const { progress } = state;
       const cameraProgress = smoothstep(0.68, 0.9, progress);
       const cameraAmplitude = variant === "mobile" ? 0.025 : 0.045;
       const exposureIn = smoothstep(0.68, 0.77, progress);
       const exposureOut = smoothstep(0.79, 0.9, progress);
       const exposure = Math.max(0, exposureIn - exposureOut) * 0.14;
-      reflectVariable("--hero-progress", progress.toFixed(4));
       reflectVariable("--hero-camera-scale", (1 + (cameraAmplitude * cameraProgress)).toFixed(5));
       reflectVariable("--hero-exposure", exposure.toFixed(4));
       const copyProgress = smoothstep(0.88, 0.98, progress);
@@ -584,40 +570,94 @@
       }
     }
 
-    function updateFromScroll() {
+    function renderFilm() {
       if (hero.dataset.mode !== "sequence") return;
-      const state = scrollState();
-      reflectScrollState(state);
+      const state = filmState();
+      reflectFilmState(state);
       prewarmPortal(state.progress);
-      const needsWindow = prefetchArmed && (
-        prefetchWindowTarget !== state.target || prefetchWindowDirection !== scrollDirection
-      );
-      if (state.target !== requestedFrame || renderedFrame < 0 || needsWindow) {
-        requestScheduledFrame(state.target, { allowPrefetch: prefetchArmed });
+      if (state.target !== requestedFrame || renderedFrame < 0) requestScheduledFrame(state.target);
+    }
+
+    // Frames are decoded just ahead of the playhead and the cache stays small -
+    // 75 decoded 1600x900 bitmaps would cost hundreds of megabytes. Pulling the
+    // bytes into the HTTP cache up front is what keeps that decode cheap enough
+    // to hold a steady rate.
+    function warmFrameBytes() {
+      if (bytesWarming || !frameUrls.length) return;
+      bytesWarming = true;
+      const queue = frameUrls.slice();
+      const lanes = variant === "mobile" ? 3 : 5;
+      const drain = async () => {
+        while (queue.length && !destroyed) {
+          const url = queue.shift();
+          try {
+            const response = await fetch(url, { cache: "force-cache" });
+            await response.blob();
+          } catch {
+            // A cold frame simply decodes on demand instead; nothing to recover.
+          }
+        }
+      };
+      for (let lane = 0; lane < lanes; lane += 1) drain();
+    }
+
+    function stopFilm() {
+      if (!filmFrame) return;
+      cancelAnimationFrame(filmFrame);
+      filmFrame = 0;
+    }
+
+    function settleFilm() {
+      if (filmSettled) return;
+      filmSettled = true;
+      stopFilm();
+      playhead = frameCount - 1;
+      renderFilm();
+      hero.dataset.film = "settled";
+      revealSiteNav();
+      window.dispatchEvent(new CustomEvent("divani:hero-film-complete"));
+    }
+
+    function advanceFilm(now) {
+      filmFrame = 0;
+      if (destroyed || filmSettled || hero.dataset.mode !== "sequence") return;
+      if (!motionAllowed()) {
+        settleFilm();
+        return;
       }
-    }
-
-    function scheduleScrollUpdate() {
-      motionDirector.schedule();
-    }
-
-    function armFramePrefetch(direction = 0) {
-      if (direction) scrollDirection = Math.sign(direction);
-      const changed = !prefetchArmed || Boolean(direction);
-      prefetchArmed = true;
-      if (changed) {
-        prefetchWindowTarget = null;
-        scheduleScrollUpdate();
+      // Somebody who scrolls on does not want to come back to a half-drawn
+      // frame, so leaving the opening screen finishes the film.
+      if (window.scrollY > window.innerHeight * 0.25) {
+        settleFilm();
+        return;
       }
+      // The playhead never runs more than one frame past what has been drawn, so
+      // a slow decode slows the film down instead of making it skip frames.
+      const elapsed = filmClock ? Math.min(120, now - filmClock) : 0;
+      filmClock = now;
+      const ceiling = Math.max(renderedFrame, 0) + 1;
+      const advanced = Math.min(playhead + ((elapsed / 1000) * FILM_FRAME_RATE), ceiling, frameCount - 1);
+      // Never let the ceiling pull the playhead backwards - swapping variants
+      // resets renderedFrame, and the film must not rewind because of it.
+      playhead = Math.max(playhead, advanced);
+      renderFilm();
+      if (playhead >= frameCount - 1) {
+        settleFilm();
+        return;
+      }
+      filmFrame = requestAnimationFrame(advanceFilm);
     }
 
-    function handleNavigationKey(event) {
-      if (event.target instanceof HTMLElement && event.target.matches("input, textarea, select, [contenteditable]")) return;
-      const forward = new Set(["ArrowDown", "PageDown", "End"]);
-      const backward = new Set(["ArrowUp", "PageUp", "Home"]);
-      if (forward.has(event.key)) armFramePrefetch(1);
-      else if (backward.has(event.key)) armFramePrefetch(-1);
-      else if (event.key === " ") armFramePrefetch(event.shiftKey ? -1 : 1);
+    function startFilm() {
+      if (destroyed || filmSettled || filmFrame || hero.dataset.mode !== "sequence") return;
+      // A restored scroll position means the opening has already been seen.
+      if (!motionAllowed() || window.scrollY > 24) {
+        settleFilm();
+        return;
+      }
+      hero.dataset.film = "playing";
+      filmClock = 0;
+      filmFrame = requestAnimationFrame(advanceFilm);
     }
 
     function prewarmDesignPoster() {
@@ -648,8 +688,8 @@
       clearCache();
       renderedFrame = -1;
       requestedFrame = -1;
-      scrollMetrics = null;
       identMetrics = null;
+      bytesWarming = false;
       if (!hero.classList.contains("is-sequence")) hero.classList.add("is-poster");
     }
 
@@ -669,36 +709,34 @@
         frameCount = Number(manifest.frameCount);
         if (manifest.version !== "hero-v1" || frameCount !== 75) throw new Error("Invalid hero manifest");
         applyVariant(window.matchMedia(MOBILE_QUERY).matches ? "mobile" : "desktop");
-        const initialState = scrollState();
-        reflectScrollState(initialState);
+        const initialState = filmState();
+        reflectFilmState(initialState);
         await loadInitialFrame(initialState.target);
         if (startupCancelled()) return;
         if (renderedFrame !== initialState.target) throw new Error("Initial target frame did not render");
         hero.dataset.frameCount = String(frameCount);
         hero.dataset.mode = "sequence";
         schedulerEnabled = true;
-        scrollMetrics = null;
-        unsubscribeScroll = motionDirector.subscribe(updateFromScroll);
         unsubscribeFramePump = motionDirector.subscribe(pumpFrameQueue);
-        window.addEventListener("wheel", (event) => armFramePrefetch(event.deltaY), { passive: true });
-        window.addEventListener("touchstart", () => armFramePrefetch(), { passive: true });
-        window.addEventListener("keydown", handleNavigationKey);
         window.addEventListener("resize", () => {
-          scrollMetrics = null;
           identMetrics = null;
         }, { passive: true });
         window.matchMedia(MOBILE_QUERY).addEventListener("change", (event) => {
           try {
             applyVariant(event.matches ? "mobile" : "desktop");
-            scheduleScrollUpdate();
+            warmFrameBytes();
+            renderFilm();
           } catch {
             fallback();
           }
         });
-        scheduleScrollUpdate();
+        renderFilm();
         hero.dataset.ready = "true";
+        hero.dataset.film = "pending";
         window.dispatchEvent(new CustomEvent("divani:hero-ready", { detail: { interactive: true } }));
         root.classList.remove("js-pending");
+        warmFrameBytes();
+        window.setTimeout(startFilm, Math.max(0, FILM_INTRO_HOLD_MS - performance.now()));
       } catch {
         fallback();
       }
@@ -710,8 +748,7 @@
     });
     window.addEventListener("pagehide", (event) => {
       if (!event.persisted) {
-        unsubscribeScroll?.();
-        unsubscribeScroll = null;
+        stopFilm();
         unsubscribeFramePump?.();
         unsubscribeFramePump = null;
         resetFrameLoads();
@@ -721,10 +758,11 @@
     });
     window.addEventListener("pageshow", (event) => {
       if (!event.persisted || destroyed || hero.dataset.mode !== "sequence") return;
-      scrollMetrics = null;
       identMetrics = null;
       renderedFrame = -1;
-      scheduleScrollUpdate();
+      filmClock = 0;
+      renderFilm();
+      if (!filmSettled && !filmFrame) filmFrame = requestAnimationFrame(advanceFilm);
     });
   }
 
@@ -828,8 +866,6 @@
       if (!(stage instanceof HTMLElement)) return;
       const type = stage.dataset.motionStage || "";
       const variant = stage.dataset.motionVariant || "";
-      const direction = stage.dataset.motionDirection || "forward";
-      const directionSign = direction === "right-to-left" || direction === "reverse" || direction === "rtl" ? -1 : 1;
       let startScale = 1;
       if (type === "capability") {
         startScale = variant === "design" ? 1.06 : variant === "fitout" ? 1.035 : 1.015;
@@ -842,15 +878,32 @@
       stage.dataset.motionProgress = progress.toFixed(4);
       stage.style.setProperty("--motion-progress", progress.toFixed(4));
       stage.style.setProperty("--scene-scale", lerp(startScale, 1, smoothstep(0, 0.9, progress)).toFixed(5));
-      const shift = directionSign * 105 * smoothstep(0.05, 0.92, progress);
-      stage.style.setProperty("--scene-shift", `${shift.toFixed(3)}%`);
-      stage.style.setProperty("--scene-shift-opposite", `${(-shift).toFixed(3)}%`);
+      // The veil panels used to wipe sideways out of frame; they cross-fade now,
+      // so data-motion-direction no longer feeds the reveal at all.
+      const veilProgress = smoothstep(0.05, 0.92, progress);
+      stage.style.setProperty("--scene-veil", (1 - veilProgress).toFixed(4));
       stage.style.setProperty("--scene-exposure", (variant === "development"
         ? Math.max(0, smoothstep(0.08, 0.28, progress) - smoothstep(0.35, 0.72, progress)) * 0.16
         : 0).toFixed(4));
       if (type === "capability" && progress >= 0.34 && stage.dataset.motionCopyEntered !== "true") {
         stage.querySelector("[data-motion-enter='capability-copy']")?.classList.add("is-entered");
         stage.dataset.motionCopyEntered = "true";
+      }
+      // The division photo fades in off its own observer so the reveal lands
+      // when the photo is on screen. This is only a failsafe against a photo
+      // stranded at opacity 0, and it has to measure the photo rather than the
+      // chapter: the design chapter runs 2.4 viewports tall, so chapter progress
+      // is already 1 long before its photo reaches the fold, and keying off that
+      // marked the photo entered before it was ever visible.
+      if (type === "capability" && stage.dataset.motionMediaEntered !== "true") {
+        const media = stage.querySelector("[data-motion-enter='capability-media']");
+        if (media instanceof HTMLElement) {
+          const rect = media.getBoundingClientRect();
+          if (rect.bottom > 0 && rect.top < window.innerHeight * 0.45) {
+            media.classList.add("is-entered");
+            stage.dataset.motionMediaEntered = "true";
+          }
+        }
       }
       if (type === "relationships" && progress >= 0.44 && stage.dataset.motionMarksEntered !== "true") {
         for (const mark of stage.querySelectorAll("[data-motion-enter='relationship-mark']")) mark.classList.add("is-entered");
@@ -1387,7 +1440,11 @@
 
   function initialiseProjectBrief() {
     const form = document.querySelector("form[data-project-brief-form]");
+    const nativeForm = document.querySelector("form[data-project-brief-native]");
     if (!(form instanceof HTMLFormElement)) return;
+    const nativeText = nativeForm instanceof HTMLFormElement
+      ? nativeForm.elements.namedItem("text")
+      : null;
     const directWhatsAppLink = document.querySelector(".project-brief__intro a[href*='wa.me']");
     if (directWhatsAppLink instanceof HTMLAnchorElement) {
       directWhatsAppLink.addEventListener("focus", () => {
@@ -1458,11 +1515,20 @@
           : (arabic ? "تعذر فتح النافذة. استخدم رابط المسودة الظاهر أدناه." : "The new window was blocked. Use the prepared draft link below.");
       }
     });
+
+    const nativeFallbackInUse = nativeText instanceof HTMLTextAreaElement &&
+      (document.activeElement === nativeText || nativeText.value.length > 0);
+    if (!nativeFallbackInUse) {
+      form.hidden = false;
+      if (nativeForm instanceof HTMLFormElement) nativeForm.hidden = true;
+    }
   }
 
   function initialiseClientMarquee() {
     const marquee = document.querySelector(".relationship-marks");
     if (!(marquee instanceof HTMLElement) || marquee.dataset.marqueeReady === "true") return;
+    const controls = document.querySelector("[data-client-marquee-controls]");
+    const toggle = controls?.querySelector("[data-client-marquee-toggle]");
 
     const clients = Array.from(marquee.querySelectorAll(":scope > figure"));
     if (clients.length < 2) return;
@@ -1528,6 +1594,23 @@
     });
 
     marquee.dataset.marqueeReady = "true";
+    if (controls instanceof HTMLElement && toggle instanceof HTMLButtonElement && motionAllowed()) {
+      const pauseLabel = toggle.dataset.pauseLabel || "Pause client logo motion";
+      const resumeLabel = toggle.dataset.resumeLabel || "Resume client logo motion";
+      const togglePaused = () => {
+        const paused = toggle.getAttribute("aria-pressed") !== "true";
+        toggle.setAttribute("aria-pressed", String(paused));
+        toggle.textContent = paused ? resumeLabel : pauseLabel;
+        marquee.dataset.marqueePaused = String(paused);
+      };
+      toggle.addEventListener("click", togglePaused);
+      toggle.addEventListener("keydown", (event) => {
+        if (event.repeat || (event.key !== "Enter" && event.key !== " ")) return;
+        event.preventDefault();
+        togglePaused();
+      });
+      controls.hidden = false;
+    }
   }
 
   function deferClientMarquee() {
@@ -1550,8 +1633,78 @@
     observer.observe(section);
   }
 
+  function initialiseSiteNav() {
+    const nav = document.querySelector("[data-site-nav]");
+    if (!(nav instanceof HTMLElement)) return;
+    const toggle = nav.querySelector("[data-site-nav-toggle]");
+    const toggleLabel = toggle?.querySelector(".site-nav__toggle-label");
+    const collapsedQuery = window.matchMedia(NAV_COLLAPSED_QUERY);
+    const entries = [...nav.querySelectorAll("[data-nav-link]")]
+      .map((link) => ({ link, section: document.getElementById(link.getAttribute("data-nav-link") || "") }))
+      .filter((entry) => entry.link instanceof HTMLAnchorElement && entry.section instanceof HTMLElement);
+
+    function setOpen(open) {
+      nav.dataset.navOpen = String(open);
+      if (!(toggle instanceof HTMLButtonElement)) return;
+      toggle.setAttribute("aria-expanded", String(open));
+      if (!(toggleLabel instanceof HTMLElement)) return;
+      const next = open ? toggleLabel.dataset.closeLabel : toggleLabel.dataset.openLabel;
+      if (next) toggleLabel.textContent = next;
+    }
+
+    setOpen(false);
+    toggle?.addEventListener("click", () => setOpen(nav.dataset.navOpen !== "true"));
+    for (const link of nav.querySelectorAll("a")) {
+      link.addEventListener("click", () => setOpen(false));
+    }
+    document.addEventListener("keydown", (event) => {
+      if (event.key !== "Escape" || nav.dataset.navOpen !== "true") return;
+      setOpen(false);
+      if (toggle instanceof HTMLButtonElement) toggle.focus();
+    });
+    document.addEventListener("pointerdown", (event) => {
+      if (nav.dataset.navOpen !== "true") return;
+      if (event.target instanceof Node && nav.contains(event.target)) return;
+      setOpen(false);
+    });
+    collapsedQuery.addEventListener("change", () => setOpen(false));
+
+    // Sections here are tall and several of them are sticky, so intersection
+    // ratios read badly. The section crossing the reading line is the honest one.
+    function markCurrentSection() {
+      if (!entries.length) return;
+      const line = window.innerHeight * 0.34;
+      let current = null;
+      for (const entry of entries) {
+        if (entry.section.getBoundingClientRect().top - line <= 0) current = entry;
+      }
+      const documentEnd = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 4;
+      if (documentEnd) current = entries[entries.length - 1];
+      for (const entry of entries) {
+        if (entry === current) entry.link.setAttribute("aria-current", "true");
+        else entry.link.removeAttribute("aria-current");
+      }
+    }
+
+    motionDirector.subscribe(markCurrentSection);
+
+    const hero = document.querySelector("#proof[data-hero-sequence]");
+    if (!(hero instanceof HTMLElement) || !motionAllowed()) {
+      revealSiteNav();
+      return;
+    }
+    window.addEventListener("divani:hero-film-complete", revealSiteNav, { once: true });
+    window.addEventListener("scroll", () => {
+      if (window.scrollY > 24) revealSiteNav();
+    }, { passive: true });
+    // Nothing is worth hiding the navigation permanently for, so a stalled film
+    // still releases it.
+    window.setTimeout(revealSiteNav, 14000);
+  }
+
   function initialiseSite() {
     initialiseSkipLink();
+    initialiseSiteNav();
     deferClientMarquee();
     window.setTimeout(initialiseHeroSequence, 0);
     window.setTimeout(initialiseMotionSystem, 0);

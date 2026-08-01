@@ -76,6 +76,7 @@
   --measure: 92rem;
   --text-small: clamp(0.84rem, 0.78rem + 0.18vw, 0.94rem);
   --text-body: clamp(1.02rem, 0.96rem + 0.2vw, 1.14rem);
+  --nav-clearance: 4.5rem;
   color-scheme: light;
   font-synthesis: none;
 }
@@ -89,6 +90,7 @@
 html {
   margin: 0;
   scroll-behavior: auto;
+  scroll-padding-top: var(--nav-clearance);
   background: var(--carbon);
   scrollbar-color: #777168 var(--carbon);
 }
@@ -176,11 +178,11 @@ html[dir="rtl"] h3 {
 }
 
 section[id] {
-  scroll-margin-top: 1rem;
+  scroll-margin-top: var(--nav-clearance);
 }
 
 #capabilities-title {
-  scroll-margin-block-start: 1rem;
+  scroll-margin-block-start: var(--nav-clearance);
 }
 
 :focus-visible {
@@ -188,6 +190,7 @@ section[id] {
   outline-offset: 4px;
 }
 
+.site-nav :focus-visible,
 .hero-stage :focus-visible,
 .selected-work :focus-visible,
 .relationships :focus-visible,
@@ -219,18 +222,170 @@ section[id] {
   transform: translateY(0);
 }
 
-.site-header {
-  position: absolute;
+.site-nav {
+  position: fixed;
   inset-block-start: 0;
   inset-inline: 0;
-  z-index: 20;
+  z-index: 900;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  width: 100%;
-  padding: clamp(1rem, 2.5vw, 2rem) var(--gutter);
+  gap: clamp(1rem, 3vw, 3rem);
+  padding: 0.8rem var(--gutter);
+  border-block-end: 1px solid var(--line-light-soft);
+  background: rgba(16, 16, 15, 0.74);
+  -webkit-backdrop-filter: blur(16px) saturate(1.08);
+  backdrop-filter: blur(16px) saturate(1.08);
   color: var(--chalk);
+  transition: opacity 700ms ease, visibility 700ms;
+}
+
+@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .site-nav {
+    background: rgba(16, 16, 15, 0.94);
+  }
+}
+
+/* The opening film owns the first screen, so the bar stays out of it and fades
+   in once the film settles. Gated on html.js: if the runtime never runs there is
+   nothing to clear data-nav-state, and the navigation must not stay hidden. */
+html.js:not(.static-motion) .site-nav[data-nav-state="film"] {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.site-nav__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  flex: 0 0 auto;
+  color: inherit;
+  font-size: 0.74rem;
+  text-decoration: none;
+}
+
+.site-nav__brand img {
+  width: 1.85rem;
+  height: 1.85rem;
+  object-fit: contain;
+  filter: grayscale(1) brightness(0) invert(1);
+}
+
+.site-nav__brand span {
+  padding-inline-start: 0.3em;
+  font-family: "Bodoni Moda Wordmark", "Times New Roman", serif;
+  font-weight: 400;
+  letter-spacing: 0.3em;
+  line-height: 1;
+}
+
+.site-nav__menu {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.85rem, 1.9vw, 2.1rem);
+  margin-inline-start: auto;
+}
+
+.site-nav__menu a:not(.language-switch) {
+  position: relative;
+  padding-block: 0.45rem;
+  color: rgba(251, 248, 242, 0.7);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-decoration: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: color 240ms ease;
+}
+
+html[dir="rtl"] .site-nav__menu a:not(.language-switch) {
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.site-nav__menu a:not(.language-switch)::after {
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline: 0;
+  height: 1px;
+  background: currentColor;
+  content: "";
+  opacity: 0;
+  transition: opacity 280ms ease;
+}
+
+.site-nav__menu a[aria-current="true"] {
+  color: var(--chalk);
+}
+
+.site-nav__menu a[aria-current="true"]::after {
   opacity: 1;
+}
+
+.site-nav .language-switch {
+  flex: 0 0 auto;
+  font-size: 0.7rem;
+}
+
+.site-nav__toggle {
+  display: none;
+  align-items: center;
+  gap: 0.6rem;
+  margin-inline-start: auto;
+  padding: 0.5rem 0;
+  border: 0;
+  background: transparent;
+  color: var(--chalk);
+  cursor: pointer;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+html[dir="rtl"] .site-nav__toggle {
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.site-nav__toggle-mark {
+  position: relative;
+  display: block;
+  width: 1.15rem;
+  height: 1px;
+  background: currentColor;
+  transition: background-color 200ms ease;
+}
+
+.site-nav__toggle-mark::before,
+.site-nav__toggle-mark::after {
+  position: absolute;
+  inset-inline: 0;
+  height: 1px;
+  background: currentColor;
+  content: "";
+  transition: transform 260ms var(--ease-architectural);
+}
+
+.site-nav__toggle-mark::before {
+  inset-block-start: -0.32rem;
+}
+
+.site-nav__toggle-mark::after {
+  inset-block-start: 0.32rem;
+}
+
+.site-nav[data-nav-open="true"] .site-nav__toggle-mark {
+  background: transparent;
+}
+
+.site-nav[data-nav-open="true"] .site-nav__toggle-mark::before {
+  transform: translateY(0.32rem) rotate(45deg);
+}
+
+.site-nav[data-nav-open="true"] .site-nav__toggle-mark::after {
+  transform: translateY(-0.32rem) rotate(-45deg);
 }
 
 .site-footer__brand {
@@ -377,10 +532,46 @@ section[id] {
   100% { opacity: 0; visibility: hidden; }
 }
 
-.site-header__actions {
-  display: flex;
-  align-items: center;
-  margin-inline-start: auto;
+@media (max-width: 63.9375rem) {
+  .site-nav__toggle {
+    display: inline-flex;
+  }
+
+  .site-nav__menu {
+    position: absolute;
+    inset-block-start: 100%;
+    inset-inline: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    margin-inline-start: 0;
+    padding: 0.25rem var(--gutter) 1.4rem;
+    border-block-end: 1px solid var(--line-light-soft);
+    background: rgba(16, 16, 15, 0.97);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 320ms ease, visibility 320ms;
+  }
+
+  .site-nav[data-nav-open="true"] .site-nav__menu {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .site-nav__menu a:not(.language-switch) {
+    padding-block: 0.95rem;
+    border-block-end: 1px solid var(--line-light-soft);
+    font-size: 0.78rem;
+  }
+
+  .site-nav__menu a:not(.language-switch)::after {
+    display: none;
+  }
+
+  .site-nav .language-switch {
+    align-self: flex-start;
+    margin-block-start: 1.1rem;
+  }
 }
 
 .language-switch {
@@ -400,7 +591,6 @@ section[id] {
 }
 
 .hero-sequence {
-  --hero-progress: 0;
   --hero-camera-scale: 1;
   --hero-exposure: 0;
   --hero-copy-progress: 1;
@@ -414,14 +604,12 @@ section[id] {
   color: var(--chalk);
 }
 
-.motion-ready .hero-sequence.is-sequence {
-  height: 180vh;
-  height: 180svh;
-}
-
+/* The opening film runs on its own clock now, so the hero no longer needs
+   scroll travel to scrub through - one screen is the whole sequence. */
+.motion-ready .hero-sequence.is-sequence,
 .js-pending .hero-sequence {
-  height: 180vh;
-  height: 180svh;
+  height: 100vh;
+  height: 100svh;
 }
 
 .hero-stage {
@@ -862,7 +1050,7 @@ html[dir="rtl"] .handoff-disclosure {
 .capabilities {
   background: var(--mineral);
   content-visibility: auto;
-  contain-intrinsic-size: auto 432svh;
+  contain-intrinsic-size: auto 462svh;
 }
 
 .capability-chapter {
@@ -872,15 +1060,14 @@ html[dir="rtl"] .handoff-disclosure {
   border-block-start: 1px solid var(--line-dark);
 }
 
-.capability-chapter--design {
-  display: block;
-  min-height: auto;
-}
-
-.capability-chapter--design > .capability-copy {
-  width: min(var(--measure), 100%);
-  min-height: 64svh;
-  margin-inline: auto;
+/* The design chapter carries the full-bleed portal as well as a media column,
+   so the portal spans the grid and the still sits beside the copy exactly as
+   it does in the fit-out and development chapters. */
+.capability-chapter--design > .threshold-stage {
+  grid-column: 1 / -1;
+  /* As a grid item the portal's min-content width would otherwise hold the
+     single-column layout open far past the viewport on phones. */
+  min-width: 0;
 }
 
 .capability-chapter:nth-of-type(even) {
@@ -908,6 +1095,7 @@ html[dir="rtl"] .handoff-disclosure {
 }
 
 .capability-media video,
+.capability-still,
 .capability-loop-fallback {
   position: absolute;
   z-index: 1;
@@ -915,20 +1103,8 @@ html[dir="rtl"] .handoff-disclosure {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transform: scale(var(--scene-scale, 1));
-  transform-origin: center;
 }
 
-.capability-chapter--development .capability-media video,
-.capability-chapter--development .capability-loop-fallback {
-  inset-block-start: -96%;
-  inset-inline-start: -59%;
-  width: 218%;
-  height: 218%;
-  max-width: none;
-  object-position: center bottom;
-  transform-origin: center bottom;
-}
 
 .no-js video[data-capability-film] {
   display: none;
@@ -947,37 +1123,12 @@ html[dir="rtl"] .handoff-disclosure {
 }
 
 .capability-chapter--design {
-  contain-intrinsic-size: auto 214svh;
+  contain-intrinsic-size: auto 244svh;
 }
 
 .selected-work {
   content-visibility: auto;
   contain-intrinsic-size: auto calc(580svh + 30rem);
-}
-
-.capability-occluder {
-  position: absolute;
-  z-index: 4;
-  inset: 0;
-  display: block;
-  pointer-events: none;
-}
-
-.capability-occluder--fitout-start {
-  inset-inline-end: 33%;
-  background: var(--limestone);
-  transform: translate3d(var(--scene-shift-opposite, 0%), 0, 0);
-}
-
-.capability-occluder--fitout-end {
-  inset-inline-start: 67%;
-  background: var(--timber);
-  transform: translate3d(var(--scene-shift, 0%), 0, 0);
-}
-
-.capability-occluder--timber {
-  background: var(--timber);
-  transform: translate3d(var(--scene-shift, 0%), 0, 0);
 }
 
 .capability-media::after {
@@ -1001,8 +1152,8 @@ html[dir="rtl"] .handoff-disclosure {
 }
 
 .capability-chapter.is-motion-active .capability-media video,
-.capability-chapter.is-motion-active .capability-occluder {
-  will-change: transform;
+.capability-chapter.is-motion-active .capability-media .capability-still {
+  will-change: opacity, transform;
 }
 
 .capability-chapter.is-motion-active .capability-media::after {
@@ -1015,20 +1166,53 @@ html[dir="rtl"] .handoff-disclosure {
 }
 
 .motion-ready [data-motion-enter] {
-  transition:
-    opacity 780ms ease var(--motion-delay, 0ms),
-    transform 900ms cubic-bezier(0.22, 1, 0.36, 1) var(--motion-delay, 0ms);
+  transition: opacity 780ms ease var(--motion-delay, 0ms);
 }
 
 .motion-ready [data-motion-enter]:not(.is-entered) {
   opacity: 0;
-  transform: translate3d(0, 16px, 0);
 }
 
 .motion-ready [data-motion-enter].is-entered,
 .motion-ready [data-motion-enter]:focus-within {
   opacity: 1;
-  transform: translate3d(0, 0, 0);
+}
+
+/* All three division visuals reveal the same way: the photo fades in while
+   drifting into place. The still is overscanned by 12% so the frame stays
+   covered for the whole 5% of travel - without that the drift would expose the
+   dark plate along one edge. Slower than the copy fade so it reads as the
+   section settling rather than a UI transition. Must sit after the generic
+   rule above - same specificity, so source order decides. */
+.motion-ready [data-motion-enter="capability-media"] {
+  transition:
+    opacity 1100ms ease var(--motion-delay, 0ms),
+    transform 1400ms var(--ease-architectural) var(--motion-delay, 0ms);
+}
+
+.motion-ready [data-motion-enter="capability-media"]:not(.is-entered) {
+  transform: translate3d(var(--media-drift, 0%), var(--media-lift, 5%), 0) scale(1.12);
+}
+
+.motion-ready [data-motion-enter="capability-media"].is-entered {
+  transform: translate3d(0, 0, 0) scale(1);
+}
+
+/* Direction comes from the chapter, so the drift mirrors itself in Arabic the
+   way the rest of the chapter choreography always did. */
+.motion-ready [data-motion-stage="capability"][data-motion-direction="left-to-right"] {
+  --media-drift: -5%;
+  --media-lift: 0%;
+}
+
+.motion-ready [data-motion-stage="capability"][data-motion-direction="right-to-left"] {
+  --media-drift: 5%;
+  --media-lift: 0%;
+}
+
+.motion-ready [data-motion-stage="capability"][data-motion-direction="center-out"] {
+  --media-drift: 0%;
+  --media-lift: 5%;
 }
 
 .motion-ready.portal-clip-supported .threshold-portal__content,
@@ -1038,16 +1222,6 @@ html[dir="rtl"] .handoff-disclosure {
   transition: none;
 }
 
-.static-motion .capability-media video,
-.static-motion .capability-loop-fallback,
-.no-js .capability-loop-fallback {
-  transform: none;
-}
-
-.static-motion .capability-occluder,
-.no-js .capability-occluder {
-  display: none;
-}
 
 .capability-copy {
   display: flex;
@@ -1270,7 +1444,7 @@ html[dir="rtl"] .handoff-disclosure {
     grid-row: 1;
     background: var(--carbon);
     content: "";
-    transform: translate3d(var(--scene-shift, 0%), 0, 0);
+    opacity: var(--scene-veil, 0);
     pointer-events: none;
   }
 
@@ -1345,7 +1519,7 @@ html[dir="rtl"] .handoff-disclosure {
     border: 0;
     border-block-end: 1px solid rgba(242, 237, 227, 0.22);
     background: transparent;
-    color: #77726b;
+    color: #8c867e;
     cursor: pointer;
     font: inherit;
     font-size: clamp(0.62rem, 0.7vw, 0.76rem);
@@ -1386,14 +1560,12 @@ html[dir="rtl"] .handoff-disclosure {
   .motion-ready:not(.static-motion) .project-runway__chapter-copy {
     padding: 0;
     opacity: 0.14;
-    transform: translate3d(0, 14px, 0);
-    transition: opacity 620ms ease, transform 760ms cubic-bezier(0.22, 1, 0.36, 1);
+    transition: opacity 620ms ease;
     visibility: hidden;
   }
 
   .motion-ready:not(.static-motion) .project-runway__chapter.is-active .project-runway__chapter-copy {
     opacity: 1;
-    transform: translate3d(0, 0, 0);
   }
 
   .motion-ready:not(.static-motion) .project-runway__chapter h3 {
@@ -1442,7 +1614,7 @@ html[dir="rtl"] .handoff-disclosure {
 
   .motion-ready:not(.static-motion) .project-runway__counter {
     margin: 0;
-    transition: opacity 240ms ease, transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+    transition: opacity 240ms ease;
   }
 
   .motion-ready:not(.static-motion) .project-runway__caption-copy {
@@ -1450,13 +1622,12 @@ html[dir="rtl"] .handoff-disclosure {
     align-items: end;
     justify-content: space-between;
     gap: 2rem;
-    transition: opacity 240ms ease, transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+    transition: opacity 240ms ease;
   }
 
   .motion-ready:not(.static-motion) .project-runway__stage[data-caption-phase="out"] .project-runway__counter,
   .motion-ready:not(.static-motion) .project-runway__stage[data-caption-phase="out"] .project-runway__caption-copy {
     opacity: 0;
-    transform: translate3d(0, 8px, 0);
   }
 
   .motion-ready:not(.static-motion) .project-runway__stage figcaption strong {
@@ -1548,15 +1719,11 @@ html[dir="rtl"] .delivery-path li::before {
 }
 
 .motion-ready .delivery-path li::before {
-  transition: transform 720ms cubic-bezier(0.22, 1, 0.36, 1) var(--motion-delay, 0ms);
+  transition: opacity 720ms ease var(--motion-delay, 0ms);
 }
 
 .motion-ready .delivery-path li:not(.is-entered)::before {
-  transform: scaleX(0);
-}
-
-.motion-ready .delivery-path li[data-motion-enter]:not(.is-entered) {
-  transform: translate3d(0, 18px, 0);
+  opacity: 0;
 }
 
 .delivery-path li:nth-child(2),
@@ -1638,7 +1805,7 @@ html[dir="rtl"] .delivery-path strong {
   inset: 0;
   background: var(--limestone);
   content: "";
-  transform: translate3d(var(--scene-shift, 0%), 0, 0);
+  opacity: var(--scene-veil, 0);
   pointer-events: none;
 }
 
@@ -1647,9 +1814,12 @@ html[dir="rtl"] .delivery-path strong {
   transform: none;
 }
 
-.readiness.is-motion-active .readiness-visual img,
-.readiness.is-motion-active .readiness-visual::after {
+.readiness.is-motion-active .readiness-visual img {
   will-change: transform;
+}
+
+.readiness.is-motion-active .readiness-visual::after {
+  will-change: opacity;
 }
 
 .static-motion .readiness-visual img,
@@ -1692,6 +1862,42 @@ html[dir="rtl"] .readiness-copy {
   padding-block-end: clamp(5rem, 8vw, 8rem);
 }
 
+.client-marquee__controls {
+  display: flex;
+  justify-content: flex-end;
+  width: min(var(--measure), calc(100% - (2 * var(--gutter))));
+  margin: clamp(1.5rem, 3vw, 3rem) auto 0;
+}
+
+.client-marquee__controls[hidden],
+.brief-form[hidden] {
+  display: none !important;
+}
+
+.client-marquee__toggle {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid rgba(251, 248, 242, 0.42);
+  background: rgba(251, 248, 242, 0.035);
+  color: var(--chalk);
+  cursor: pointer;
+  font: inherit;
+  font-size: var(--text-small);
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.client-marquee__toggle[aria-pressed="true"] {
+  background: rgba(251, 248, 242, 0.12);
+  border-color: rgba(251, 248, 242, 0.72);
+}
+
+.client-marquee__toggle:focus-visible {
+  outline: 2px solid var(--chalk);
+  outline-offset: 3px;
+}
+
 .relationship-marks {
   position: relative;
   display: grid;
@@ -1702,6 +1908,10 @@ html[dir="rtl"] .readiness-copy {
   isolation: isolate;
   -webkit-mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
   mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+}
+
+.client-marquee__controls:not([hidden]) + .relationship-marks {
+  margin-block-start: 1rem;
 }
 
 .relationship-group-label {
@@ -1723,10 +1933,6 @@ html[dir="rtl"] .readiness-copy {
   animation: client-marquee-forward 78s linear infinite;
 }
 
-/* The lanes translate negatively to scroll. Under dir="rtl" the flex track is laid
-   out from the right edge, so a negative translate walks the whole strip off-screen
-   to the left and the Arabic marquee renders empty. Force the scrolling geometry to
-   ltr; the mirrored feel comes from swapping which keyframe each lane uses below. */
 html.js:not(.static-motion) .client-marquee__lane,
 html.js:not(.static-motion) .client-marquee__track {
   direction: ltr;
@@ -1746,6 +1952,10 @@ html[dir="rtl"] .client-marquee__lane:nth-child(even) .client-marquee__track {
 }
 
 .relationship-marks:is(:hover, :focus-within) .client-marquee__track {
+  animation-play-state: paused;
+}
+
+.relationship-marks[data-marquee-paused="true"] .client-marquee__track {
   animation-play-state: paused;
 }
 
@@ -1872,7 +2082,7 @@ html[dir="rtl"] .client-marquee__lane:nth-child(even) .client-marquee__track {
   inset: 0;
   background: var(--carbon-soft);
   content: "";
-  transform: translate3d(var(--scene-shift, 0%), 0, 0);
+  opacity: var(--scene-veil, 0);
   pointer-events: none;
 }
 
@@ -1883,7 +2093,7 @@ html[dir="rtl"] .client-marquee__lane:nth-child(even) .client-marquee__track {
 }
 
 .project-brief.is-motion-active::before {
-  will-change: transform;
+  will-change: opacity;
 }
 
 .project-brief__intro {
@@ -1939,14 +2149,33 @@ html[dir="rtl"] .client-marquee__lane:nth-child(even) .client-marquee__track {
   color-scheme: dark;
 }
 
+.brief-form--native {
+  grid-template-columns: 1fr;
+}
+
 .brief-field {
   min-width: 0;
 }
 
 .brief-field--message,
 .brief-form__footer,
+.brief-form__required-note,
 .brief-status {
   grid-column: 1 / -1;
+}
+
+.brief-form__required-note {
+  margin: 0;
+  color: #d8d0c6;
+  font-size: var(--text-small);
+  font-weight: 600;
+}
+
+.brief-field__help {
+  margin: 0.65rem 0 0;
+  color: #cec5ba;
+  font-size: var(--text-small);
+  line-height: 1.55;
 }
 
 .brief-field label {
@@ -2066,7 +2295,7 @@ html[dir="rtl"] .brief-field label {
   inset: 0;
   background: var(--timber);
   content: "";
-  transform: translate3d(var(--scene-shift, 0%), 0, 0);
+  opacity: var(--scene-veil, 0);
   pointer-events: none;
 }
 
@@ -2076,11 +2305,11 @@ html[dir="rtl"] .brief-field label {
 }
 
 .final-frame:focus-within::before {
-  transform: translate3d(105%, 0, 0);
+  opacity: 0;
 }
 
 .final-frame.is-motion-active::before {
-  will-change: transform;
+  will-change: opacity;
 }
 
 .final-frame h2 {
@@ -2291,7 +2520,7 @@ html[dir="rtl"] .site-footer__contact {
 
 @media (max-width: 60rem) {
   .capabilities {
-    contain-intrinsic-size: auto calc(366svh + 102rem);
+    contain-intrinsic-size: auto calc(438svh + 102rem);
   }
 
   .capability-chapter,
@@ -2377,11 +2606,11 @@ html[dir="rtl"] .site-footer__contact {
 
 @media (max-width: 47.9375rem) {
   .capabilities {
-    contain-intrinsic-size: auto calc(338svh + 90rem);
+    contain-intrinsic-size: auto calc(404svh + 90rem);
   }
 
   .capability-chapter--design {
-    contain-intrinsic-size: auto 204svh;
+    contain-intrinsic-size: auto 270svh;
   }
 
   :root {
@@ -2392,25 +2621,12 @@ html[dir="rtl"] .site-footer__contact {
     scroll-behavior: auto;
   }
 
-  .site-header {
-    padding-block: 1rem;
-  }
-
   .site-intro__mark-shell {
     width: min(68vw, 17rem);
   }
 
-  .site-header__actions {
-    gap: 0.9rem;
-  }
-
   .language-switch {
     font-size: 0.7rem;
-  }
-
-  .motion-ready .hero-sequence.is-sequence {
-    height: 160vh;
-    height: 160svh;
   }
 
   .hero-poster,
@@ -2527,13 +2743,19 @@ html[dir="rtl"] .site-footer__contact {
     padding-block: 6.5rem;
   }
 
-  .brief-render-pending .brief-form {
+  .brief-render-pending .brief-form[data-project-brief-native] {
     display: block;
     block-size: 64rem;
   }
 
-  .brief-render-pending .brief-form > :not([data-initial-render-ready]) {
+  .brief-render-pending .brief-form[data-project-brief-native] > :not([data-initial-render-ready]) {
     display: none;
+  }
+
+  .readiness-render-pending .readiness,
+  .delivery-render-pending .delivery {
+    content-visibility: hidden;
+    contain-intrinsic-block-size: 56rem;
   }
 
   .capabilities-render-pending .capabilities {
@@ -2541,7 +2763,6 @@ html[dir="rtl"] .site-footer__contact {
     contain-intrinsic-block-size: calc(338svh + 90rem);
   }
 
-  .hero-text-render-pending .site-header__actions,
   .hero-text-render-pending .hero-copy,
   .hero-text-render-pending .hero-semantic {
     display: none;
@@ -2565,6 +2786,7 @@ html[dir="rtl"] .site-footer__contact {
 
   .brief-field--message,
   .brief-form__footer,
+  .brief-form__required-note,
   .brief-status {
     grid-column: auto;
   }
@@ -2638,6 +2860,7 @@ html[dir="rtl"] .site-footer__contact {
   .site-footer__contact {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
   .motion-ready:not(.static-motion) [data-motion-enter="project-chapter-media"] {
     opacity: 0;
     transform: scale(1.04);
@@ -2654,15 +2877,11 @@ html[dir="rtl"] .site-footer__contact {
 
   .motion-ready:not(.static-motion) [data-motion-enter="project-chapter-copy"] {
     opacity: 0;
-    transform: translate3d(0, 1.25rem, 0);
-    transition:
-      opacity 620ms var(--ease-architectural) var(--motion-delay, 0ms),
-      transform 780ms var(--ease-architectural) var(--motion-delay, 0ms);
+    transition: opacity 620ms var(--ease-architectural) var(--motion-delay, 0ms);
   }
 
   .motion-ready:not(.static-motion) [data-motion-enter="project-chapter-copy"].is-entered {
     opacity: 1;
-    transform: translate3d(0, 0, 0);
   }
 }
 
@@ -2687,6 +2906,7 @@ html[dir="rtl"] .site-footer__contact {
   #hero-canvas,
   [data-motion-enter],
   .readiness-visual img,
+  .capability-still,
   .project-runway__stage img {
     opacity: 1 !important;
     transform: none !important;
@@ -2707,6 +2927,10 @@ html[dir="rtl"] .site-footer__contact {
     overflow: visible;
     -webkit-mask-image: none;
     mask-image: none;
+  }
+
+  .client-marquee__controls {
+    display: none !important;
   }
 
   .client-marquee__lane {
@@ -2763,7 +2987,6 @@ html[dir="rtl"] .site-footer__contact {
   }
 
   .threshold-handoff,
-  .capability-occluder,
   .readiness-visual::after,
   .project-cut-occluder,
   .project-runway__stage::before,
@@ -2796,4 +3019,53 @@ html[dir="rtl"] .site-footer__contact {
     transition-duration: 0.01ms !important;
   }
 
+}
+
+.static-motion .client-marquee__controls {
+  display: none !important;
+}
+
+.static-motion .relationship-marks,
+.no-js .relationship-marks:not([data-marquee-ready="true"]) {
+  width: min(var(--measure), calc(100% - (2 * var(--gutter))));
+  overflow: visible;
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+
+.static-motion .relationship-marks:not([data-marquee-ready="true"]),
+.no-js .relationship-marks:not([data-marquee-ready="true"]) {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  gap: 1px;
+  padding: 1px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.static-motion .client-marquee__lane {
+  overflow: visible;
+  border: 0;
+}
+
+.static-motion .client-marquee__track {
+  display: block;
+  width: auto;
+  animation: none !important;
+  transform: none !important;
+}
+
+.static-motion .client-marquee__set {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  gap: 1px;
+  padding: 1px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.static-motion .client-marquee__set--duplicate {
+  display: none;
+}
+
+.static-motion .relationship-marks figure,
+.static-motion .relationship-marks figure.relationship-mark--profile {
+  min-height: 8.5rem;
 }
