@@ -3,8 +3,9 @@
 
   const root = document.documentElement;
   const renderLocks = [
-    "brief-render-pending", "capabilities-render-pending", "hero-text-render-pending",
-    "threshold-render-pending", "design-copy-render-pending",
+    "brief-render-pending", "readiness-render-pending", "delivery-render-pending",
+    "capabilities-render-pending", "hero-text-render-pending", "threshold-render-pending",
+    "design-copy-render-pending",
   ];
   const formReadyAttribute = "data-initial-render-ready";
   let runtimeStarted = false;
@@ -21,7 +22,7 @@
   }
 
   function releaseFormProgressively() {
-    const form = document.querySelector("form[data-project-brief-form]");
+    const form = document.querySelector("form[data-project-brief-native]");
     const mobile = window.matchMedia && window.matchMedia("(max-width: 47.9375rem)").matches;
     if (!mobile || !(form instanceof HTMLFormElement)) {
       root.classList.remove("brief-render-pending");
@@ -38,13 +39,11 @@
       if (child) {
         index += 1;
         child.setAttribute(formReadyAttribute, "");
-        void child.offsetHeight;
         requestAnimationFrame(revealNext);
         return;
       }
       root.classList.remove("brief-render-pending");
       clearFormMarkers();
-      void form.offsetHeight;
     };
     requestAnimationFrame(revealNext);
   }
@@ -78,13 +77,22 @@
         }, 500);
         releaseFormProgressively();
         requestAnimationFrame(() => {
-          root.classList.remove("capabilities-render-pending", "hero-text-render-pending");
+          root.classList.remove("hero-text-render-pending");
           requestAnimationFrame(() => {
-            root.classList.remove("threshold-render-pending");
+            root.classList.remove("readiness-render-pending");
             requestAnimationFrame(() => {
-              root.classList.remove("design-copy-render-pending");
-              window.clearTimeout(stagingFallback);
-              loadRuntime();
+              root.classList.remove("delivery-render-pending");
+              requestAnimationFrame(() => {
+                root.classList.remove("capabilities-render-pending");
+                requestAnimationFrame(() => {
+                  root.classList.remove("threshold-render-pending");
+                  requestAnimationFrame(() => {
+                    root.classList.remove("design-copy-render-pending");
+                    window.clearTimeout(stagingFallback);
+                    loadRuntime();
+                  });
+                });
+              });
             });
           });
         });
