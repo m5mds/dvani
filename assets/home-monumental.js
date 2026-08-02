@@ -8,11 +8,11 @@
   const LANGUAGE_ANCHOR_ALLOWLIST = new Set(["proof", "about", "why-divani", "capabilities", "relationships", "selected-work", "project-brief", "contact"]);
   const MOBILE_QUERY = "(max-width: 767px)";
   const NAV_COLLAPSED_QUERY = "(max-width: 63.9375rem)";
-  // 75 frames at 11fps reads as a ~7s opening title, which lands the composed
-  // final frame just after the intro curtain has lifted.
-  const FILM_FRAME_RATE = 11;
-  const FILM_INTRO_HOLD_MS = 2200;
-  const PROJECT_RUNWAY_QUERY = "(min-width: 900px)";
+  // 75 frames at 18fps is a ~4.2s opening title. The hold is timed so the film
+  // begins exactly as the intro curtain starts lifting, rather than running
+  // behind it - together they reach the composed frame in about 5.4s.
+  const FILM_FRAME_RATE = 18;
+  const FILM_INTRO_HOLD_MS = 1200;
   const WHATSAPP_NUMBER = "966531100366";
   const INITIAL_RENDER_LOCKS = [
     "brief-render-pending", "readiness-render-pending", "delivery-render-pending",
@@ -84,11 +84,6 @@
       threshold.style.removeProperty("--threshold-copy-opacity");
       threshold.style.removeProperty("--threshold-copy-shift");
       threshold.style.removeProperty("--threshold-design-scale");
-    }
-    for (const stage of document.querySelectorAll("[data-project-frame]")) {
-      if (!(stage instanceof HTMLElement)) continue;
-      stage.removeAttribute("data-cut-phase");
-      stage.removeAttribute("aria-busy");
     }
     for (const video of document.querySelectorAll("video[data-capability-film]")) {
       if (!(video instanceof HTMLVideoElement)) continue;
@@ -1167,274 +1162,227 @@
     window.addEventListener("pagehide", () => videos.forEach((video) => video.pause()));
   }
 
-  function initialiseProjectShowcase() {
-    const showcase = document.querySelector("[data-project-showcase]");
-    if (!(showcase instanceof HTMLElement)) return;
-    const stage = showcase.querySelector("[data-project-frame]");
-    const image = stage?.querySelector("img[data-project-layer='primary']");
-    const secondaryImage = stage?.querySelector("img[data-project-layer='incoming']");
-    const occluder = stage?.querySelector("[data-project-occluder]");
-    const title = showcase.querySelector("[data-project-title]");
-    const counter = showcase.querySelector("[data-project-counter]");
-    const navigatorCounter = showcase.querySelector("[data-project-navigator-counter]");
-    const captionCopy = showcase.querySelector(".project-runway__caption-copy");
-    const chapters = [...showcase.querySelectorAll("[data-project-chapter]")];
-    const controls = chapters.map((chapter) => chapter.querySelector("[data-project-select]"));
-    const staticControls = [...showcase.querySelectorAll("[data-project-static-select]")];
-    const runwayQuery = window.matchMedia(PROJECT_RUNWAY_QUERY);
-    if (!(stage instanceof HTMLElement) || !(image instanceof HTMLImageElement) ||
-        !(secondaryImage instanceof HTMLImageElement) || !(occluder instanceof HTMLElement) ||
-        chapters.length === 0 || controls.some((control) => !(control instanceof HTMLButtonElement))) return;
-    const totalLabel = String(chapters.length).padStart(2, "0");
-    showcase.style.setProperty("--project-count", String(chapters.length));
-    showcase.style.setProperty("--project-runway-height", `${(chapters.length * 68) + 36}svh`);
-    let desiredIndex = 0;
-    let committedIndex = 0;
-    let requestVersion = 0;
-    let decodeJob = null;
-    let readyJob = null;
-    let cutRunning = false;
-    let runwayArmed = false;
-    let syncWithoutCut = window.scrollY > 1;
+  function initialiseProjectRunway() {
+    const runway = document.querySelector("[data-project-runway]");
+    if (!(runway instanceof HTMLElement)) return;
+    const viewport = runway.querySelector("[data-runway-viewport]");
+    const slides = [...runway.querySelectorAll("[data-runway-slide]")];
+    const ticks = [...runway.querySelectorAll("[data-runway-jump]")];
+    const counter = runway.querySelector("[data-runway-counter]");
+    if (!(viewport instanceof HTMLElement) || !slides.length) return;
 
-    stage.dataset.projectDesired = "0";
-    stage.dataset.projectCommitted = "0";
-    chapters[0].classList.add("is-active");
+    const stickyQuery = window.matchMedia("(min-width: 56.25rem)");
+    const total = String(slides.length).padStart(2, "0");
+    const ofLabel = counter?.dataset.ofLabel || "of";
+    let index = -1;
 
-    function waitForTransition(element, propertyName, timeout) {
-      if (!motionAllowed()) return Promise.resolve();
-      return new Promise((resolve) => {
-        let settled = false;
-        const finish = () => {
-          if (settled) return;
-          settled = true;
-          clearTimeout(timer);
-          element.removeEventListener("transitionend", onTransitionEnd);
-          prefersReducedMotion.removeEventListener("change", onMotionChange);
-          resolve();
-        };
-        const onTransitionEnd = (event) => {
-          if (event.target === element && event.propertyName === propertyName) finish();
-        };
-        const onMotionChange = (event) => {
-          if (event.matches) finish();
-        };
-        const timer = window.setTimeout(finish, timeout);
-        element.addEventListener("transitionend", onTransitionEnd);
-        prefersReducedMotion.addEventListener("change", onMotionChange);
+    function stickyMode() {
+      return stickyQuery.matches && motionAllowed() && root.classList.contains("motion-ready");
+    }
+
+    function setIndex(next) {
+      const clamped = Math.min(slides.length - 1, Math.max(0, next));
+      if (clamped === index) return;
+      index = clamped;
+      for (const [position, slide] of slides.entries()) {
+        slide.dataset.runwayActive = String(position === index);
+      }
+      for (const [position, tick] of ticks.entries()) {
+        if (position === index) tick.setAttribute("aria-current", "true");
+        else tick.removeAttribute("aria-current");
+      }
+      if (counter) counter.textContent = `${String(index + 1).padStart(2, "0")} ${ofLabel} ${total}`;
+    }
+
+    // Desktop: the runway is taller than the viewport it sticks inside, and that
+    // travel is what selects the frame.
+    function updateFromScroll() {
+      if (!stickyMode()) return;
+      const rect = runway.getBoundingClientRect();
+      const travel = Math.max(1, runway.offsetHeight - window.innerHeight);
+      const progress = clamp(-rect.top / travel);
+      const position = progress * slides.length;
+      setIndex(Math.min(slides.length - 1, Math.floor(position)));
+
+      // How far through the current frame we are, which is what fills the
+      // active segment of the control.
+      runway.style.setProperty("--frame-progress", clamp(position - Math.floor(position)).toFixed(4));
+
+      // The opening frame holds the whole screen for the first half of its own
+      // band, then the stage zooms back into the window the rest play inside.
+      const openingBand = clamp(progress * slides.length);
+      const shrink = smoothstep(0.5, 1, openingBand);
+      runway.style.setProperty("--runway-shrink", shrink.toFixed(4));
+      runway.dataset.runwayChrome = shrink > 0.02 ? "on" : "off";
+
+      // The stage sits at its 3:2 size in layout, so full bleed is that box
+      // scaled up until it covers the viewport. CSS cannot divide one length by
+      // another, so the cover factor has to be measured here.
+      const frameWidth = slides[0].offsetWidth || 1;
+      const frameHeight = slides[0].offsetHeight || 1;
+      const cover = Math.max(window.innerWidth / frameWidth, window.innerHeight / frameHeight);
+      runway.style.setProperty("--runway-cover", lerp(cover, 1, shrink).toFixed(4));
+    }
+
+    // Phones: the native snap scroller is the source of truth, so the counter
+    // follows the finger rather than a scroll calculation.
+    function updateFromSwipe() {
+      if (stickyMode()) return;
+      const centre = viewport.scrollLeft + (viewport.clientWidth / 2);
+      let nearest = 0;
+      let best = Number.POSITIVE_INFINITY;
+      for (const [position, slide] of slides.entries()) {
+        const distance = Math.abs((slide.offsetLeft + (slide.offsetWidth / 2)) - centre);
+        if (distance < best) {
+          best = distance;
+          nearest = position;
+        }
+      }
+      setIndex(nearest);
+    }
+
+    function goTo(position) {
+      const clamped = Math.min(slides.length - 1, Math.max(0, position));
+      if (stickyMode()) {
+        const travel = Math.max(1, runway.offsetHeight - window.innerHeight);
+        const top = window.scrollY + runway.getBoundingClientRect().top;
+        // Aim at the middle of that frame's band so it is unambiguously selected.
+        window.scrollTo({ top: top + (travel * ((clamped + 0.5) / slides.length)), behavior: "smooth" });
+      } else {
+        slides[clamped]?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+      }
+      setIndex(clamped);
+    }
+
+    for (const [position, tick] of ticks.entries()) {
+      tick.addEventListener("click", () => goTo(position));
+    }
+    viewport.addEventListener("scroll", () => {
+      updateFromSwipe();
+      // Once they have swiped they know they can; the cue stops asking.
+      if (!stickyMode()) runway.dataset.runwaySwiped = "true";
+    }, { passive: true });
+    viewport.addEventListener("keydown", (event) => {
+      if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+      event.preventDefault();
+      const forward = document.documentElement.dir === "rtl" ? "ArrowLeft" : "ArrowRight";
+      goTo(index + (event.key === forward ? 1 : -1));
+    });
+    motionDirector.subscribe(updateFromScroll);
+    stickyQuery.addEventListener("change", () => {
+      index = -1;
+      if (stickyMode()) updateFromScroll();
+      else updateFromSwipe();
+    });
+
+    // Each slide spills its own colour behind the frame. Taken from the tile
+    // already on the page, so it costs no extra request.
+    for (const slide of slides) {
+      const source = slide.querySelector("img");
+      if (source instanceof HTMLImageElement) {
+        slide.style.setProperty("--photo", `url("${source.currentSrc || source.src}")`);
+      }
+    }
+
+    setIndex(0);
+    if (stickyMode()) updateFromScroll();
+
+    initialiseProjectLightbox(runway);
+  }
+
+  function initialiseProjectLightbox(scope) {
+    const lightbox = document.querySelector("dialog[data-project-lightbox]");
+    const triggers = [...scope.querySelectorAll("[data-project-open]")];
+    if (!triggers.length) return;
+    // Each frame is a real link to the full photograph, so without JS - or
+    // without dialog support - it still opens.
+    if (!(lightbox instanceof HTMLElement) || typeof lightbox.showModal !== "function") return;
+
+    const image = lightbox.querySelector("[data-lightbox-image]");
+    const counter = lightbox.querySelector("[data-lightbox-counter]");
+    const slides = triggers.map((trigger) => ({
+      full: trigger.getAttribute("href") || "",
+      alt: trigger.querySelector("img")?.alt || "",
+    }));
+    const total = String(slides.length).padStart(2, "0");
+    const ofLabel = counter?.dataset.ofLabel || "of";
+    let index = 0;
+    let opener = null;
+
+    function preload(position) {
+      const slide = slides[(position + slides.length) % slides.length];
+      if (!slide) return;
+      const warm = new Image();
+      warm.decoding = "async";
+      warm.src = slide.full;
+    }
+
+    function show(position) {
+      index = (position + slides.length) % slides.length;
+      const slide = slides[index];
+      if (image instanceof HTMLImageElement) {
+        image.src = slide.full;
+        image.alt = slide.alt;
+      }
+      if (counter) counter.textContent = `${String(index + 1).padStart(2, "0")} ${ofLabel} ${total}`;
+      preload(index + 1);
+      preload(index - 1);
+    }
+
+    // Idempotent, and driven from every close path rather than from the dialog
+    // close event alone - if that event is ever missed the page would be left
+    // permanently unscrollable, which is a far worse failure than running twice.
+    function restore() {
+      document.body.style.removeProperty("overflow");
+      if (image instanceof HTMLImageElement) image.removeAttribute("src");
+      const trigger = opener;
+      opener = null;
+      trigger?.focus({ preventScroll: true });
+    }
+
+    function close() {
+      if (lightbox.open) lightbox.close();
+      restore();
+    }
+
+    lightbox.addEventListener("close", restore);
+    lightbox.addEventListener("cancel", restore);
+    lightbox.addEventListener("click", (event) => {
+      if (event.target === lightbox) close();
+    });
+    lightbox.querySelector("[data-lightbox-close]")?.addEventListener("click", close);
+    lightbox.querySelector("[data-lightbox-prev]")?.addEventListener("click", () => show(index - 1));
+    lightbox.querySelector("[data-lightbox-next]")?.addEventListener("click", () => show(index + 1));
+    lightbox.addEventListener("keydown", (event) => {
+      if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+      event.preventDefault();
+      const forward = document.documentElement.dir === "rtl" ? "ArrowLeft" : "ArrowRight";
+      show(index + (event.key === forward ? 1 : -1));
+    });
+
+    let touchX = null;
+    lightbox.addEventListener("touchstart", (event) => {
+      touchX = event.changedTouches[0]?.clientX ?? null;
+    }, { passive: true });
+    lightbox.addEventListener("touchend", (event) => {
+      if (touchX === null) return;
+      const delta = (event.changedTouches[0]?.clientX ?? touchX) - touchX;
+      touchX = null;
+      if (Math.abs(delta) < 45) return;
+      const rtl = document.documentElement.dir === "rtl";
+      show(index + ((delta < 0) === rtl ? -1 : 1));
+    }, { passive: true });
+
+    for (const [position, trigger] of triggers.entries()) {
+      trigger.addEventListener("click", (event) => {
+        if (event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return;
+        event.preventDefault();
+        opener = trigger;
+        show(position);
+        lightbox.showModal();
+        // showModal alone leaves the page behind scrollable on iOS.
+        document.body.style.overflow = "hidden";
       });
-    }
-
-    function clearCutState() {
-      stage.removeAttribute("aria-busy");
-      stage.removeAttribute("data-cut-phase");
-      stage.removeAttribute("data-caption-phase");
-    }
-
-    function rebaseProjectLayers() {
-      stage.classList.add("is-rebasing");
-      secondaryImage.src = image.currentSrc || image.src;
-      clearCutState();
-      stage.getBoundingClientRect();
-      requestAnimationFrame(() => stage.classList.remove("is-rebasing"));
-    }
-
-    function recordFor(index) {
-      const chapter = chapters[index];
-      if (!(chapter instanceof HTMLElement)) return null;
-      return {
-        index,
-        chapter,
-        control: controls[index],
-        src: chapter.dataset.src || "",
-        alt: chapter.dataset.alt || "",
-        title: chapter.dataset.title || "",
-      };
-    }
-
-    function commitSelection(job) {
-      const record = job.record;
-      committedIndex = record.index;
-      image.src = job.decoded.currentSrc || job.decoded.src;
-      image.alt = record.alt;
-      if (title) title.textContent = record.title;
-      if (counter) counter.textContent = `${String(record.index + 1).padStart(2, "0")} / ${totalLabel}`;
-      if (navigatorCounter) navigatorCounter.textContent = `${String(record.index + 1).padStart(2, "0")} / ${totalLabel}`;
-      chapters.forEach((chapter, index) => chapter.classList.toggle("is-active", index === record.index));
-      controls.forEach((control, index) => control?.setAttribute("aria-pressed", String(index === record.index)));
-      staticControls.forEach((control, index) => control.setAttribute("aria-pressed", String(index === record.index)));
-      stage.dataset.projectCommitted = String(record.index);
-    }
-
-    function canAnimateCut() {
-      return motionAllowed() && runwayQuery.matches && root.classList.contains("motion-ready");
-    }
-
-    async function performCut(job) {
-      if (job.version !== requestVersion) return;
-      if (!canAnimateCut() || syncWithoutCut) {
-        commitSelection(job);
-        secondaryImage.src = image.currentSrc || image.src;
-        syncWithoutCut = false;
-        return;
-      }
-
-      secondaryImage.src = job.decoded.currentSrc || job.decoded.src;
-      if (job.version !== requestVersion) return;
-      stage.setAttribute("aria-busy", "true");
-      stage.dataset.cutPhase = "ready";
-      stage.dataset.captionPhase = "out";
-      secondaryImage.getBoundingClientRect();
-      await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-      stage.dataset.cutPhase = "crossfade";
-      if (captionCopy instanceof HTMLElement) await waitForTransition(captionCopy, "opacity", 300);
-
-      if (job.version !== requestVersion) {
-        stage.dataset.cutPhase = "ready";
-        stage.dataset.captionPhase = "in";
-        await waitForTransition(secondaryImage, "opacity", 820);
-        secondaryImage.src = image.currentSrc || image.src;
-        clearCutState();
-        return;
-      }
-
-      commitSelection(job);
-      stage.dataset.captionPhase = "in";
-
-      await waitForTransition(secondaryImage, "opacity", 820);
-      rebaseProjectLayers();
-    }
-
-    async function drainReadyJobs() {
-      if (cutRunning) return;
-      cutRunning = true;
-      try {
-        while (readyJob) {
-          const job = readyJob;
-          readyJob = null;
-          if (job.version !== requestVersion) continue;
-          await performCut(job);
-        }
-      } finally {
-        cutRunning = false;
-        if (readyJob) drainReadyJobs();
-      }
-    }
-
-    async function requestProject(index, options = {}) {
-      if (!Number.isInteger(index) || index < 0 || index >= chapters.length) return;
-      if (index === committedIndex && index !== desiredIndex) {
-        requestVersion += 1;
-        decodeJob = null;
-        readyJob = null;
-        desiredIndex = committedIndex;
-        stage.dataset.projectDesired = String(committedIndex);
-        syncWithoutCut = false;
-        return;
-      }
-      const sameRequestPending = decodeJob?.index === index || readyJob?.record.index === index ||
-        (cutRunning && index === desiredIndex);
-      if (index === desiredIndex && (index === committedIndex || sameRequestPending)) {
-        if (options.immediate || index === committedIndex) syncWithoutCut = false;
-        return;
-      }
-      desiredIndex = index;
-      stage.dataset.projectDesired = String(index);
-      if (options.immediate) syncWithoutCut = true;
-      const version = ++requestVersion;
-      const record = recordFor(index);
-      if (!record?.src) return;
-      const decoded = new Image();
-      const pendingDecode = { index, version };
-      decodeJob = pendingDecode;
-      decoded.decoding = "async";
-      decoded.src = record.src;
-      try {
-        if (typeof decoded.decode === "function") await decoded.decode();
-        else if (!decoded.complete) await new Promise((resolve, reject) => {
-          decoded.onload = resolve;
-          decoded.onerror = reject;
-        });
-        if (!decoded.naturalWidth) throw new Error("Project image unavailable");
-      } catch {
-        if (decodeJob === pendingDecode) decodeJob = null;
-        if (version === requestVersion) {
-          desiredIndex = committedIndex;
-          stage.dataset.projectDesired = String(committedIndex);
-          clearCutState();
-        }
-        return;
-      }
-      if (decodeJob === pendingDecode) decodeJob = null;
-      if (version !== requestVersion) return;
-      readyJob = { version, record, decoded };
-      drainReadyJobs();
-    }
-
-    function nearestProjectIndex() {
-      const activationLine = window.innerHeight * 0.42;
-      let bestIndex = committedIndex;
-      let bestDistance = Number.POSITIVE_INFINITY;
-      chapters.forEach((chapter, index) => {
-        const rect = chapter.getBoundingClientRect();
-        const distance = Math.abs((rect.top + (rect.height / 2)) - activationLine);
-        if (distance < bestDistance) {
-          bestDistance = distance;
-          bestIndex = index;
-        }
-      });
-      return bestIndex;
-    }
-
-    function updateRunway() {
-      if (!runwayArmed || !canAnimateCut()) return;
-      requestProject(nearestProjectIndex());
-    }
-
-    controls.forEach((control, index) => {
-      control?.addEventListener("click", () => requestProject(index));
-    });
-    staticControls.forEach((control, index) => {
-      control.addEventListener("click", () => requestProject(index));
-    });
-
-    const runwayObserver = new IntersectionObserver((entries) => {
-      runwayArmed = entries.some((entry) => entry.isIntersecting);
-      if (runwayArmed) {
-        syncWithoutCut = true;
-        requestProject(nearestProjectIndex(), { immediate: true });
-        motionDirector.schedule();
-      }
-    }, { rootMargin: "35% 0px", threshold: 0 });
-    runwayObserver.observe(showcase);
-    const unsubscribe = motionDirector.subscribe(updateRunway);
-
-    function handleModeChange() {
-      requestVersion += 1;
-      decodeJob = null;
-      readyJob = null;
-      clearCutState();
-      syncWithoutCut = true;
-      desiredIndex = committedIndex;
-      stage.dataset.projectDesired = String(committedIndex);
-      if (canAnimateCut()) requestProject(nearestProjectIndex(), { immediate: true });
-    }
-
-    runwayQuery.addEventListener("change", handleModeChange);
-    prefersReducedMotion.addEventListener("change", handleModeChange);
-    window.addEventListener("pageshow", handleModeChange, { passive: true });
-    window.addEventListener("pagehide", (event) => {
-      if (event.persisted) return;
-      unsubscribe();
-      runwayObserver.disconnect();
-      runwayQuery.removeEventListener("change", handleModeChange);
-      prefersReducedMotion.removeEventListener("change", handleModeChange);
-      window.removeEventListener("pageshow", handleModeChange);
-    });
-
-    if (runwayQuery.matches && motionAllowed()) {
-      syncWithoutCut = true;
-      requestProject(nearestProjectIndex(), { immediate: true });
     }
   }
 
@@ -1709,7 +1657,7 @@
     window.setTimeout(initialiseHeroSequence, 0);
     window.setTimeout(initialiseMotionSystem, 0);
     window.setTimeout(initialiseCapabilityMedia, 0);
-    window.setTimeout(initialiseProjectShowcase, 0);
+    window.setTimeout(initialiseProjectRunway, 0);
     window.setTimeout(initialiseProjectBrief, 0);
   }
 
