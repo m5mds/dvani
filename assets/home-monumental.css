@@ -332,8 +332,11 @@ html[dir="rtl"] .site-nav__menu a:not(.language-switch) {
   display: none;
   align-items: center;
   gap: 0.6rem;
+  /* 34px without this - and it is the only way to navigate on a phone. */
+  min-height: 44px;
   margin-inline-start: auto;
-  padding: 0.5rem 0;
+  margin-block: -0.35rem;
+  padding: 0.85rem 0;
   border: 0;
   background: transparent;
   color: var(--chalk);
@@ -438,7 +441,7 @@ html[dir="rtl"] .site-nav__toggle {
   background: var(--carbon);
   color: var(--chalk);
   pointer-events: none;
-  animation: site-intro-curtain 2800ms cubic-bezier(0.76, 0, 0.24, 1) forwards;
+  animation: site-intro-curtain 1700ms cubic-bezier(0.76, 0, 0.24, 1) forwards;
   isolation: isolate;
 }
 
@@ -457,7 +460,7 @@ html[dir="rtl"] .site-nav__toggle {
   flex-direction: column;
   align-items: center;
   gap: clamp(1rem, 2vw, 1.6rem);
-  animation: site-intro-identity 2800ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: site-intro-identity 1700ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 .site-intro__mark-shell {
@@ -476,7 +479,7 @@ html[dir="rtl"] .site-nav__toggle {
   box-shadow: 0 0 1.1rem rgba(251, 248, 242, 0.45);
   content: "";
   opacity: 0;
-  animation: site-intro-pen 1250ms cubic-bezier(0.76, 0, 0.24, 1) 180ms forwards;
+  animation: site-intro-pen 760ms cubic-bezier(0.76, 0, 0.24, 1) 110ms forwards;
 }
 
 .site-intro__mark {
@@ -485,7 +488,7 @@ html[dir="rtl"] .site-nav__toggle {
   object-fit: contain;
   clip-path: inset(0 100% 0 0);
   mix-blend-mode: screen;
-  animation: site-intro-draw 1250ms cubic-bezier(0.76, 0, 0.24, 1) 180ms forwards;
+  animation: site-intro-draw 760ms cubic-bezier(0.76, 0, 0.24, 1) 110ms forwards;
 }
 
 .site-intro__wordmark {
@@ -499,7 +502,7 @@ html[dir="rtl"] .site-nav__toggle {
   line-height: 1;
   opacity: 0;
   transform: translate3d(0, 0.8rem, 0);
-  animation: site-intro-wordmark 720ms cubic-bezier(0.22, 1, 0.36, 1) 980ms forwards;
+  animation: site-intro-wordmark 440ms cubic-bezier(0.22, 1, 0.36, 1) 600ms forwards;
 }
 
 .no-js .site-intro,
@@ -796,11 +799,26 @@ html[dir="rtl"] .hero-divisions {
   letter-spacing: 0;
 }
 
+/* These read as 27px tall, under the 44px touch minimum. The tap area is
+   extended past the visual bounds instead of padding the link, so the underline
+   keeps its position and no layout moves. */
+.hero-cta::after,
+.capability-copy a::after,
+.readiness-copy a::after,
+.project-brief__intro > a::after,
+.final-frame__content > a::after {
+  position: absolute;
+  inset-block: -0.6rem;
+  inset-inline: -0.25rem;
+  content: "";
+}
+
 .hero-cta,
 .capability-copy a,
 .readiness-copy a,
 .project-brief__intro > a,
 .final-frame__content > a {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: 0.55rem;
@@ -1105,7 +1123,6 @@ html[dir="rtl"] .handoff-disclosure {
   object-fit: cover;
 }
 
-
 .no-js video[data-capability-film] {
   display: none;
 }
@@ -1128,7 +1145,629 @@ html[dir="rtl"] .handoff-disclosure {
 
 .selected-work {
   content-visibility: auto;
-  contain-intrinsic-size: auto calc(580svh + 30rem);
+  contain-intrinsic-size: auto calc(545svh + 30rem);
+}
+
+/* Projects run as a runway, not a grid dump: one photograph at a time.
+   The base layer is a native horizontal snap-scroller - it needs no JS, so
+   no-JS, reduced-motion and save-data visitors get a working swipeable strip,
+   and phones get one screen instead of thirteen stacked images. Desktop
+   upgrades that same markup into a sticky scroll-driven crossfade. */
+.project-runway {
+  /* 0 while the opening frame holds the whole screen, 1 once the stage has
+     pulled back into its framed window. Scroll drives it; everything that
+     reacts to the pull-back reads from here. */
+  --runway-shrink: 0;
+  position: relative;
+  padding-block-end: clamp(3rem, 5vw, 5rem);
+}
+
+.project-runway__viewport {
+  display: flex;
+  gap: 0;
+  height: min(74svh, 40rem);
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-inline: contain;
+  scrollbar-width: none;
+}
+
+.project-runway__viewport::-webkit-scrollbar {
+  display: none;
+}
+
+.project-runway__slide {
+  position: relative;
+  flex: 0 0 100%;
+  height: 100%;
+  margin: 0;
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
+}
+
+.project-runway__frame {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--carbon-soft);
+}
+
+.project-runway__frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.project-runway__hud {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  width: fit-content;
+  max-width: calc(100% - (2 * var(--gutter)));
+  margin: clamp(1rem, 2.5vw, 1.75rem) auto 0;
+  padding: 0.2rem 0.9rem;
+  border: 1px solid rgba(251, 248, 242, 0.1);
+  border-radius: 999px;
+  background: rgba(20, 20, 18, 0.5);
+  -webkit-backdrop-filter: blur(22px) saturate(180%);
+  backdrop-filter: blur(22px) saturate(180%);
+  box-shadow:
+    inset 0 1px 0 rgba(251, 248, 242, 0.08),
+    0 1rem 2.5rem rgba(0, 0, 0, 0.45);
+}
+
+@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .project-runway__hud {
+    background: rgba(20, 20, 18, 0.86);
+  }
+}
+
+.project-runway__counter {
+  direction: ltr;
+  unicode-bidi: isolate;
+  margin: 0;
+  /* 0.5 chalk measured 4.31:1 on the capsule - just under AA. */
+  color: rgba(251, 248, 242, 0.64);
+  font-size: 0.72rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.1em;
+}
+
+.project-runway__rail {
+  display: flex;
+  align-items: center;
+  gap: 0.26rem;
+}
+
+/* The visible pill is 4px, but the button is 18px tall and the background is
+   clipped to its content box - so the target stays comfortable to hit on a
+   trackpad without the control looking heavy. */
+.project-runway__tick {
+  box-sizing: content-box;
+  width: clamp(0.85rem, 1.5vw, 1.5rem);
+  height: 0.25rem;
+  /* Both axes explicitly: setting only padding-block leaves the UA button's
+     default 6px inline padding, which silently widened every pill. */
+  padding: 0.45rem 0;
+  border: 0;
+  border-radius: 999px;
+  background-color: rgba(251, 248, 242, 0.24);
+  background-clip: content-box;
+  cursor: pointer;
+  transition: width 420ms var(--ease-architectural), background-color 260ms ease;
+}
+
+/* The active segment widens and fills as you travel through its frame, so the
+   control reads as progress rather than as a row of dots. */
+.project-runway__tick[aria-current="true"] {
+  width: clamp(1.7rem, 3vw, 2.8rem);
+  background-color: rgba(251, 248, 242, 0.24);
+  background-image: linear-gradient(
+    to right,
+    var(--chalk) calc(var(--frame-progress, 1) * 100%),
+    transparent 0
+  );
+  box-shadow: 0 0 0.75rem rgba(251, 248, 242, 0.25);
+}
+
+html[dir="rtl"] .project-runway__tick[aria-current="true"] {
+  background-image: linear-gradient(
+    to left,
+    var(--chalk) calc(var(--frame-progress, 1) * 100%),
+    transparent 0
+  );
+}
+
+/* Touch pointers get the 44px target the guidelines ask for; the visible pill
+   is unchanged, only the button around it grows. */
+@media (pointer: coarse) {
+  .project-runway__tick {
+    padding: 1.25rem 0;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .project-runway__tick:hover {
+    background-color: rgba(251, 248, 242, 0.5);
+  }
+}
+
+.project-runway__tick:focus-visible {
+  outline: 2px solid var(--chalk);
+  outline-offset: 4px;
+}
+
+/* Landing on a full-bleed photograph with no chrome tells you nothing, so the
+   opening frame carries its own instruction - typeset the way the hero already
+   handles words over a photograph: no panel, just a wash on the image and the
+   site's own small-caps voice. A floating glass box reads as a notification,
+   not as part of the film.
+
+   The wash is what buys the contrast. Chalk on a bright photograph is 1.06:1;
+   under this wash it measures 10:1. */
+.project-runway__cue {
+  display: none;
+}
+
+@media (min-width: 56.25rem) {
+  .motion-ready:not(.static-motion) .project-runway__viewport::after {
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    background: linear-gradient(
+      to top,
+      rgba(8, 8, 7, 0.88) 0%,
+      rgba(8, 8, 7, 0.78) 20%,
+      rgba(8, 8, 7, 0.42) 34%,
+      transparent 56%
+    );
+    content: "";
+    opacity: calc(1 - var(--runway-shrink));
+    pointer-events: none;
+  }
+
+  .motion-ready:not(.static-motion) .project-runway__cue {
+    position: absolute;
+    z-index: 3;
+    inset-block-start: calc(100svh - 9.5rem);
+    inset-inline: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.55rem;
+    text-align: center;
+    opacity: calc(1 - var(--runway-shrink));
+    pointer-events: none;
+  }
+
+  [data-cue-touch] {
+    display: none;
+  }
+
+  .project-runway__cue-label {
+    color: var(--chalk);
+    font-size: clamp(0.78rem, 1vw, 0.9rem);
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    line-height: 1.6;
+    text-transform: uppercase;
+  }
+
+  html[dir="rtl"] .project-runway__cue-label {
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  .project-runway__cue-hint {
+    color: rgba(251, 248, 242, 0.72);
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    line-height: 1.5;
+  }
+
+  /* A hairline that keeps travelling downward - the site's own way of pointing
+     onward, and the only moving part in the composition. */
+  .project-runway__cue-line {
+    position: relative;
+    width: 1px;
+    height: 3.25rem;
+    margin-block-start: 0.5rem;
+    overflow: hidden;
+    background: rgba(251, 248, 242, 0.22);
+  }
+
+  .project-runway__cue-line::after {
+    position: absolute;
+    inset-inline: 0;
+    height: 45%;
+    background: linear-gradient(180deg, transparent, var(--chalk));
+    content: "";
+    animation: runway-cue-travel 2400ms cubic-bezier(0.65, 0, 0.35, 1) infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .project-runway__cue-line::after {
+      animation: none;
+      transform: translateY(80%);
+    }
+  }
+}
+
+@keyframes runway-cue-travel {
+  0% { transform: translateY(-110%); }
+  100% { transform: translateY(230%); }
+}
+
+/* Desktop: the same markup becomes a sticky stage the scroll drives through.
+   Gated on motion-ready so a failed runtime leaves the swipeable strip intact
+   rather than a stack of invisible slides. */
+@media (min-width: 56.25rem) {
+  .motion-ready:not(.static-motion) .project-runway {
+    height: calc(100svh + (var(--project-count, 13) * 34svh));
+    padding-block-end: 0;
+  }
+
+  .motion-ready:not(.static-motion) .project-runway__viewport {
+    position: sticky;
+    inset-block-start: 0;
+    display: block;
+    height: 100svh;
+    overflow: hidden;
+  }
+
+  /* The stage is a 3:2 window at rest. Full bleed is that same window scaled up
+     to cover the viewport, so the shape never distorts - it is one uniform
+     transform the whole way, and the frame lands on an exact 3:2. */
+  .motion-ready:not(.static-motion) .project-runway {
+    --frame-height: min(74svh, calc((100vw - 8rem) / 1.5));
+    --frame-width: calc(var(--frame-height) * 1.5);
+  }
+
+  .motion-ready:not(.static-motion) .project-runway__slide {
+    position: absolute;
+    inset: 0;
+    width: var(--frame-width);
+    height: var(--frame-height);
+    margin: auto;
+    opacity: 0;
+    transform: scale(var(--runway-cover, 1));
+    transform-origin: center;
+    transition: opacity 900ms ease;
+  }
+
+  /* The photograph spills its own colour into the dark around it, so the frame
+     sits in a pool of its own light rather than floating in a black field.
+     Lives on the slide, not the frame, so it crossfades with the photograph and
+     is not clipped by the rounded corners. */
+  .motion-ready:not(.static-motion) .project-runway__slide::before {
+    position: absolute;
+    z-index: -1;
+    inset: -14% -10%;
+    background-image: var(--photo);
+    background-position: center;
+    background-size: cover;
+    content: "";
+    filter: blur(5rem) saturate(1.5);
+    opacity: calc(0.42 * var(--runway-shrink));
+    pointer-events: none;
+  }
+
+  /* Seamless corners: the radius opens up with the pull-back, so the opening
+     frame still meets the screen edges square and only the framed window is
+     rounded. overflow clips the photograph to the same curve. */
+  .motion-ready:not(.static-motion) .project-runway__frame {
+    border-radius: calc(var(--runway-shrink) * clamp(0.85rem, 1.5vw, 1.75rem));
+    overflow: hidden;
+    box-shadow:
+      0 0 0 1px rgba(251, 248, 242, calc(0.16 * var(--runway-shrink))),
+      0 2.5rem 5rem rgba(0, 0, 0, calc(0.5 * var(--runway-shrink)));
+  }
+
+  .motion-ready:not(.static-motion) .project-runway__slide[data-runway-active="true"] {
+    opacity: 1;
+  }
+
+  .motion-ready:not(.static-motion) .project-runway__frame img {
+    transform: scale(var(--runway-scale, 1));
+    transition: transform 1600ms var(--ease-architectural);
+  }
+
+  .motion-ready:not(.static-motion) .project-runway__slide[data-runway-active="true"] .project-runway__frame img {
+    --runway-scale: 1.04;
+  }
+
+  /* Aligned to the frame rather than the page gutter, so the counter and rail
+     read as part of the photograph's composition instead of floating off at the
+     edge of the screen. No chrome over the opening frame - it arrives with the
+     pull-back. */
+  .motion-ready:not(.static-motion) .project-runway__hud {
+    position: sticky;
+    inset-block-start: calc(100svh - 4.25rem);
+    z-index: 2;
+    margin-block-start: -4.25rem;
+    opacity: var(--runway-shrink);
+  }
+
+  /* Hidden rather than merely transparent, so the rail is not a clickable
+     target sitting invisibly over the opening frame. */
+  .motion-ready:not(.static-motion) .project-runway[data-runway-chrome="off"] .project-runway__hud {
+    visibility: hidden;
+  }
+
+  .motion-ready:not(.static-motion) .project-runway__frame {
+    cursor: zoom-in;
+  }
+}
+
+/* View mode: the photograph is the whole point, so it gets the screen and every
+   control collapses into one glass capsule in the same material as the runway's
+   own control - rather than three outlined squares scattered over the image. */
+.project-lightbox {
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  max-height: none;
+  padding: 0;
+  border: 0;
+  background: rgba(8, 8, 7, 0.78);
+  -webkit-backdrop-filter: blur(30px) saturate(140%);
+  backdrop-filter: blur(30px) saturate(140%);
+  color: var(--chalk);
+  overscroll-behavior: contain;
+}
+
+.project-lightbox::backdrop {
+  background: rgba(8, 8, 7, 0.72);
+  -webkit-backdrop-filter: blur(30px);
+  backdrop-filter: blur(30px);
+}
+
+@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .project-lightbox,
+  .project-lightbox::backdrop {
+    background: rgba(8, 8, 7, 0.96);
+  }
+}
+
+.project-lightbox[open] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(1.25rem, 5vh, 3.5rem) clamp(1rem, 4vw, 4rem) clamp(6.5rem, 13vh, 8.5rem);
+  animation: lightbox-enter 300ms ease both;
+}
+
+.project-lightbox__image {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: clamp(0.5rem, 0.9vw, 1rem);
+  box-shadow: 0 3rem 6rem rgba(0, 0, 0, 0.6);
+  animation: lightbox-image-enter 420ms var(--ease-architectural) both;
+}
+
+/* One capsule holds back, position and forward - the same material, radius and
+   hairline as the runway control, so view mode reads as the same product. */
+.project-lightbox__controls {
+  position: absolute;
+  inset-block-end: clamp(1.5rem, 4vh, 2.5rem);
+  inset-inline-start: 50%;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.3rem;
+  border: 1px solid rgba(251, 248, 242, 0.12);
+  border-radius: 999px;
+  background: rgba(20, 20, 18, 0.6);
+  -webkit-backdrop-filter: blur(22px) saturate(180%);
+  backdrop-filter: blur(22px) saturate(180%);
+  box-shadow:
+    inset 0 1px 0 rgba(251, 248, 242, 0.08),
+    0 1rem 2.5rem rgba(0, 0, 0, 0.5);
+  transform: translateX(-50%);
+}
+
+.project-lightbox__nav,
+.project-lightbox__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  transition: background-color 220ms ease;
+}
+
+.project-lightbox__nav::before,
+.project-lightbox__close::before {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-block-start: 1.5px solid currentColor;
+  border-inline-start: 1.5px solid currentColor;
+  content: "";
+}
+
+.project-lightbox__nav::before {
+  transform: translateX(0.12rem) rotate(-45deg);
+}
+
+[data-lightbox-next]::before {
+  transform: translateX(-0.12rem) rotate(135deg);
+}
+
+html[dir="rtl"] [data-lightbox-prev]::before {
+  transform: translateX(-0.12rem) rotate(135deg);
+}
+
+html[dir="rtl"] [data-lightbox-next]::before {
+  transform: translateX(0.12rem) rotate(-45deg);
+}
+
+.project-lightbox__close {
+  position: absolute;
+  z-index: 2;
+  inset-block-start: clamp(1rem, 2.5vh, 1.75rem);
+  inset-inline-end: clamp(1rem, 2.5vw, 1.75rem);
+  border: 1px solid rgba(251, 248, 242, 0.12);
+  background: rgba(20, 20, 18, 0.6);
+  -webkit-backdrop-filter: blur(22px) saturate(180%);
+  backdrop-filter: blur(22px) saturate(180%);
+}
+
+.project-lightbox__close::before {
+  width: 0.85rem;
+  height: 0.85rem;
+  border: 0;
+  background:
+    linear-gradient(currentColor, currentColor) center / 100% 1.5px no-repeat,
+    linear-gradient(currentColor, currentColor) center / 1.5px 100% no-repeat;
+  transform: rotate(45deg);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .project-lightbox__nav:hover,
+  .project-lightbox__close:hover {
+    background-color: rgba(251, 248, 242, 0.14);
+  }
+}
+
+.project-lightbox__nav:focus-visible,
+.project-lightbox__close:focus-visible {
+  outline: 2px solid var(--chalk);
+  outline-offset: 3px;
+}
+
+.project-lightbox__counter {
+  direction: ltr;
+  unicode-bidi: isolate;
+  min-width: 5.5ch;
+  margin: 0;
+  color: rgba(251, 248, 242, 0.62);
+  font-size: 0.72rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.1em;
+  text-align: center;
+}
+
+@keyframes lightbox-enter {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes lightbox-image-enter {
+  from { opacity: 0; transform: scale(0.965); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-lightbox[open],
+  .project-lightbox__image {
+    animation: none;
+  }
+}
+
+/* Phones get two columns rather than one: thirteen full-width photographs
+   would be a longer scroll than the runway this replaced. */
+@media (max-width: 56.249rem) {
+  .project-runway__viewport {
+    height: min(62svh, 30rem);
+  }
+
+  /* A phone shows one photograph with no sign there are twelve more behind it.
+     The cue sits below the strip on the section background, so it stays legible
+     without covering the picture, and it retires once you have actually swiped. */
+  .project-runway__cue {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3rem;
+    padding: clamp(0.9rem, 3vw, 1.4rem) var(--gutter) 0;
+    text-align: center;
+    transition: opacity 420ms ease, visibility 420ms;
+  }
+
+  [data-cue-pointer] {
+    display: none;
+  }
+
+  .project-runway__cue-label {
+    color: var(--chalk);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  html[dir="rtl"] .project-runway__cue-label {
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  .project-runway__cue-hint {
+    color: rgba(251, 248, 242, 0.72);
+    font-size: 0.74rem;
+  }
+
+  /* Horizontal here, because the gesture is horizontal. */
+  .project-runway__cue-line {
+    position: relative;
+    width: 3.5rem;
+    height: 1px;
+    margin-block-start: 0.55rem;
+    overflow: hidden;
+    background: rgba(251, 248, 242, 0.22);
+  }
+
+  .project-runway__cue-line::after {
+    position: absolute;
+    inset-block: 0;
+    width: 45%;
+    background: linear-gradient(90deg, transparent, var(--chalk));
+    content: "";
+    animation: runway-cue-swipe 2200ms cubic-bezier(0.65, 0, 0.35, 1) infinite;
+  }
+
+  html[dir="rtl"] .project-runway__cue-line::after {
+    background: linear-gradient(270deg, transparent, var(--chalk));
+    animation-name: runway-cue-swipe-rtl;
+  }
+
+  .project-runway[data-runway-swiped="true"] .project-runway__cue {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+@keyframes runway-cue-swipe {
+  0% { transform: translateX(-110%); }
+  100% { transform: translateX(230%); }
+}
+
+@keyframes runway-cue-swipe-rtl {
+  0% { transform: translateX(230%); }
+  100% { transform: translateX(-110%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-runway__cue-line::after {
+    animation: none !important;
+  }
+}
+
+@media (max-width: 30rem) {
+  .project-lightbox[open] {
+    padding-inline: 0.5rem;
+  }
 }
 
 .capability-media::after {
@@ -1222,7 +1861,6 @@ html[dir="rtl"] .handoff-disclosure {
   transition: none;
 }
 
-
 .capability-copy {
   display: flex;
   flex-direction: column;
@@ -1276,91 +1914,24 @@ html[dir="rtl"] .handoff-disclosure {
   }
 }
 
+/* A lit room rather than a flat black panel: the stage sits in a soft pool of
+   light that falls off to near-black at the edges, so the frame has somewhere
+   to sit and the photograph's own colour spill has something to bleed into. */
+.selected-work {
+  background:
+    radial-gradient(118% 86% at 50% 38%, #1c1b19 0%, #121110 46%, #080807 100%),
+    var(--carbon);
+}
+
 .selected-work,
 .relationships {
-  background: var(--carbon);
+  background-color: var(--carbon);
   color: var(--chalk);
 }
 
 .section-intro--light .eyebrow,
 .section-intro--light > p:last-child {
   color: var(--muted-light);
-}
-
-.project-runway {
-  width: min(76rem, 100%);
-  margin-inline: auto;
-  padding: 0 var(--gutter) clamp(7rem, 12vw, 12rem);
-}
-
-.project-runway__stage {
-  display: none;
-}
-
-.project-runway__navigator {
-  display: none;
-}
-
-.project-runway__chapter {
-  border-block-start: 1px solid var(--line-light);
-}
-
-.project-runway__mobile-image {
-  width: 100%;
-  height: auto;
-  aspect-ratio: 16 / 9;
-  object-fit: cover;
-  object-position: center;
-  background: #090909;
-  outline: 1px solid var(--line-light-soft);
-  outline-offset: -1px;
-  transform-origin: center;
-  transition: filter 520ms var(--ease-architectural), transform 760ms var(--ease-architectural);
-}
-
-.project-runway__chapter-copy {
-  padding: 1.6rem 0 clamp(4rem, 10vw, 7rem);
-}
-
-.project-runway__index,
-.project-runway__counter {
-  display: block;
-  direction: ltr;
-  unicode-bidi: isolate;
-  margin-block-end: 1.2rem;
-  color: #aaa39a;
-  font-size: var(--text-small);
-  font-weight: 600;
-  letter-spacing: 0.12em;
-}
-
-/* Every chapter carries the same <h3>Our Projects</h3>, which is the large title
-   revealed beside the sticky stage on desktop. In the stacked layout those eight
-   identical headings run down the page, repeating words the section already shows
-   as its eyebrow - so hide them here and re-enable in the runway block below, the
-   same way __stage, __navigator and the chapter button are handled. */
-.project-runway__chapter h3 {
-  display: none;
-  margin-block-end: 1rem;
-  font-size: clamp(2.2rem, 7vw, 4rem);
-}
-
-.project-runway__chapter p {
-  max-width: 34rem;
-  margin-block-end: 0;
-  color: #b9b2a9;
-  font-size: 0.82rem;
-  line-height: 1.65;
-}
-
-.project-runway__chapter button,
-.project-runway__hold {
-  display: none;
-}
-
-.project-cut-occluder {
-  display: none;
-  pointer-events: none;
 }
 
 .static-motion [data-motion-enter],
@@ -1374,297 +1945,9 @@ html[dir="rtl"] .handoff-disclosure {
   animation: none !important;
 }
 
-@media (min-width: 56.25rem) {
-  .motion-ready:not(.static-motion) .project-runway {
-    display: grid;
-    grid-template-columns: minmax(0, 1.58fr) minmax(19rem, 0.72fr);
-    align-items: start;
-    width: 100%;
-    min-height: var(--project-runway-height, 240vh);
-    min-height: var(--project-runway-height, 240svh);
-    padding: 0;
-  }
-
-  .motion-ready:not(.static-motion) .project-runway__stage {
-    position: sticky;
-    inset-block-start: 0;
-    grid-column: 1;
-    grid-row: 1;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: minmax(0, 1fr) auto;
-    height: 100vh;
-    height: 100svh;
-    margin: 0;
-    overflow: hidden;
-    background: #090909;
-    isolation: isolate;
-  }
-
-  .motion-ready:not(.static-motion) .project-runway__stage > img {
-    grid-column: 1;
-    grid-row: 1;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-    transform: scale(var(--scene-scale, 1));
-    transform-origin: center;
-    backface-visibility: hidden;
-    transition: opacity 720ms cubic-bezier(0.22, 1, 0.36, 1), transform 1050ms cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  .motion-ready:not(.static-motion) .project-runway__stage.is-rebasing > img {
-    transition: none;
-  }
-
-  .motion-ready:not(.static-motion) .project-runway__stage > img[data-project-layer="primary"] {
-    z-index: 2;
-  }
-
-  .motion-ready:not(.static-motion) .project-runway__incoming-layer {
-    z-index: 3;
-    opacity: 0;
-    transform: scale(1.018);
-  }
-
-  .motion-ready:not(.static-motion) .project-runway__stage[data-cut-phase="crossfade"] > img[data-project-layer="primary"] {
-    opacity: 0;
-    transform: scale(1.012);
-  }
-
-  .motion-ready:not(.static-motion) .project-runway__stage[data-cut-phase="crossfade"] .project-runway__incoming-layer {
-    opacity: 1;
-    transform: scale(1);
-  }
-
-  .motion-ready:not(.static-motion) .project-runway__stage::before {
-    z-index: 4;
-    grid-column: 1;
-    grid-row: 1;
-    background: var(--carbon);
-    content: "";
-    opacity: var(--scene-veil, 0);
-    pointer-events: none;
-  }
-
-  .motion-ready:not(.static-motion) .project-runway__stage::after {
-    position: relative;
-    z-index: 3;
-    grid-column: 1;
-    grid-row: 1;
-    background: linear-gradient(180deg, rgba(8, 8, 7, 0.3), transparent 18%, transparent 80%, rgba(8, 8, 7, 0.48));
-    content: "";
-    pointer-events: none;
-  }
-
-  .motion-ready:not(.static-motion) .project-runway__chapters {
-    z-index: 1;
-    grid-column: 2;
-    grid-row: 1;
-    height: var(--project-runway-height, 240vh);
-    height: var(--project-runway-height, 240svh);
-    pointer-events: none;
-  }
-
-  .motion-ready:not(.static-motion) .project-runway__navigator {
-    position: sticky;
-    inset-block-start: 0;
-    z-index: 2;
-    grid-column: 2;
-    grid-row: 1;
-    align-self: start;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    min-width: 0;
-    height: 100vh;
-    height: 100svh;
-    padding: clamp(2rem, 4vw, 4.5rem);
-    border-inline-start: 1px solid var(--line-light);
-    background: var(--carbon);
-    color: var(--chalk);
-  }
-
-  .motion-ready:not(.static-motion) .project-runway__navigator-count {
-    direction: ltr;
-    unicode-bidi: isolate;
-    margin-block-end: 1.5rem;
-    color: #aaa39a;
-    font-size: var(--text-small);
-    font-weight: 600;
-    letter-spacing: 0.12em;
-  }
-
-  .motion-ready:not(.static-motion) .project-runway__navigator > strong {
-    font-size: clamp(2.4rem, 4vw, 4.25rem);
-    font-weight: 400;
-    letter-spacing: -0.045em;
-    line-height: 0.98;
-  }
-
-  html[dir="rtl"] .motion-ready:not(.static-motion) .project-runway__navigator > strong {
-    letter-spacing: 0;
-  }
-
-  .motion-ready:not(.static-motion) .project-runway__navigator-list {
-    display: grid;
-    grid-template-columns: repeat(var(--project-count, 8), minmax(0, 1fr));
-    gap: 0.28rem;
-    margin-block-start: clamp(2.5rem, 6vh, 4.5rem);
-  }
-
-  .motion-ready:not(.static-motion) .project-runway__navigator-list button {
-    padding: 0 0 0.55rem;
-    border: 0;
-    border-block-end: 1px solid rgba(242, 237, 227, 0.22);
-    background: transparent;
-    color: #8c867e;
-    cursor: pointer;
-    font: inherit;
-    font-size: clamp(0.62rem, 0.7vw, 0.76rem);
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-align: start;
-    transition: border-color 240ms ease, color 240ms ease;
-  }
-
-  .motion-ready:not(.static-motion) .project-runway__navigator-list button[aria-pressed="true"] {
-    border-block-end-color: var(--chalk);
-    color: var(--chalk);
-  }
-
-  .motion-ready:not(.static-motion) .project-runway__navigator-list button:focus-visible {
-    outline: 2px solid var(--chalk);
-    outline-offset: 4px;
-  }
-
-  .motion-ready:not(.static-motion) .project-runway__chapter {
-    display: flex;
-    align-items: center;
-    min-height: 68vh;
-    min-height: 68svh;
-    padding: 0 clamp(2rem, 5vw, 5rem);
-    color: #8c867e;
-    transition: color 620ms ease;
-  }
-
-  .motion-ready:not(.static-motion) .project-runway__chapter.is-active {
-    color: var(--chalk);
-  }
-
-  .motion-ready:not(.static-motion) .project-runway__mobile-image {
-    display: none;
-  }
-
-  .motion-ready:not(.static-motion) .project-runway__chapter-copy {
-    padding: 0;
-    opacity: 0.14;
-    transition: opacity 620ms ease;
-    visibility: hidden;
-  }
-
-  .motion-ready:not(.static-motion) .project-runway__chapter.is-active .project-runway__chapter-copy {
-    opacity: 1;
-  }
-
-  .motion-ready:not(.static-motion) .project-runway__chapter h3 {
-    display: block;
-    font-size: clamp(2.4rem, 4vw, 4.25rem);
-  }
-
-  .motion-ready:not(.static-motion) .project-runway__chapter button {
-    display: inline-flex;
-    margin-block-start: 1.8rem;
-    padding: 0 0 0.38rem;
-    border: 0;
-    border-block-end: 1px solid currentColor;
-    background: transparent;
-    color: inherit;
-    cursor: pointer;
-    font-size: 0.76rem;
-    font-weight: 600;
-    letter-spacing: 0.05em;
-    text-align: start;
-  }
-
-  .motion-ready:not(.static-motion) .project-runway__chapter button[aria-pressed="true"] {
-    color: var(--chalk);
-  }
-
-  .motion-ready:not(.static-motion) .project-runway__hold {
-    display: block;
-    height: 36vh;
-    height: 36svh;
-  }
-
-  .motion-ready:not(.static-motion) .project-runway__stage figcaption {
-    position: relative;
-    z-index: 6;
-    grid-column: 1;
-    grid-row: 2;
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    align-items: end;
-    gap: 2rem;
-    padding: clamp(1.25rem, 3vw, 2.5rem) clamp(1.25rem, 3vw, 3rem);
-    background: var(--carbon);
-    color: var(--chalk);
-  }
-
-  .motion-ready:not(.static-motion) .project-runway__counter {
-    margin: 0;
-    transition: opacity 240ms ease;
-  }
-
-  .motion-ready:not(.static-motion) .project-runway__caption-copy {
-    display: flex;
-    align-items: end;
-    justify-content: space-between;
-    gap: 2rem;
-    transition: opacity 240ms ease;
-  }
-
-  .motion-ready:not(.static-motion) .project-runway__stage[data-caption-phase="out"] .project-runway__counter,
-  .motion-ready:not(.static-motion) .project-runway__stage[data-caption-phase="out"] .project-runway__caption-copy {
-    opacity: 0;
-  }
-
-  .motion-ready:not(.static-motion) .project-runway__stage figcaption strong {
-    font-size: clamp(1.4rem, 2.5vw, 2.4rem);
-    font-weight: 400;
-    letter-spacing: -0.03em;
-  }
-
-  html[dir="rtl"] .motion-ready:not(.static-motion) .project-runway__stage figcaption strong {
-    letter-spacing: 0;
-  }
-
-}
-
-.selected-work.is-motion-active .project-runway__stage::before,
-.project-runway__stage[data-cut-phase] img {
-  will-change: opacity, transform;
-}
-
-.static-motion .project-runway__stage,
-.no-js .project-runway__stage,
-.static-motion .project-cut-occluder,
-.no-js .project-cut-occluder {
-  display: none;
-}
-
 @media (max-width: 56.249rem) {
   .selected-work {
-    contain-intrinsic-size: auto calc(210svh + 7rem);
-  }
-
-  .project-runway {
-    padding-inline: 0;
-  }
-
-  .project-runway__chapter-copy {
-    padding-inline: var(--gutter);
+    contain-intrinsic-size: auto calc(100svh + 7rem);
   }
 }
 
@@ -2468,11 +2751,6 @@ html[dir="rtl"] .site-footer__contact {
     opacity: 0.72;
   }
 
-  .project-runway__chapter:hover .project-runway__mobile-image {
-    filter: saturate(0.94) contrast(1.025);
-    transform: scale(1.008);
-  }
-
   .relationship-marks figure:hover::after {
     opacity: 1;
     transform: scale(1);
@@ -2605,6 +2883,17 @@ html[dir="rtl"] .site-footer__contact {
 }
 
 @media (max-width: 47.9375rem) {
+  /* Footer and contact links measured 21-23px. On a phone these are the phone
+     number and the section links, so they get real height rather than a
+     hit-area trick - the footer has the room. */
+  .site-footer nav a,
+  .site-footer__contact a,
+  .contact-links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
   .capabilities {
     contain-intrinsic-size: auto calc(404svh + 90rem);
   }
@@ -2902,26 +3191,6 @@ html[dir="rtl"] .site-footer__contact {
     height: 100svh;
   }
 
-  .hero-poster,
-  #hero-canvas,
-  [data-motion-enter],
-  .readiness-visual img,
-  .capability-still,
-  .project-runway__stage img {
-    opacity: 1 !important;
-    transform: none !important;
-  }
-
-  .project-runway__mobile-image,
-  .relationship-marks figure::after,
-  .brief-field input,
-  .brief-field select,
-  .brief-field textarea,
-  .brief-form__footer button {
-    transition: none !important;
-    transform: none !important;
-  }
-
   .relationship-marks {
     width: min(var(--measure), calc(100% - (2 * var(--gutter))));
     overflow: visible;
@@ -2984,15 +3253,6 @@ html[dir="rtl"] .site-footer__contact {
   .threshold-stage__sticky {
     position: relative !important;
     height: auto !important;
-  }
-
-  .threshold-handoff,
-  .readiness-visual::after,
-  .project-cut-occluder,
-  .project-runway__stage::before,
-  .project-brief::before,
-  .final-frame::before {
-    display: none !important;
   }
 
   .threshold-portal {
