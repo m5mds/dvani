@@ -50,6 +50,7 @@ tasks/*
 # build-client-logo-pack.py at all. This applies the repairs that need only the
 # shipped PNGs, and rebuilds a single mark from artwork someone hands over.
 !tasks/repair-built-marks.py
+!tasks/rebuild-mark.ps1
 docs/
 prototypes/
 exports/

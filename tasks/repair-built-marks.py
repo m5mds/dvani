@@ -29,7 +29,9 @@ Usage:
     python tasks/repair-built-marks.py                     # apply, then report
     python tasks/repair-built-marks.py --dry-run           # report only
     python tasks/repair-built-marks.py --artwork <stem>    # rebuild one mark from
-                                                           # supplied brand artwork
+                                                           # artwork already in place
+    python tasks/repair-built-marks.py --artwork <stem> --from <path>
+                                                           # file it, then rebuild
 """
 
 from __future__ import annotations
@@ -106,8 +108,31 @@ def solidify(stem: str, *, dry_run: bool) -> str:
     return f"{stem}: solidified, partial alpha {before:.1f}% -> {after:.1f}%, mobile gain {gain}"
 
 
-def from_artwork(stem: str, *, dry_run: bool) -> str:
+def file_artwork(stem: str, supplied: Path) -> Path:
+    """Copy supplied artwork into brand-sources under the name the build expects.
+
+    The stem must match the output PNG exactly or resolve_brand_source will not
+    find it, which is a fiddly thing to get right by hand - so take any path and
+    do the renaming here.
+    """
+    if not supplied.is_file():
+        raise SystemExit(f"No such file: {supplied}")
+    extension = supplied.suffix.lower()
+    if extension not in build.BRAND_EXTS:
+        raise SystemExit(
+            f"{supplied.name}: unsupported format {extension!r}. "
+            f"Supported: {', '.join(build.BRAND_EXTS)}"
+        )
+    build.BRAND_DIR.mkdir(parents=True, exist_ok=True)
+    destination = build.BRAND_DIR / f"{stem}{extension}"
+    destination.write_bytes(supplied.read_bytes())
+    return destination
+
+
+def from_artwork(stem: str, *, dry_run: bool, supplied: Path | None = None) -> str:
     """Rebuild a single mark from official artwork dropped into brand-sources."""
+    if supplied is not None:
+        file_artwork(stem, supplied)
     source = build.resolve_brand_source(f"{stem}.png")
     if source is None:
         searched = ", ".join(f"{stem}{ext}" for ext in build.BRAND_EXTS)
@@ -133,7 +158,10 @@ def main() -> None:
     dry_run = "--dry-run" in sys.argv
     if "--artwork" in sys.argv:
         stem = sys.argv[sys.argv.index("--artwork") + 1]
-        print(f"  {from_artwork(stem, dry_run=dry_run)}")
+        supplied = None
+        if "--from" in sys.argv:
+            supplied = Path(sys.argv[sys.argv.index("--from") + 1]).expanduser()
+        print(f"  {from_artwork(stem, dry_run=dry_run, supplied=supplied)}")
         print("Dry run - nothing written." if dry_run else "Rebuilt. Now run: "
               "python tasks/check-client-logo-pack.py")
         return
