@@ -115,6 +115,37 @@ def harden_alpha(alpha: np.ndarray, gain: float) -> np.ndarray:
     return (np.clip((scaled - 0.5) * gain + 0.5, 0.0, 1.0) * 255.0).astype(np.uint8)
 
 
+def solidify_alpha(alpha: np.ndarray, ink_threshold: int = 26, band: int = 1) -> np.ndarray:
+    """Raise flat translucent interiors to opaque, leaving the antialias fringe alone.
+
+    Some official artwork carries a symbol as a flat mid-opacity plate rather than
+    solid ink - astra-construction's aperture sits at alpha 110/255 with a standard
+    deviation of 13.9, i.e. deliberately half transparent. `ingest()` keys shape
+    correctly but preserves that opacity, so the symbol paints mid-grey next to a
+    solid-white wordmark and the mark reads as two-tone on the dark marquee.
+
+    Hardening cannot fix it: harden_alpha pivots about 0.5, so a 0.43 plate is
+    pushed *down*, not up. Multiplying the channel would saturate the plate but
+    also fatten every antialiased edge.
+
+    So solidify by position instead of by value: erode the ink mask by one pixel
+    and set everything that survives - the interior - to opaque, leaving the
+    single-pixel boundary band at whatever alpha it had. Counters are unaffected
+    because a counter is alpha 0 and never enters the mask.
+    """
+    mask = (alpha > ink_threshold).astype(np.uint8)
+    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2 * band + 1, 2 * band + 1))
+    interior = cv2.erode(mask, kernel, iterations=1).astype(bool)
+    solid = alpha.copy()
+    solid[interior] = 255
+    return solid
+
+
+# Marks whose artwork carries a translucent plate rather than solid ink. Measured,
+# not guessed: every other mark in the pack is >= 97% opaque over its interior.
+SOLIDIFY_STEMS = frozenset({"cce", "astra-construction", "diriyah-company"})
+
+
 def ink_components(alpha: np.ndarray) -> int:
     count, _ = cv2.connectedComponents((alpha > 10).astype(np.uint8), 8)
     return count - 1
@@ -345,8 +376,22 @@ def main() -> None:
                 OFFICIAL_DIR / filename, alpha_floor=OFFICIAL_ALPHA_FLOORS.get(filename, 7)
             )
         else:
+            # WARNING: this crop is wrong and cannot be fixed from the built PNG.
+            # It was added to cut a background box artifact off the right of the
+            # top-grill source, but 0.86 also slices the wordmark mid-glyph: the
+            # mark ships reading "TOP GRILI" with the final L reduced to a bare
+            # stem, and a grey remnant of the box survives anyway. Re-crop the
+            # source so the full wordmark is kept, then drop this special case.
             trim_right = 0.86 if filename == "top-grill.png" else 1.0
             output = normalise(PROFILE_DIR / filename, trim_right=trim_right)
+
+        # Applied to the finished canvas, not inside one source branch: the three
+        # affected marks arrive by two different routes (astra-construction as a
+        # page crop, cce and diriyah-company on the legacy profile path).
+        if Path(filename).stem in SOLIDIFY_STEMS:
+            solid = solidify_alpha(np.asarray(output)[:, :, 3])
+            output.putalpha(Image.fromarray(solid, mode="L"))
+
         output.save(OUTPUT_DIR / filename, optimize=True)
 
         # Downscale first, then harden: resampling a hardened mask reintroduces
