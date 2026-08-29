@@ -44,3 +44,19 @@ ministry-civil-service	Ministry of Civil Service (Saudi Arabia)	-	-	page-crop	Mi
 diriyah-company	Diriyah Company	-	-	pending	Seal shipped with 64% of its ink at partial alpha, rendering as a grey ghost; solidified (blur 1.74 -> 0.44), but the rim text is still unreadable at served size. Official artwork not reachable from this environment - the egress policy denies every brand host. Needs the client's brand kit or a fetch from an allowed network.
 top-grill	Top Grill	-	-	rejected	Ships reading "TOP GRILI": build-client-logo-pack applies trim_right=0.86 to the source, which slices the wordmark mid-glyph, and a grey remnant of the background box survives regardless. The discarded pixels are not recoverable from the built PNG - re-crop assets/profile-client-logos/top-grill.png, or supply brand artwork.
 north-coffee	North Coffee	-	-	pending	Portrait mark is mottled with speckle noise and the "COFFEE" subline (0.86 device px strokes) breaks up at served size. Needs brand artwork; not reachable from this environment.
+#
+# COLOUR MARKS. The pack is no longer uniformly monochrome. Where a client's own
+# artwork reads on the dark relationships section it now ships in colour; where it
+# does not, the white silhouette stays. Built by tasks/build-colour-marks.py and
+# gated on measured contrast against #0E1012 (minimum 3:1) by the checker.
+# Artwork below came from the m5mds/DecoCorner repo, public/assets/clients.
+bec-arabia	BEC Arabia	m5mds/DecoCorner public/assets/clients/bec.svg	svg	colour	Vector, white artwork. 18.18:1 on the section ground.
+gaca	General Authority of Civil Aviation	m5mds/DecoCorner public/assets/clients/gaca.svg	svg	colour	Vector, white artwork. 16.96:1.
+havelock-one	Havelock One	m5mds/DecoCorner public/assets/clients/havelock-one.svg	svg	colour	Vector, white artwork. 16.60:1. Replaces a page-crop whose subline was unreadable.
+hayyak	Hayyak	m5mds/DecoCorner public/assets/clients/hayyak.svg	svg	colour	Vector, white artwork. 16.25:1. Replaces a 150 DPI page crop - the "VIP LOUNGE" subline is now legible.
+rcu-mono-v3	Royal Commission for AlUla	m5mds/DecoCorner public/assets/clients/royal-commission-alula.svg	svg	colour	Vector, gold #ba9863. 5.85:1. Stem must stay rcu-mono-v3 - home-monumental.css keys on the filename.
+neom-mono-v3	NEOM	m5mds/DecoCorner public/assets/clients/neom.svg	svg	colour	4.48:1, but that figure is carried by the colour emblem: the "NEOM" wordmark beside it is near-black and reads faintly on the dark ground. Shipped in colour at the client's direction. Stem must stay neom-mono-v3. The SVG embeds a raster, so it is not true vector.
+mas-engineering-construction	MAS Engineering & Construction	m5mds/DecoCorner public/assets/clients/mas-ecc.png	png	colour	351x400 raster, orange. 3.72:1.
+alfanar-engineering-services	alfanar	m5mds/DecoCorner public/assets/clients/alfanar.svg	svg	colour	Vector, blue #106FB3. 3.41:1.
+#	NOTE	jedco-jeddah-airports	-	rejected	DecoCorner's "jeddah-airports" artwork is the King Abdulaziz International Airport mark. This slot credits JEDCO, Jeddah Airports Company - the operator, a different entity - so swapping it would misattribute the client. Kept monochrome.
+#	NOTE	red-sea-global	-	rejected	Measured 4.85:1, but the figure is carried by the bright emblem while the "Red Sea Global" wordmark is a muted blue that reads worse than the white silhouette it would have replaced. Kept monochrome.

@@ -30,6 +30,27 @@ from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
 PACK_DIR = ROOT / "assets" / "client-logos-monochrome"
+
+# The pack is mixed. A mark ships in the client's own colours when that artwork
+# reads on the dark relationships section, and as a white silhouette when it does
+# not. The colour roster lives in build-colour-marks.py so there is one source of
+# truth; every ink-shape gate below is written for silhouettes and is skipped for
+# colour marks, which get their own contrast gate instead.
+def _colour_marks() -> frozenset[str]:
+    import importlib.util
+    spec = importlib.util.spec_from_file_location(
+        "_colour_build", Path(__file__).resolve().parent / "build-colour-marks.py")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules["_colour_build"] = module
+    spec.loader.exec_module(module)
+    return frozenset(module.COLOUR_MARKS)
+
+
+COLOUR = _colour_marks()
+# The relationships section ground. A colour mark that cannot clear this against
+# it is unreadable where it actually ships, whatever it looks like on white.
+SECTION_GROUND = (14, 16, 18)
+MIN_COLOUR_CONTRAST = 3.0
 BASELINE_PATH = ROOT / "tasks" / "client-logo-baseline.json"
 
 CANVAS_SIZE = (1200, 448)
@@ -113,10 +134,36 @@ class Measurement:
     holes: int
     coverage: float
     served_width: float
+    ground_contrast: float
 
 
 def _served_width(stem: str) -> float:
     return SERVED_DEVICE_WIDTH_WIDE if stem in WIDE_MARKS else SERVED_DEVICE_WIDTH
+
+
+def _relative_luminance(rgb: np.ndarray) -> np.ndarray:
+    channel = rgb.astype(np.float64) / 255.0
+    channel = np.where(channel <= 0.03928, channel / 12.92, ((channel + 0.055) / 1.055) ** 2.4)
+    return 0.2126 * channel[..., 0] + 0.7152 * channel[..., 1] + 0.0722 * channel[..., 2]
+
+
+def _ground_contrast(rgb: np.ndarray, alpha: np.ndarray) -> float:
+    """WCAG contrast between a mark's ink and the section it is painted on.
+
+    Composited over the ground first: a half-opaque pixel does not deliver its
+    own colour, it delivers a blend, and judging the raw colour overstates a
+    translucent mark.
+    """
+    ink = alpha > 128
+    if not ink.any():
+        return 0.0
+    weight = (alpha[ink] / 255.0)[:, None]
+    ground = np.array(SECTION_GROUND, dtype=np.float64)
+    composited = rgb[ink] * weight + ground * (1.0 - weight)
+    ink_luminance = float(_relative_luminance(composited).mean())
+    ground_luminance = float(_relative_luminance(ground))
+    hi, lo = max(ink_luminance, ground_luminance), min(ink_luminance, ground_luminance)
+    return (hi + 0.05) / (lo + 0.05)
 
 
 def _perimeter(alpha: np.ndarray) -> int:
@@ -166,7 +213,7 @@ def measure(path: Path) -> Measurement:
     visible = alpha > 0
     if not visible.any():
         raise CheckError(f"{stem}: no visible pixels")
-    if not np.all(rgb[visible] == 255):
+    if stem not in COLOUR and not np.all(rgb[visible] == 255):
         raise CheckError(f"{stem}: ink is not pure white — colour fringing survived the build")
 
     ys, xs = np.nonzero(alpha > 8)
@@ -193,6 +240,7 @@ def measure(path: Path) -> Measurement:
         holes=_hole_count(alpha, bbox),
         coverage=float((alpha[y0 : y1 + 1, x0 : x1 + 1] >= 128).mean()),
         served_width=served,
+        ground_contrast=_ground_contrast(rgb, alpha),
     )
 
 
@@ -280,6 +328,20 @@ def check(measurements: list[Measurement]) -> tuple[list[str], list[str]]:
     baseline = _load_baseline()
 
     for m in measurements:
+        if m.stem in COLOUR:
+            # Every gate below reads ink shape and assumes a silhouette: blur
+            # measures an antialiasing band against a hard edge, min-stroke and
+            # counters assume one flat ink. None of that describes a gradient, a
+            # patterned emblem, or a two-tone lockup. What actually matters for a
+            # colour mark is whether it survives the ground it is painted on.
+            if m.ground_contrast < MIN_COLOUR_CONTRAST:
+                failures.append(
+                    f"{m.stem}: colour artwork contrasts {m.ground_contrast:.2f}:1 against "
+                    f"the section ground, under the {MIN_COLOUR_CONTRAST:.1f}:1 minimum - "
+                    f"ship the monochrome silhouette instead, or source a light variant"
+                )
+            continue
+
         recorded = baseline.get(m.stem, {}).get("blur_dev")
         if m.stem in PAGE_CROP:
             # Source-capped: fail only on regression against the recorded value.
