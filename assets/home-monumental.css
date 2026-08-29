@@ -3009,7 +3009,7 @@ html[dir="rtl"] .site-footer__contact {
     mask-image: linear-gradient(90deg, transparent, #000 2.5%, #000 97.5%, transparent);
   }
 
-  /* Phones swipe the strip instead of watching it scroll itself.
+  /* Phones scroll the strip, they do not animate it.
      A transform animation gets its own compositing layer whether or not
      will-change asks for one, and each lane's track is ~11,700 CSS px wide -
      about 30,000 device px at DPR 2.6, four to seven times a mobile GPU's max
@@ -3017,21 +3017,35 @@ html[dir="rtl"] .site-footer__contact {
      under memory pressure; tiles that cannot be re-rastered in time paint
      blank, which is why marks vanished after the strip had been running a
      while. Measured with LayerTree: 11749 + 11280 px layers as-is, gone once
-     the animation stops. Dropping will-change alone changed nothing.
-     A scroll container has no such layer - the browser rasterises around the
-     scroll position instead. */
+     the animation stops. Dropping will-change alone changed nothing, because
+     the animation is what promotes the layer.
+
+     A scroll container carries no such layer - the browser rasterises around
+     the scroll position - so the motion is driven by advancing scrollLeft in
+     initialiseMarqueeAutoScroll() instead. Same drift, a fraction of the cost,
+     and a finger can still take over at any point. */
   .client-marquee__track {
     --marquee-gap: 0.65rem;
-    animation: none;
-    transform: none;
     will-change: auto;
-    width: auto;
+    width: max-content;
+  }
+
+  /* !important, and not by laziness. The per-lane direction rules above are
+     `.client-marquee__lane:nth-child(even) .client-marquee__track` and the two
+     RTL variants - specificity 0,3,0 and 0,3,1 against this block's 0,1,0 - so a
+     plain `animation: none` here is overridden and only the odd lanes stop. That
+     left lane 2 running the transform animation while JS also drove its
+     scrollLeft: the layer stayed composited at 11,280 px and the strip ran off
+     its own content, which verify-mobile caught as an uncovered lane. The
+     reduced-motion block below disables the same rules the same way. */
+  .client-marquee__track {
+    animation: none !important;
+    transform: none !important;
   }
 
   .client-marquee__lane {
     overflow-x: auto;
     overflow-y: hidden;
-    scroll-snap-type: x proximity;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
   }
@@ -3040,17 +3054,21 @@ html[dir="rtl"] .site-footer__contact {
     display: none;
   }
 
-  /* The duplicate exists only to make the animation loop seamlessly. */
+  /* Kept on phones: the auto-scroll wraps by jumping back one set width, which
+     only goes unnoticed while an identical copy is already on screen. Scroll
+     snapping is deliberately absent - it fights a continuous scroll. */
   .client-marquee__set--duplicate {
-    display: none;
+    display: flex;
   }
 
-  .client-marquee__set {
-    padding-inline-end: var(--gutter);
-  }
-
-  .relationship-marks figure {
-    scroll-snap-align: start;
+  /* No gutter on a continuously scrolling strip. The desktop lane is padded so
+     the first mark clears the page edge, but here the lane starts at scroll
+     offset 0, where that padding reads as an empty stretch - which
+     verify-mobile flags as an uncovered lane. Zeroing it also butts the two
+     sets together, so the wrap distance stays exactly one set plus the gap. */
+  .client-marquee__set,
+  .client-marquee__set--duplicate {
+    padding-inline: 0;
   }
 
   .relationship-marks figure {
