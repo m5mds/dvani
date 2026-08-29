@@ -20,10 +20,15 @@ why the contact sheet is part of this process and not a formality:
                          muted blue that reads far worse than the white
                          silhouette it would replace.
 
-neom is a judgement call the measurement cannot make: it scores 4.48 on the
-strength of its colour emblem, while the "NEOM" wordmark beside it is near-black
-and reads faintly on the dark ground. Included in colour at the client's
-direction - the emblem is the recognisable half.
+neom needed its dark-background lockup. The artwork on hand is the light-background
+one: colour emblem plus a near-black wordmark that vanishes on this section, which
+is why it first measured 4.48 on the strength of the emblem alone. NEOM publish a
+dark variant with the wordmark in white - the client supplied a reference of it -
+and in this file the wordmark is the only thing filled #0c0a09, so recolouring
+that one value reproduces it exactly and leaves every emblem colour untouched.
+See WORDMARK_RECOLOUR. This is the one place the pipeline alters artwork, it is
+confined to swapping a single declared fill, and it is done to match the brand's
+own published variant rather than to invent one.
 
 SVG is rasterised with headless Chromium rather than a Node toolchain, because
 sharp/librsvg is not a declared dependency of this repo.
@@ -57,27 +62,45 @@ CHROME = "/opt/pw-browsers/chromium-1194/chrome-linux/chrome"
 # downsamples, matching what build-client-logo-pack.py does for its own sources.
 RASTER_LONG_EDGE = 2 * max(CONTENT_SIZE)
 
-# dvani mark stem -> artwork filename, with the measured contrast on #0E1012.
+# dvani mark stem -> artwork filename, with its contrast against the section
+# ground. These are the checker's own figures (check-client-logo-pack._ground_contrast,
+# which composites the mark over the ground before measuring), so the roster and
+# the gate cannot drift apart. neom's is measured after the wordmark recolour.
 COLOUR_MARKS: dict[str, tuple[str, float]] = {
-    "bec-arabia": ("bec.svg", 18.18),
-    "gaca": ("gaca.svg", 16.96),
-    "havelock-one": ("havelock-one.svg", 16.60),
-    "hayyak": ("hayyak.svg", 16.25),
-    "rcu-mono-v3": ("royal-commission-alula.svg", 5.85),
-    "mas-engineering-construction": ("mas-ecc.png", 3.72),
-    "alfanar-engineering-services": ("alfanar.svg", 3.41),
-    "neom-mono-v3": ("neom.svg", 4.48),
+    "bec-arabia": ("bec.svg", 18.87),
+    "gaca": ("gaca.svg", 18.46),
+    "havelock-one": ("havelock-one.svg", 18.42),
+    "hayyak": ("hayyak.svg", 18.39),
+    "rcu-mono-v3": ("royal-commission-alula.svg", 6.79),
+    "mas-engineering-construction": ("mas-ecc.png", 4.15),
+    "alfanar-engineering-services": ("alfanar.svg", 3.55),
+    "neom-mono-v3": ("neom.svg", 5.22),
 }
 
 
-def rasterise(source: Path) -> Image.Image:
+# stem -> (fill to replace, replacement). Applied to SVG source text before
+# rasterising, so the file in brand-sources stays exactly as supplied.
+WORDMARK_RECOLOUR: dict[str, tuple[str, str]] = {
+    "neom-mono-v3": ("#0c0a09", "#ffffff"),
+}
+
+
+def rasterise(source: Path, recolour: tuple[str, str] | None = None) -> Image.Image:
     """Render artwork to RGBA at high resolution, transparent background."""
     if source.suffix.lower() != ".svg":
+        if recolour is not None:
+            raise RuntimeError(f"{source.name}: recolour is only supported for SVG sources")
         return Image.open(source).convert("RGBA")
 
     import base64
 
-    payload = base64.b64encode(source.read_bytes()).decode()
+    markup = source.read_text()
+    if recolour is not None:
+        old, new = recolour
+        if old not in markup:
+            raise RuntimeError(f"{source.name}: fill {old} not present - artwork changed?")
+        markup = markup.replace(old, new)
+    payload = base64.b64encode(markup.encode()).decode()
     # Size the viewport to the artwork's own aspect so nothing is letterboxed away.
     probe = Image.new("RGBA", (1, 1))
     with tempfile.TemporaryDirectory() as tmp:
@@ -134,7 +157,7 @@ def main() -> None:
         source = BRAND_DIR / art
         if not source.exists():
             raise SystemExit(f"missing artwork: {source}")
-        canvas, scale = fit(rasterise(source))
+        canvas, scale = fit(rasterise(source, WORDMARK_RECOLOUR.get(stem)))
         canvas.save(PACK_DIR / f"{stem}.png", optimize=True)
         canvas.resize(MOBILE_SIZE, Image.Resampling.LANCZOS).save(
             MOBILE_DIR / f"{stem}.png", optimize=True)
