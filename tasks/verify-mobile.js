@@ -33,7 +33,18 @@ const CHROME_CANDIDATES = [
   "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe",
   "C:/Program Files/Microsoft/Edge/Application/msedge.exe",
 ];
-const CHROME_EXE = CHROME_CANDIDATES.find((candidate) => fs.existsSync(candidate));
+// The list above is Windows-only, so this harness could not run on Linux or in
+// CI. CHROME_PATH takes precedence; the Linux fallbacks below cover a container
+// (including the Playwright browser bundle) without needing it set.
+const LINUX_CANDIDATES = [
+  "/opt/pw-browsers/chromium-1194/chrome-linux/chrome",
+  "/usr/bin/chromium",
+  "/usr/bin/chromium-browser",
+  "/usr/bin/google-chrome",
+  "/usr/bin/google-chrome-stable",
+];
+const CHROME_EXE = [process.env.CHROME_PATH, ...CHROME_CANDIDATES, ...LINUX_CANDIDATES]
+  .find((candidate) => candidate && fs.existsSync(candidate));
 
 const PROJECT_CHAPTERS = 8;
 // Cold load was 3164 KB before this work; budget guards the win, not a hard target.
@@ -191,6 +202,9 @@ async function run(port) {
   const child = spawn(CHROME_EXE, [
     "--headless=new", `--remote-debugging-port=${debugPort}`, `--user-data-dir=${profile}`,
     "--no-first-run", "--no-default-browser-check", "--disable-extensions",
+    // Chrome's sandbox cannot initialise as uid 0, which is the normal case in a
+    // CI container. Only dropped when actually running as root.
+    ...(process.getuid && process.getuid() === 0 ? ["--no-sandbox"] : []),
     `--window-size=${VIEWPORT.width},${VIEWPORT.height}`, "about:blank",
   ], { stdio: "ignore" });
 
