@@ -1542,6 +1542,7 @@
     });
 
     marquee.dataset.marqueeReady = "true";
+    initialiseMarqueeAutoScroll(marquee);
     if (controls instanceof HTMLElement && toggle instanceof HTMLButtonElement && motionAllowed()) {
       const pauseLabel = toggle.dataset.pauseLabel || "Pause client logo motion";
       const resumeLabel = toggle.dataset.resumeLabel || "Resume client logo motion";
@@ -1560,6 +1561,146 @@
       controls.hidden = false;
     }
   }
+
+  /* Drift the phone lanes by scroll position rather than by transform.
+     The CSS animation this replaces composited each lane's track as a single
+     ~30,000 device px layer, far past a mobile GPU's texture limit, and marks
+     blanked as Chrome discarded tiles it could not re-raster. A scroll
+     container is rasterised around its scroll offset instead, so the same
+     drift costs a fraction of the memory - and a finger can interrupt it,
+     which the animation never allowed. */
+  function initialiseMarqueeAutoScroll(marquee) {
+    const phoneQuery = window.matchMedia("(max-width: 47.9375rem)");
+    const lanes = [...marquee.querySelectorAll(".client-marquee__lane")].map((lane, index) => ({
+      lane,
+      // Lane 2 drifts the other way, matching the desktop animation's alternating
+      // direction. Speeds differ so the two never march in lockstep.
+      speed: index % 2 === 0 ? 26 : -23,
+      // Position is carried as a float here rather than read back from the
+      // element. scrollLeft is rounded to whole pixels, so at these speeds a
+      // frame's movement rounds to zero on read and the lane never advances.
+      pos: 0,
+      held: false,
+    }));
+    if (!lanes.length) return;
+
+    let running = false;
+    let frame = 0;
+    let last = 0;
+
+    // How far the lane travels before it repeats: one set, plus the flex gap
+    // that separates it from its duplicate. The gap matters - wrapping by the
+    // set width alone leaves a gap-sized hop at every cycle. This mirrors the
+    // desktop keyframe, which translates by -50% - gap/2 for the same reason.
+    const period = (lane) => {
+      const set = lane.querySelector(".client-marquee__set");
+      if (!set) return lane.scrollWidth / 2;
+      const track = lane.querySelector(".client-marquee__track");
+      const gap = track ? parseFloat(getComputedStyle(track).columnGap) || 0 : 0;
+      return set.getBoundingClientRect().width + gap;
+    };
+
+    function step(now) {
+      if (!running) return;
+      const elapsed = Math.min(now - last, 64);   // a backgrounded tab must not lurch
+      last = now;
+      for (const entry of lanes) {
+        if (entry.held) continue;
+        const span = period(entry.lane);
+        if (span <= 0) continue;
+        entry.pos += (entry.speed * elapsed) / 1000;
+        if (entry.pos >= span) entry.pos -= span;
+        else if (entry.pos < 0) entry.pos += span;
+        entry.lane.scrollLeft = entry.pos;
+      }
+      frame = requestAnimationFrame(step);
+    }
+
+    // A lane is only safe to seek once its two sets measure the same: until the
+    // marks have laid out, the duplicate is narrower than the original, so
+    // seeking a reverse lane to one period lands past the content that exists
+    // and the strip shows an empty stretch. verify-mobile catches exactly this
+    // as an uncovered lane.
+    const laidOut = () => lanes.every(({ lane }) => {
+      const sets = lane.querySelectorAll(".client-marquee__set");
+      if (sets.length < 2) return false;
+      const first = sets[0].getBoundingClientRect().width;
+      const second = sets[1].getBoundingClientRect().width;
+      return first > 0 && Math.abs(first - second) <= 1;
+    });
+
+    function start() {
+      if (running || !phoneQuery.matches || !motionAllowed()) return;
+      if (marquee.dataset.marqueePaused === "true") return;
+      if (!laidOut()) {
+        // Come back once the marks have sized. Cheap, and it self-resolves.
+        requestAnimationFrame(start);
+        return;
+      }
+      running = true;
+      last = performance.now();
+      // A reverse lane starts at the duplicate so it has somewhere to travel to.
+      for (const entry of lanes) {
+        if (entry.speed < 0 && entry.lane.scrollLeft <= 0) {
+          entry.lane.scrollLeft = period(entry.lane);
+        }
+        entry.pos = entry.lane.scrollLeft;
+      }
+      frame = requestAnimationFrame(step);
+    }
+
+    function stop() {
+      running = false;
+      cancelAnimationFrame(frame);
+    }
+
+    for (const entry of lanes) {
+      // A finger takes precedence: hand the lane over on touch and pick the
+      // drift back up from wherever it was left.
+      const hold = () => { entry.held = true; };
+      const release = () => {
+        entry.held = false;
+        // Pick the drift back up from where the finger left it, not from the
+        // stale float.
+        entry.pos = entry.lane.scrollLeft;
+        last = performance.now();
+      };
+      entry.lane.addEventListener("pointerdown", hold, { passive: true });
+      entry.lane.addEventListener("touchstart", hold, { passive: true });
+      entry.lane.addEventListener("pointerup", release, { passive: true });
+      entry.lane.addEventListener("pointercancel", release, { passive: true });
+      entry.lane.addEventListener("touchend", release, { passive: true });
+      entry.lane.addEventListener("touchcancel", release, { passive: true });
+    }
+
+    // Never burn frames on a strip nobody is looking at, or on a hidden tab.
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver((entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) start();
+          else stop();
+        }
+      }, { rootMargin: "20% 0px" }).observe(marquee);
+    } else {
+      start();
+    }
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) stop();
+      else start();
+    });
+    phoneQuery.addEventListener("change", () => {
+      stop();
+      if (phoneQuery.matches) start();
+    });
+
+    // The pause control drives the desktop animation through a data attribute;
+    // honour the same switch here rather than inventing a second one.
+    new MutationObserver(() => {
+      if (marquee.dataset.marqueePaused === "true") stop();
+      else start();
+    }).observe(marquee, { attributes: true, attributeFilter: ["data-marquee-paused"] });
+  }
+
 
   function deferClientMarquee() {
     const section = document.querySelector("#relationships");
