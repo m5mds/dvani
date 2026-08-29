@@ -324,13 +324,13 @@
     "stem": "le-meridien"
   },
   "lilac-park": {
-    "blur_dev": 0.9512272599267811,
-    "coverage": 0.2385365099009901,
-    "holes": 1,
+    "blur_dev": 1.1665301204819276,
+    "coverage": 0.4602102534562212,
+    "holes": 46,
     "ink_h": 320,
-    "ink_w": 202,
-    "min_stroke_dev": 1.7280000448226929,
-    "offset_dx": 0,
+    "ink_w": 217,
+    "min_stroke_dev": 0.8640000224113464,
+    "offset_dx": -1,
     "offset_dy": 0,
     "served_width": 518.4,
     "stem": "lilac-park"
