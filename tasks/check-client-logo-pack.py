@@ -33,20 +33,27 @@ PACK_DIR = ROOT / "assets" / "client-logos-monochrome"
 
 # The pack is mixed. A mark ships in the client's own colours when that artwork
 # reads on the dark relationships section, and as a white silhouette when it does
-# not. The colour roster lives in build-colour-marks.py so there is one source of
-# truth; every ink-shape gate below is written for silhouettes and is skipped for
-# colour marks, which get their own contrast gate instead.
-def _colour_marks() -> frozenset[str]:
+# not. The colour roster lives in the two build scripts so there is one source of
+# truth - build-colour-marks.py for vector artwork pulled from brand sites,
+# build-client-colour-pack.py for raster artwork the client delivered - and every
+# ink-shape gate below is written for silhouettes and is skipped for colour marks,
+# which get their own contrast gate instead.
+def _load_task(name: str):
     import importlib.util
     spec = importlib.util.spec_from_file_location(
-        "_colour_build", Path(__file__).resolve().parent / "build-colour-marks.py")
+        f"_task_{name.replace('-', '_')}", Path(__file__).resolve().parent / f"{name}.py")
     module = importlib.util.module_from_spec(spec)
-    sys.modules["_colour_build"] = module
+    sys.modules[spec.name] = module
     spec.loader.exec_module(module)
-    return frozenset(module.COLOUR_MARKS)
+    return module
 
 
-COLOUR = _colour_marks()
+COLOUR = frozenset(_load_task("build-colour-marks").COLOUR_MARKS) | frozenset(
+    _load_task("build-client-colour-pack").CLIENT_MARKS)
+# Each mark is painted at its own size in the marquee - see fit-marquee-marks.py -
+# and the blur gate is measured in device pixels at served size, so it has to read
+# the same factor the page does rather than assume every mark is served alike.
+_mark_scale = _load_task("fit-marquee-marks").mark_scale
 # The relationships section ground. A colour mark that cannot clear this against
 # it is unreadable where it actually ships, whatever it looks like on white.
 SECTION_GROUND = (14, 16, 18)
@@ -73,11 +80,11 @@ WIDE_MARKS = frozenset({"rcu-mono-v3", "neom-mono-v3", "rosewood-mono-v3"})
 # can never clear leaves the checker permanently red and therefore useless as a
 # regression detector - so they are gated against their recorded baseline instead.
 # Moving one out of this set requires real brand artwork; see SOURCES.tsv.
+# Seven stems left this set when the client delivered their own artwork; they are
+# colour marks now and are gated on contrast instead. See build-client-colour-pack.py.
 PAGE_CROP = frozenset({
-    "siac", "six-senses", "astra-construction", "elegancia-arabia",
-    "jedco-jeddah-airports", "kidana", "hayyak", "house-express",
-    "swiss-inn-hotels-resorts", "swiss-inn-tabuk", "alsharif-group-holding",
-    "abdul-mohsen-al-tamimi-group", "ministry-civil-service", "albaddad-engineering",
+    "six-senses", "kidana", "hayyak", "house-express",
+    "swiss-inn-hotels-resorts", "swiss-inn-tabuk", "ministry-civil-service",
 })
 # How much a page-crop mark may drift above its baseline before it counts as a
 # regression. Rebuilds are deterministic, so this only absorbs deliberate retuning.
@@ -93,7 +100,7 @@ REPLACED = frozenset({
     "house-express", "albaddad-engineering", "crowne-plaza",
 })
 
-EXPECTED_COUNT = 49
+EXPECTED_COUNT = 50
 
 # Measured on the pack before replacement: the 28 keepers span 0.38-1.87, the 21
 # targets span 1.82-3.70. The bands overlap around 1.8-1.9, so a single threshold
@@ -103,9 +110,16 @@ EXPECTED_COUNT = 49
 # The two marks in the pack built from real vector art score 0.38 (rosewood-mono-v3)
 # and 0.69 (neom-mono-v3), so this is comfortably achievable with official artwork.
 GATE_REPLACED = 1.20
-# GATE_ALL is only a regression guard, set just above the worst current keeper
-# (cce, 1.87) so an untouched mark cannot silently degrade.
-GATE_ALL = 1.95
+# GATE_ALL is only a regression guard, set just above the worst current keeper so
+# an untouched mark cannot silently degrade. It was 1.95, just above cce at 1.87.
+# fit-marquee-marks.py then grew the portrait marks by up to 1.5x, and this metric
+# is in device pixels at served size, so every one of those measurements grew with
+# them - the artwork did not change, the size it is painted at did. Recalibrated
+# the same way against the new figures: the worst keeper is now ibtech at 2.38.
+# The marks that moved most were checked on the contact sheet before this was
+# raised; at 1.5x they are still downsampled from a 1200px canvas, so the wider
+# band is antialiasing spread over more pixels rather than lost resolution.
+GATE_ALL = 2.45
 # Centring is measured on the alpha > 8 bounding box, whose extreme rows can be a
 # 4%-opacity resampling fringe (kidana's outermost ink rows peak at alpha 11). LANCZOS
 # leaves that fringe asymmetric by a pixel or two, which is 0.45% of the 448px canvas
@@ -138,7 +152,8 @@ class Measurement:
 
 
 def _served_width(stem: str) -> float:
-    return SERVED_DEVICE_WIDTH_WIDE if stem in WIDE_MARKS else SERVED_DEVICE_WIDTH
+    base = SERVED_DEVICE_WIDTH_WIDE if stem in WIDE_MARKS else SERVED_DEVICE_WIDTH
+    return base * _mark_scale(stem)
 
 
 def _relative_luminance(rgb: np.ndarray) -> np.ndarray:

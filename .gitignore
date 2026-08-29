@@ -54,6 +54,12 @@ tasks/*
 # Builds the colour half of the mixed pack; see the COLOUR MARKS block in
 # assets/brand-sources/SOURCES.tsv.
 !tasks/build-colour-marks.py
+# The other colour path: raster artwork delivered by the client rather than
+# pulled from a brand site, so it needs a background knockout first.
+# check-client-logo-pack.py imports its roster, and fit-marquee-marks.py's factor,
+# so leaving either untracked breaks the checker outright on a fresh clone.
+!tasks/build-client-colour-pack.py
+!tasks/fit-marquee-marks.py
 docs/
 prototypes/
 exports/

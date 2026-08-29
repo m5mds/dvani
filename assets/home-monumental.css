@@ -2317,6 +2317,14 @@ html[dir="rtl"] .client-marquee__lane:nth-child(even) .client-marquee__track {
   max-height: clamp(5rem, 6vw, 6.6rem);
   object-fit: contain;
   object-position: center;
+  /* Every mark ships on the same 1200x448 canvas with its ink fitted into a
+     1080x320 box, so a portrait mark paints at a third of a landscape one's
+     visual weight and reads as an afterthought beside it. --mark-scale is the
+     per-mark factor that grows each one back into the tile's padded box; it is
+     computed from the mark's own ink bounds at build time and written onto the
+     tag, and it is a transform rather than a width so the tile never reflows.
+     Marks with no factor stay at 1. */
+  transform: scale(var(--mark-scale, 1));
   filter: none;
   opacity: 1;
 }
