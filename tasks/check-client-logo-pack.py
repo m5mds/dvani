@@ -71,7 +71,9 @@ SERVED_DEVICE_WIDTH = 518.4
 #   .relationship-mark--wide  padding 1.75rem -> content 280px, but max-height 4.75rem = 76px
 #     binds first, so object-fit: contain paints 76 * 1200/448 = 203.6 CSS px.
 SERVED_DEVICE_WIDTH_WIDE = 407.1
-WIDE_MARKS = frozenset({"rcu-mono-v3", "neom-mono-v3", "rosewood-mono-v3"})
+# neom-mono-v3 left this set when its artwork became the stacked lockup; see the
+# matching note in home-monumental.css.
+WIDE_MARKS = frozenset({"rcu-mono-v3", "rosewood-mono-v3"})
 
 # Marks re-extracted from native-resolution colour crops of divani profile.pdf.
 # Their ceiling is the source: the pages are 1650x928 JPEGs at 150 DPI and an

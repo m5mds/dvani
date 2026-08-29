@@ -2346,8 +2346,12 @@ html[dir="rtl"] .client-marquee__lane:nth-child(even) .client-marquee__track {
   padding: clamp(1rem, 2vw, 1.75rem);
 }
 
+/* Lockups that run very wide - both of these are near 4.8:1 - would paint too tall
+   at the tile's full content width, so their height is capped instead.
+   neom-mono-v3 sat here while its artwork was the horizontal lockup. The client
+   has since supplied the stacked one at 1.02:1, which this cap would shrink rather
+   than rescue, so it now sizes off --mark-scale like every other square mark. */
 .relationship-marks img[src$="/rcu-mono-v3.png"],
-.relationship-marks img[src$="/neom-mono-v3.png"],
 .relationship-marks img[src$="/rosewood-mono-v3.png"] {
   width: 100%;
   max-height: 4.75rem;
