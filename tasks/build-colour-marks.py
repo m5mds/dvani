@@ -20,7 +20,16 @@ why the contact sheet is part of this process and not a formality:
                          muted blue that reads far worse than the white
                          silhouette it would replace.
 
-neom needed its dark-background lockup. The artwork on hand is the light-background
+neom is not here, and the reason is a trap worth naming. Its artwork is NEOM's
+STACKED lockup - emblem above wordmark, ink aspect 1.04 - while the monochrome
+mark it would replace is the HORIZONTAL lockup at aspect 2.88, filling 77% of the
+canvas against the stacked one's 28%. The marquee slot is .relationship-mark--wide,
+capped at 76px tall and shaped for roughly 2.9:1, so the stacked lockup renders at
+about a third of the size of its neighbours with the wordmark clipped. Contrast was
+fine; proportion was not. Going colour here needs NEOM's horizontal lockup, not a
+recolour. The dropped recolour step read:
+
+    neom needed its dark-background lockup. The artwork on hand is the light-background
 one: colour emblem plus a near-black wordmark that vanishes on this section, which
 is why it first measured 4.48 on the strength of the emblem alone. NEOM publish a
 dark variant with the wordmark in white - the client supplied a reference of it -
@@ -74,15 +83,13 @@ COLOUR_MARKS: dict[str, tuple[str, float]] = {
     "rcu-mono-v3": ("royal-commission-alula.svg", 6.79),
     "mas-engineering-construction": ("mas-ecc.png", 4.15),
     "alfanar-engineering-services": ("alfanar.svg", 3.55),
-    "neom-mono-v3": ("neom.svg", 5.22),
 }
 
 
 # stem -> (fill to replace, replacement). Applied to SVG source text before
-# rasterising, so the file in brand-sources stays exactly as supplied.
-WORDMARK_RECOLOUR: dict[str, tuple[str, str]] = {
-    "neom-mono-v3": ("#0c0a09", "#ffffff"),
-}
+# rasterising, so the file in brand-sources stays exactly as supplied. Empty for
+# now: the one user, neom, was reverted to its monochrome mark (see below).
+WORDMARK_RECOLOUR: dict[str, tuple[str, str]] = {}
 
 
 def rasterise(source: Path, recolour: tuple[str, str] | None = None) -> Image.Image:
