@@ -13,7 +13,7 @@
  *
  * Checks, per locale:
  *   1. Cold load, no scroll  -> zero client-logo requests (the marquee is deferred)
- *   2. Scroll to #relationships -> marquee builds, 49 marks, served from /640/
+ *   2. Scroll to #relationships -> marquee builds, 50 marks, served from /640/
  *   3. Scroll to #selected-work -> project chapters receive .is-entered
  *
  * Usage: node tasks/verify-mobile.js [port]
@@ -260,8 +260,8 @@ function report(results) {
       ["cold load fetches no logos", r.cold.logoRequests === 0],
       ["marquee deferred on cold load", r.cold.marqueeBuilt === false],
       ["marquee builds after scroll", r.marquee.marqueeBuilt === true],
-      ["49 original figures", r.marquee.originalFigures === 49],
-      ["49 unique srcs", r.marquee.uniqueSrcs === 49],
+      ["50 original figures", r.marquee.originalFigures === 50],
+      ["50 unique srcs", r.marquee.uniqueSrcs === 50],
       ["logos served from /640/", r.marquee.allFrom640 === true],
       // The lanes scroll marks in by transform, which does not reliably re-run
       // lazy loading - unloaded marks appear as blanks mid-scroll. This shipped

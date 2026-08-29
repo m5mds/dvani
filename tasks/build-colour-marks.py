@@ -156,7 +156,8 @@ def main() -> None:
     if "--list" in sys.argv:
         for stem, (art, contrast) in sorted(COLOUR_MARKS.items(), key=lambda kv: -kv[1][1]):
             print(f"  {stem:32} {art:28} {contrast:5.2f} : 1")
-        print(f"\n  {len(COLOUR_MARKS)} colour, {49 - len(COLOUR_MARKS)} monochrome")
+        print(f"\n  {len(COLOUR_MARKS)} colour from vector sources; the client-delivered"
+              f"\n  colour marks are a separate roster in build-client-colour-pack.py")
         return
 
     MOBILE_DIR.mkdir(parents=True, exist_ok=True)

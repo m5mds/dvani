@@ -60,3 +60,33 @@ mas-engineering-construction	MAS Engineering & Construction	m5mds/DecoCorner pub
 alfanar-engineering-services	alfanar	m5mds/DecoCorner public/assets/clients/alfanar.svg	svg	colour	Vector, blue #106FB3. 3.41:1.
 #	NOTE	jedco-jeddah-airports	-	rejected	DecoCorner's "jeddah-airports" artwork is the King Abdulaziz International Airport mark. This slot credits JEDCO, Jeddah Airports Company - the operator, a different entity - so swapping it would misattribute the client. Kept monochrome.
 #	NOTE	red-sea-global	-	rejected	Measured 4.85:1, but the figure is carried by the bright emblem while the "Red Sea Global" wordmark is a muted blue that reads worse than the white silhouette it would have replaced. Kept monochrome.
+#
+# CLIENT-DELIVERED COLOUR ARTWORK, 2026-08. The client supplied raster artwork for
+# nineteen marks. Every one of them replaces either a 150 DPI crop out of divani
+# profile.pdf or, for havelock-one, a white silhouette standing in for a two-blue
+# logo - so this clears most of the "needs the client's brand kit" backlog recorded
+# above. Sources live in assets/brand-sources/client-logos-2026 (gitignored, as the
+# rest of brand-sources is) and are built by tasks/build-client-colour-pack.py,
+# which knocks the flat background out and gates each mark on measured contrast
+# against the section ground. Figures below are that gate's own numbers.
+abdul-mohsen-al-tamimi-group	Abdul Mohsen Al Tamimi Group	client-supplied 2026-08	jpg	colour	Gold calligraphic lockup, 1600x331. 6.28:1. Replaces the p.8 profile crop.
+albaddad-engineering	Al Baddad International	client-supplied 2026-08	jpg	colour	Cyan bilingual wordmark, 1254x1254. 6.44:1. Replaces the p.8 profile crop.
+alsharif-group-holding	Al Sharif Group Holding	client-supplied 2026-08	jpg	colour	Gold and grey ASG globe, but only 330x121 - the smallest source in the pack, enlarged 2.69x to fill the content box, and the one mark here still worth re-requesting at size. Sharper than the p.7 crop it replaces even so. 8.25:1.
+astra-construction	Astra Construction	client-supplied 2026-08	jpg	colour	Green aperture plus white type, already on a dark ground. 13.22:1. Replaces the p.8 profile crop.
+china-comservice	China Comservice	client-supplied 2026-08	jpg	colour	Red lattice square; the black CJK and Latin type is reversed to white by REVERSE_NEUTRAL_INK, the square is untouched. 6.44:1.
+diriyah-company	Diriyah Company	client-supplied 2026-08	jpg	colour	Terracotta seal on cream, 582x555. 5.72:1. Clears the "pending" note above - the seal is solid now rather than a grey ghost, though the rim text is still fine at served size.
+diwan-al-kashi	Diwan Al Kashi	client-supplied 2026-08	jpg	colour	Red and yellow pot mark, 1600x1600. 7.45:1.
+el-seif-engineering	EL SEIF Engineering Contracting	client-supplied 2026-08	jpg	colour	NEW MARK, not previously in the pack - the fiftieth. White type and a red triangle emblem on a #f7f7f7 plate, which is why it carries its own knockout band of 3 (see KNOCKOUT_BAND). 11.58:1.
+elegancia-arabia	Elegancia Arabia	client-supplied 2026-08	jpg	colour	Green diamond plus wordmark; the black wordmark is reversed to white, the diamond keeps its green. 13.32:1. Replaces the p.7 crop whose "arabia" subtitle was breaking up.
+five-seasons-hotel	Five Seasons Hotel	client-supplied 2026-08	jpg	colour	Entirely black artwork on white, so it is entirely reversed - this is the mark that measured 1.36:1 before the reversal and 16.55:1 after.
+havelock-one	Havelock One	client-supplied 2026-08	jpg	colour	Two-blue emblem and wordmark, 1241x907. 5.66:1. Replaces the white DecoCorner silhouette with the brand's actual colours.
+jedco-jeddah-airports	Jeddah Airports Company (JEDCO)	client-supplied 2026-08	jpg	colour	The correct JEDCO mark, which settles the rejection note above: DecoCorner's file was the King Abdulaziz International Airport mark and would have misattributed this slot. Deep blue throughout, so LIFT_DARK_INK raises it a tint: 2.88:1 as delivered, 4.13:1 shipped.
+lilac-park	Lilac Park	client-supplied 2026-08	jpg	colour	Navy disc with gold rim, LP monogram and bilingual wordmark. 3.84:1 - carried by the gold; the navy disc reads as the ring around it on this ground. Supersedes the alpha-lift repair recorded above.
+national-talents-company	National Talents Company	client-supplied 2026-08	jpg	colour	Colour "Talents" monogram with black bilingual type; only the type is reversed. 3.85:1.
+north-coffee	North Coffee	client-supplied 2026-08	jpg	colour	Brown portrait mark, 1254x1254. 4.88:1. Clears the "pending" note above - no speckle, and the COFFEE subline holds at served size.
+rose-land	Rose Land	client-supplied 2026-08	jpg	colour	Black on a gold plate, 748x1064. 6.52:1. Deliberately NOT reversed: the plate carries the contrast, and white type on gold is not a lockup the brand publishes.
+siac	SIAC Construction	client-supplied 2026-08	jpg	colour	Blue and orange chevron with a navy wordmark, 1600x719. The navy is dark enough that the mark measured 2.76:1, so LIFT_DARK_INK raises it a tint to 4.62:1. Replaces the p.7 crop.
+skyline-tabuk-hotel	Skyline Hotels	client-supplied 2026-08	jpg	colour	White artwork already on black, 1254x1254. 16.52:1.
+watania-business-group	Wataniah Business Group	client-supplied 2026-08	jpg	colour	Green portrait mark, 1254x1254. 5.26:1. The narrowest mark on the strip even at the 1.5x marquee fit.
+#	NOTE	neom-mono-v3	-	rejected	The client also supplied a NEOM lockup, but it is the STACKED one at 738x369 - the same trap recorded in build-colour-marks.py. This slot is .relationship-mark--wide and shaped for roughly 2.9:1; the stacked lockup renders at a third of its neighbours' size with the wordmark clipped. The existing horizontal mark is kept.
+#	NOTE	top-grill	-	rejected	Still reads "TOP GRILI". No artwork for it in the 2026-08 delivery, so the note above stands.
