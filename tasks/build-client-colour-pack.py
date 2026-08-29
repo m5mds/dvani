@@ -105,6 +105,7 @@ CLIENT_MARKS: dict[str, str] = {
     "rose-land": "rose-land.jpg",
     "siac": "siac.jpg",
     "skyline-tabuk-hotel": "skyline-tabuk-hotel.jpg",
+    "top-grill": "top-grill.jpg",
     "watania-business-group": "watania-business-group.jpg",
 }
 
@@ -159,6 +160,12 @@ REVERSE_NEUTRAL_INK = frozenset({
     "elegancia-arabia",
     "five-seasons-hotel",
     "national-talents-company",
+    # top-grill is the emblem case rather than the wordmark case: its type is red
+    # and orange and reads unaided, but the plate ring and the glass outline that
+    # carry the emblem's whole shape are black linework, and on this section that
+    # is a red fork floating in nothing. Reversed, they are the white linework the
+    # brand uses on its own dark applications.
+    "top-grill",
 })
 
 # Stems drawn entirely in a dark chromatic ink - both of these are a deep blue -
@@ -239,11 +246,18 @@ def reverse_neutral_ink(image: Image.Image) -> Image.Image:
     """
     arr = np.asarray(image).astype(np.float64) / 255.0
     rgb, alpha = arr[:, :, :3], arr[:, :, 3]
-    high, low = rgb.max(axis=2), rgb.min(axis=2)
-    saturation = np.where(high > 1e-6, (high - low) / np.maximum(high, 1e-6), 0.0)
+    # Absolute chroma, not saturation. Saturation divides by the brightest channel,
+    # so on the dark pixels this transform exists for it is dividing by almost
+    # nothing and any noise reads as strong colour: a black line that JPEG chroma
+    # subsampling has fringed to (30, 10, 15) scores 0.67 saturation and is spared
+    # as "coloured", while its cleaner neighbours reverse - which is what turned
+    # top-grill's solid ring into speckle. The same pixel's absolute chroma is 20,
+    # and a real red is nearer 200, so the two separate cleanly at any threshold in
+    # between regardless of how dark they are.
+    chroma = rgb.max(axis=2) - rgb.min(axis=2)
     luma = _luma(rgb)
     # Feathered on both axes so a glyph's antialiasing ramp does not band.
-    mask = (1.0 - _smoothstep(0.14, 0.26, saturation)) * (1.0 - _smoothstep(0.34, 0.50, luma))
+    mask = (1.0 - _smoothstep(0.12, 0.20, chroma)) * (1.0 - _smoothstep(0.34, 0.50, luma))
     lifted = np.clip(rgb + (1.0 - 2.0 * luma)[:, :, None], 0.0, 1.0)
     rgb = rgb * (1.0 - mask)[:, :, None] + lifted * mask[:, :, None]
     return Image.fromarray(

@@ -132,7 +132,7 @@
   "china-comservice": {
     "blur_dev": 0.6082324934302056,
     "coverage": 0.315158471563981,
-    "ground_contrast": 6.436002268176806,
+    "ground_contrast": 7.055957195730409,
     "holes": 19,
     "ink_h": 320,
     "ink_w": 422,
@@ -223,7 +223,7 @@
   "five-seasons-hotel": {
     "blur_dev": 0.6286841111410844,
     "coverage": 0.1933916908563135,
-    "ground_contrast": 16.553503876953677,
+    "ground_contrast": 17.27481702290283,
     "holes": 11,
     "ink_h": 320,
     "ink_w": 689,
@@ -457,7 +457,7 @@
   "national-talents-company": {
     "blur_dev": 0.4244503212166972,
     "coverage": 0.20205217236467238,
-    "ground_contrast": 3.8530000483245406,
+    "ground_contrast": 9.73634318717782,
     "holes": 19,
     "ink_h": 208,
     "ink_w": 1080,
@@ -624,13 +624,13 @@
     "stem": "swiss-inn-tabuk"
   },
   "top-grill": {
-    "blur_dev": 1.3954746388982195,
-    "coverage": 0.1664905024509804,
-    "ground_contrast": 17.68654337670051,
-    "holes": 3,
+    "blur_dev": 0.7612372705230341,
+    "coverage": 0.20135233918128656,
+    "ground_contrast": 7.643539873691224,
+    "holes": 29,
     "ink_h": 320,
-    "ink_w": 408,
-    "min_stroke_dev": 5.183999999999999,
+    "ink_w": 342,
+    "min_stroke_dev": 1.2959999999999998,
     "offset_dx": 0,
     "offset_dy": 0,
     "served_width": 777.5999999999999,
