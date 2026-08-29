@@ -51,6 +51,9 @@ tasks/*
 # shipped PNGs, and rebuilds a single mark from artwork someone hands over.
 !tasks/repair-built-marks.py
 !tasks/rebuild-mark.ps1
+# Builds the colour half of the mixed pack; see the COLOUR MARKS block in
+# assets/brand-sources/SOURCES.tsv.
+!tasks/build-colour-marks.py
 docs/
 prototypes/
 exports/

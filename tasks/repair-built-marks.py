@@ -37,6 +37,7 @@ Usage:
 from __future__ import annotations
 
 import importlib.util
+import io
 import subprocess
 import sys
 from pathlib import Path
@@ -60,8 +61,10 @@ build = _load("_logo_build", "build-client-logo-pack.py")
 PACK_DIR = ROOT / "assets" / "client-logos-monochrome"
 MOBILE_DIR = PACK_DIR / "640"
 
-# stem -> commit holding the correct artwork.
-RESTORE_FROM = {"lilac-park": "6510ac5"}
+# stem -> (commit holding the better artwork, alpha gain to apply).
+# Gain chosen by sweeping 1.5-2.8 and inspecting the "LP" at full zoom: the
+# counter starts eroding above ~2.4, and ink components hold at 22 throughout.
+LIFT_ALPHA = {"lilac-park": ("74fe841", 2.1)}
 
 
 def write_mobile(stem: str, master: Image.Image) -> float:
@@ -76,7 +79,7 @@ def write_mobile(stem: str, master: Image.Image) -> float:
     return gain
 
 
-def restore(stem: str, revision: str, *, dry_run: bool) -> str:
+def lift(stem: str, revision: str, alpha_gain: float, *, dry_run: bool) -> str:
     path = PACK_DIR / f"{stem}.png"
     blob = subprocess.run(
         ["git", "show", f"{revision}:assets/client-logos-monochrome/{stem}.png"],
@@ -85,11 +88,17 @@ def restore(stem: str, revision: str, *, dry_run: bool) -> str:
     )
     if blob.returncode != 0:
         raise RuntimeError(f"{stem}: cannot read {revision} ({blob.stderr.decode().strip()})")
+    image = Image.open(io.BytesIO(blob.stdout)).convert("RGBA")
+    alpha = np.asarray(image)[:, :, 3]
+    lifted = np.clip(alpha.astype(np.float32) * alpha_gain, 0, 255).astype(np.uint8)
     if dry_run:
-        return f"{stem}: would restore from {revision}"
-    path.write_bytes(blob.stdout)
-    gain = write_mobile(stem, Image.open(path).convert("RGBA"))
-    return f"{stem}: restored from {revision}, mobile gain {gain}"
+        return f"{stem}: would take {revision} and scale alpha x{alpha_gain}"
+    image.putalpha(Image.fromarray(lifted, mode="L"))
+    image.save(path, optimize=True)
+    gain = write_mobile(stem, image)
+    return (f"{stem}: {revision} with alpha x{alpha_gain}, "
+            f"ink mean {alpha[alpha > 13].mean():.0f} -> {lifted[lifted > 13].mean():.0f}, "
+            f"mobile gain {gain}")
 
 
 def solidify(stem: str, *, dry_run: bool) -> str:
@@ -165,8 +174,8 @@ def main() -> None:
         print("Dry run - nothing written." if dry_run else "Rebuilt. Now run: "
               "python tasks/check-client-logo-pack.py")
         return
-    for stem, revision in sorted(RESTORE_FROM.items()):
-        print(f"  {restore(stem, revision, dry_run=dry_run)}")
+    for stem, (revision, alpha_gain) in sorted(LIFT_ALPHA.items()):
+        print(f"  {lift(stem, revision, alpha_gain, dry_run=dry_run)}")
     for stem in sorted(build.SOLIDIFY_STEMS):
         print(f"  {solidify(stem, dry_run=dry_run)}")
     print("Dry run - nothing written." if dry_run else "Repairs applied.")
