@@ -455,14 +455,14 @@
     "stem": "national-talents-company"
   },
   "neom-mono-v3": {
-    "blur_dev": 0.38941527617951666,
-    "coverage": 0.40975975975975976,
-    "ground_contrast": 5.224345722170265,
-    "holes": 1,
+    "blur_dev": 0.6912797219307449,
+    "coverage": 0.22744712581344903,
+    "ground_contrast": 17.489264200760967,
+    "holes": 193,
     "ink_h": 320,
-    "ink_w": 333,
+    "ink_w": 922,
     "min_stroke_dev": 1.3569999933242798,
-    "offset_dx": -1,
+    "offset_dx": 0,
     "offset_dy": 0,
     "served_width": 407.1,
     "stem": "neom-mono-v3"
