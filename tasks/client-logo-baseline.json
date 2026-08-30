@@ -91,16 +91,16 @@
     "stem": "aris-star"
   },
   "astra-construction": {
-    "blur_dev": 0.5250262632858631,
-    "coverage": 0.34232386961093586,
-    "ground_contrast": 13.224609754897326,
-    "holes": 5,
-    "ink_h": 317,
-    "ink_w": 1080,
-    "min_stroke_dev": 5.531327999999999,
+    "blur_dev": 0.5376147041119524,
+    "coverage": 0.2384861407249467,
+    "ground_contrast": 13.717525338307896,
+    "holes": 8,
+    "ink_h": 320,
+    "ink_w": 938,
+    "min_stroke_dev": 3.39188520904541,
     "offset_dx": 0,
-    "offset_dy": 1,
-    "served_width": 553.1328,
+    "offset_dy": 0,
+    "served_width": 636.5952,
     "stem": "astra-construction"
   },
   "bec-arabia": {
