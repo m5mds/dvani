@@ -87,7 +87,7 @@ CLIENT_MARKS: dict[str, str] = {
     "abdul-mohsen-al-tamimi-group": "abdul-mohsen-al-tamimi-group.jpg",
     "albaddad-engineering": "albaddad-engineering.jpg",
     "alsharif-group-holding": "alsharif-group-holding.jpg",
-    "astra-construction": "astra-construction.jpg",
+    "astra-construction": "astra-construction.png",
     "china-comservice": "china-comservice.jpg",
     "diriyah-company": "diriyah-company.jpg",
     "diwan-al-kashi": "diwan-al-kashi.jpg",
@@ -125,6 +125,8 @@ SAMPLE_GROUND = "sample"
 
 # stem -> what knockout() should remove. Absent means SAMPLE_GROUND.
 KNOCKOUT_GROUND: dict[str, tuple[int, int, int] | None] = {
+    # Delivered on transparency, and its ring is transparent too.
+    "astra-construction": None,
     # Delivered on transparency already, correctly cut. Sampling its border ring
     # would read #000 out of the transparent margin and eat the darker artwork.
     "ministry-civil-service": None,
@@ -160,6 +162,10 @@ REVERSE_NEUTRAL_INK = frozenset({
     "elegancia-arabia",
     "five-seasons-hotel",
     "national-talents-company",
+    # astra-construction replaced a screenshot of its own dark-background lockup,
+    # already white, with the artwork - which is the light-background lockup, so
+    # the type is black and has to be reversed back. The aperture keeps its greens.
+    "astra-construction",
     # top-grill is the emblem case rather than the wordmark case: its type is red
     # and orange and reads unaided, but the plate ring and the glass outline that
     # carry the emblem's whole shape are black linework, and on this section that
